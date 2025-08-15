@@ -29,12 +29,13 @@ export default function Home() {
     const el = scrollerRef.current;
     if (!el) return;
 
-    const ITEM_GAP = 24; // matches gap-6 between tiles
-    const visibleColumns = 4.8; // 4 full + half for affordance
-
+    // Base gap matches gap utilities below (gap-4 on mobile, gap-6 on ≥sm)
     const compute = () => {
       const width = el.clientWidth;
-      const col = (width - ITEM_GAP * 3) / visibleColumns; // 4 cols => 3 gaps
+      const isSmall = width < 640; // ~sm breakpoint
+      const gap = isSmall ? 16 : 24; // gap-4 vs gap-6
+      const visibleColumns = isSmall ? 2.2 : 4.8; // make tiles larger on phones
+      const col = (width - gap * 3) / visibleColumns; // 4 cols => 3 gaps between
       el.style.setProperty("--col", `${col}px`);
     };
 
@@ -140,9 +141,9 @@ export default function Home() {
 
   return (
     <section>
-      <div className="grid gap-8 lg:grid-cols-[20%_80%]">
+      <div className="grid gap-4 sm:gap-8 lg:grid-cols-[20%_80%]">
         {/* Intro text (left column) */}
-        <div className="text-xs leading-relaxed space-y-4 max-w-[60ch]">
+        <div className="text-xs leading-relaxed space-y-4 max-w-none sm:max-w-[60ch]">
           {introBlocks && introBlocks.length > 0 ? (
             <div className="prose prose-invert max-w-none">
               <PortableText value={introBlocks} />
@@ -170,7 +171,7 @@ export default function Home() {
           onWheel={onWheel}
           className="relative overflow-x-auto pb-2 hide-scrollbar"
         >
-          <div className="grid grid-rows-2 grid-flow-col auto-cols-[var(--col)] gap-6 min-h-[0]">
+          <div className="grid grid-rows-2 grid-flow-col auto-cols-[var(--col)] gap-4 sm:gap-6 min-h-[0]">
             {(projects && projects.length > 0
               ? projects.map((p, i) => ({
                   key: p._id,
@@ -178,32 +179,32 @@ export default function Home() {
                   alt: p.title || `Projekt ${i + 1}`,
                 }))
               : [
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Vattentornet-01-Thumbnail-1.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Surekat-02-Thumbnailq.jpg",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Radiohuset-01-Thumbnail-1.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/New-Project-2.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Nalen-01.jpg",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Origo-01-1.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Nahal-01-Thumbnail-1.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Infinity-Wall-05-Thumbnail-1.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Lunds-Stadshall-01-Thumbnail.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Halvarsson-Halvarsson-02-Thumbnail-2.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Lidingo-stadshus-Thumbnail.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Folkungakyrkan-01.jpg",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Cafe-Goteborg-01-Thumbnail.jpg",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Vattentornet-01-Thumbnail-1.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Surekat-02-Thumbnailq.jpg",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Radiohuset-01-Thumbnail-1.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/New-Project-2.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Nalen-01.jpg",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Origo-01-1.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Nahal-01-Thumbnail-1.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Infinity-Wall-05-Thumbnail-1.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Lunds-Stadshall-01-Thumbnail.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Halvarsson-Halvarsson-02-Thumbnail-2.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Lidingo-stadshus-Thumbnail.png",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Folkungakyrkan-01.jpg",
-                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Cafe-Goteborg-01-Thumbnail.jpg",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/d80b61c2dc0f0a1b1524a3f22d0dda41698c132f-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/9ecb332317c5e2ee5e4e98c783db487856cd0b4c-600x600.jpg",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/5f3f14ff88b5fc2944ae85e9b13ab3146092bb13-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/4ac675916c50552bae5d974c58c6dde0659b694d-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/c468d0464587a8e16f3335701b81209a2b2e97c3-600x600.jpg",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/4e244d79554680b0999d9cc048eac0ef77c6b91f-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/cbb5bd7c28866b706b519f87793f9a840f12a25a-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/eef64a2a1b8f13b1b69d0af243b2ccb7b058d80e-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/b684c0d32955d2c2da076991aeb11fc151b51eb5-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/b348176da9412e9f63a7a77007349b453ceeac8d-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/f7b4a36f69dcee2e43c5079521e797e026f29ffe-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/6d5fde2384317c88e12f9c08c63ddf4d67b395dd-600x600.jpg",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/f35272ffc7fcd869807d159d613ddf51ad330d3e-600x600.jpg",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/d80b61c2dc0f0a1b1524a3f22d0dda41698c132f-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/9ecb332317c5e2ee5e4e98c783db487856cd0b4c-600x600.jpg",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/5f3f14ff88b5fc2944ae85e9b13ab3146092bb13-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/4ac675916c50552bae5d974c58c6dde0659b694d-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/c468d0464587a8e16f3335701b81209a2b2e97c3-600x600.jpg",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/4e244d79554680b0999d9cc048eac0ef77c6b91f-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/cbb5bd7c28866b706b519f87793f9a840f12a25a-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/eef64a2a1b8f13b1b69d0af243b2ccb7b058d80e-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/b684c0d32955d2c2da076991aeb11fc151b51eb5-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/b348176da9412e9f63a7a77007349b453ceeac8d-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/f7b4a36f69dcee2e43c5079521e797e026f29ffe-600x600.png",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/6d5fde2384317c88e12f9c08c63ddf4d67b395dd-600x600.jpg",
+                  "https://cdn.sanity.io/images/20rfbnpw/production/f35272ffc7fcd869807d159d613ddf51ad330d3e-600x600.jpg",
                 ].map((src, i) => ({ key: `fallback-${i}`, src, alt: `Projekt ${i + 1}` }))
             ).map((item, i) => (
               <div

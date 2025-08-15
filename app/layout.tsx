@@ -30,19 +30,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-white text-neutral-900`}
       >
-        {/* Two-column layout: left sidebar (navigation) and main content */}
-        <div className="min-h-screen grid grid-cols-[160px_1fr]">
+        {/* Two-column layout on ≥sm; single column on mobile */}
+        <div className="min-h-screen grid grid-cols-1 sm:grid-cols-[160px_1fr]">
           {/* Left vertical navigation */}
           <Header />
 
           {/* Main content area */}
-          <div className="px-6 sm:px-8 lg:px-12 py-8 flex flex-col">
+          <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-8 flex flex-col">
             {/* Wordmark and subtext (align with sidebar 'K') */}
-            <div className="flex items-start gap-6">
+            <div className="flex flex-col sm:flex-row items-start gap-2 sm:gap-6">
               {/* Wordmark: full text on mobile, image on ≥sm to pair with sidebar 'K' */}
-              <div className="select-none whitespace-nowrap -ml-6 sm:-ml-8 lg:-ml-12">
+              <div className="select-none whitespace-nowrap ml-0 sm:-ml-8 lg:-ml-12">
                 <div className="leading-none">
-                  <span className="sm:hidden text-5xl sm:text-6xl md:text-7xl font-light tracking-[0.6em]">KONTRAST</span>
+                  <span className="sm:hidden text-5xl sm:text-6xl md:text-7xl font-light tracking-[0.45em]">KONTRAST</span>
                   <span className="hidden sm:inline">
                     <Image
                       src="/Kontrast-logo-2.png"

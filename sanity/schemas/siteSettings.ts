@@ -40,5 +40,13 @@ export default defineType({
     defineField({ name: 'address', type: 'string', title: 'Address' }),
     defineField({ name: 'email', type: 'string', title: 'Email' }),
     defineField({ name: 'phone', type: 'string', title: 'Phone' }),
+    defineField({
+      name: 'assets',
+      title: 'Assets',
+      type: 'array',
+      of: [
+        { type: 'image', options: { hotspot: true } },
+      ],
+    }),
   ],
 });
