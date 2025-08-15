@@ -17,7 +17,8 @@ export default defineConfig({
   basePath: '/studio',
   projectId,
   dataset,
-  plugins: [deskTool(), visionTool({ defaultApiVersion: apiVersion, defaultDataset: dataset, projectId })],
+  // visionTool does not accept projectId; it gets that from the Studio config above.
+  plugins: [deskTool(), visionTool({ defaultApiVersion: apiVersion, defaultDataset: dataset })],
   schema: {
     types: schemaTypes,
   },
