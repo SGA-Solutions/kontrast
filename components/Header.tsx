@@ -51,10 +51,10 @@ export function Header() {
       </nav>
 
       {/* Spacer to push socials to bottom */}
-      <div className="flex-1" />
+      {/* <div className="flex-1" /> */}
 
       {/* Social links */}
-      <div className="flex gap-3 text-neutral-500">
+      <div className="mt-4 flex gap-4 text-neutral-500">
         <a
           href="https://www.instagram.com/"
           target="_blank"
@@ -62,7 +62,20 @@ export function Header() {
           aria-label="Instagram"
           className="hover:text-neutral-900 dark:hover:text-neutral-100"
         >
-          ig
+          {/* Instagram icon (monochrome via currentColor) */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            className="h-5 w-5"
+            aria-hidden="true"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="5" ry="5" />
+            <path d="M16.5 7.5h.01" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
         </a>
         <a
           href="https://www.linkedin.com/"
@@ -71,7 +84,16 @@ export function Header() {
           aria-label="LinkedIn"
           className="hover:text-neutral-900 dark:hover:text-neutral-100"
         >
-          in
+          {/* LinkedIn icon (monochrome via currentColor) */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="h-5 w-5"
+            aria-hidden="true"
+          >
+            <path d="M4.984 3.5A1.75 1.75 0 1 1 1.5 3.5a1.75 1.75 0 0 1 3.484 0ZM2 8h4v12H2V8Zm7 0h3.8v1.64h.05c.53-1 1.84-2.06 3.78-2.06 4.04 0 4.79 2.66 4.79 6.12V20H18v-5.2c0-1.24-.02-2.84-1.73-2.84-1.73 0-2 1.35-2 2.74V20h-4V8Z" />
+          </svg>
         </a>
       </div>
     </aside>

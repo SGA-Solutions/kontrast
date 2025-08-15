@@ -1,6 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { PortableText } from "@portabletext/react";
+import type { PortableTextBlock } from "sanity";
+import { client, urlFor } from "../sanity/client";
+import { groq } from "next-sanity";
+
+type ProjectDoc = {
+  _id: string;
+  title?: string;
+  coverImage?: any;
+};
 
 export default function Home() {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
@@ -10,6 +20,10 @@ export default function Home() {
   const fromRef = useRef<number>(0);
   const toRef = useRef<number>(0);
   const durationRef = useRef<number>(400);
+
+  // CMS state
+  const [introBlocks, setIntroBlocks] = useState<PortableTextBlock[] | null>(null);
+  const [projects, setProjects] = useState<ProjectDoc[] | null>(null);
 
   useEffect(() => {
     const el = scrollerRef.current;
@@ -33,6 +47,31 @@ export default function Home() {
   useEffect(() => {
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  // Fetch content from Sanity (client-side read with CDN)
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const settings = await client.fetch<{ description?: PortableTextBlock[] }>(
+          groq`*[_type == "siteSettings"][0]{ description }`
+        );
+        if (mounted) {
+          setIntroBlocks(settings?.description && Array.isArray(settings.description) ? settings.description : null);
+        }
+
+        const projDocs = await client.fetch<ProjectDoc[]>(
+          groq`*[_type == "project" && defined(coverImage)]|order(featured desc, _createdAt desc)[0...30]{ _id, title, coverImage }`
+        );
+        if (mounted) setProjects(projDocs || []);
+      } catch (err) {
+        console.warn("[Home] Failed to load CMS content", err);
+      }
+    })();
+    return () => {
+      mounted = false;
     };
   }, []);
 
@@ -103,18 +142,26 @@ export default function Home() {
     <section>
       <div className="grid gap-8 lg:grid-cols-[20%_80%]">
         {/* Intro text (left column) */}
-        <div className="text-xs sm:text-[13px] leading-6 text-neutral-700">
-          <p className="mb-4">
-            Kontrast omdefinierar svensk arkitektur genom att förena estetik med
-            den digitala byggprocessen. Vår grundidé är att skapa lösningar där
-            byggnadens identitet formas i symbios med funktion, plats och
-            människor.
-          </p>
-          <p>
-            Vi erbjuder arkitektur, projektledning och digitalisering för
-            fastighetsägare som vill skapa lönsamma, hållbara och tidsbeständiga
-            miljöer.
-          </p>
+        <div className="text-xs leading-relaxed space-y-4 max-w-[60ch]">
+          {introBlocks && introBlocks.length > 0 ? (
+            <div className="prose prose-invert max-w-none">
+              <PortableText value={introBlocks} />
+            </div>
+          ) : (
+            <>
+              <p className="mb-4">
+                Kontrast omdefinierar svensk arkitektur genom att förena estetik med
+                den digitala byggprocessen. Vår grundidé är att skapa lösningar där
+                byggnadens identitet formas i symbios med funktion, plats och
+                människor.
+              </p>
+              <p>
+                Vi erbjuder arkitektur, projektledning och digitalisering för
+                fastighetsägare som vill skapa lönsamma, hållbara och tidsbeständiga
+                miljöer.
+              </p>
+            </>
+          )}
         </div>
 
         {/* Image grid (right column): 2 rows, horizontal scroll */}
@@ -124,47 +171,49 @@ export default function Home() {
           className="relative overflow-x-auto pb-2 hide-scrollbar"
         >
           <div className="grid grid-rows-2 grid-flow-col auto-cols-[var(--col)] gap-6 min-h-[0]">
-            {[
-              "https://images.unsplash.com/photo-1523419409543-8a5a5b14fd0a?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1501183638710-841dd1904471?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1494526585095-c41746248156?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1487956382158-bb926046304a?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1536052371167-5e4f22cb9859?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1508541968004-b8df7d3be2f4?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1493282121944-bc2c0d0d02a5?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=1200&auto=format&fit=crop",
-              // Additional images to extend scroll
-              "https://images.unsplash.com/photo-1520975922215-cf1bd77f1b50?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1446054851785-66c4f9f4b774?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1467803738586-46b7eb7b16a1?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1482192505345-5655af888cc4?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1523419409543-8a5a5b14fd0a?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1501183638710-841dd1904471?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1508541968004-b8df7d3be2f4?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1493282121944-bc2c0d0d02a5?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1479839672679-a46483c0e7c8?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1487956382158-bb926046304a?q=80&w=1200&auto=format&fit=crop",
-              "https://images.unsplash.com/photo-1536052371167-5e4f22cb9859?q=80&w=1200&auto=format&fit=crop"
-            ].map((src, i) => (
+            {(projects && projects.length > 0
+              ? projects.map((p, i) => ({
+                  key: p._id,
+                  src: p.coverImage ? urlFor(p.coverImage).width(1200).height(1200).fit("crop").url() : "",
+                  alt: p.title || `Projekt ${i + 1}`,
+                }))
+              : [
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Vattentornet-01-Thumbnail-1.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Surekat-02-Thumbnailq.jpg",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Radiohuset-01-Thumbnail-1.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/New-Project-2.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Nalen-01.jpg",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Origo-01-1.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Nahal-01-Thumbnail-1.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Infinity-Wall-05-Thumbnail-1.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Lunds-Stadshall-01-Thumbnail.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Halvarsson-Halvarsson-02-Thumbnail-2.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Lidingo-stadshus-Thumbnail.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Folkungakyrkan-01.jpg",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Cafe-Goteborg-01-Thumbnail.jpg",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Vattentornet-01-Thumbnail-1.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Surekat-02-Thumbnailq.jpg",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Radiohuset-01-Thumbnail-1.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/New-Project-2.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Nalen-01.jpg",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Origo-01-1.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Nahal-01-Thumbnail-1.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Infinity-Wall-05-Thumbnail-1.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Lunds-Stadshall-01-Thumbnail.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Halvarsson-Halvarsson-02-Thumbnail-2.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Lidingo-stadshus-Thumbnail.png",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Folkungakyrkan-01.jpg",
+                  "https://staging.sga-kontrast.se/wp-content/uploads/2024/10/Cafe-Goteborg-01-Thumbnail.jpg",
+                ].map((src, i) => ({ key: `fallback-${i}`, src, alt: `Projekt ${i + 1}` }))
+            ).map((item, i) => (
               <div
-                key={i}
+                key={item.key ?? i}
                 className="group relative aspect-square bg-neutral-100 overflow-hidden"
               >
                 {/* Image */}
                 <img
-                  src={src}
-                  alt={`Projekt ${i + 1}`}
+                  src={item.src}
+                  alt={item.alt}
                   className="w-full h-full object-cover transition-opacity duration-300 ease-out group-hover:opacity-50"
                   loading="lazy"
                 />
@@ -181,7 +230,7 @@ export default function Home() {
                     className="px-3 py-1 text-white tracking-widest text-sm sm:text-base font-medium uppercase opacity-0 -translate-x-10 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-x-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]"
                     style={{ textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
                   >
-                    {`PROJEKT ${i + 1}`}
+                    {item.alt?.toUpperCase() || `PROJEKT ${i + 1}`}
                   </span>
                 </div>
               </div>
