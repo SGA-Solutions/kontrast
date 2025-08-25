@@ -6,6 +6,7 @@ export type ImageGridItem = {
   key?: string;
   src: string;
   alt: string;
+  onClick?: () => void;
 };
 
 interface ImageGridProps {
@@ -120,7 +121,8 @@ export default function ImageGrid({ items, className = "" }: ImageGridProps) {
         {items.map((item, i) => (
           <div
             key={item.key ?? i}
-            className="group relative aspect-square bg-neutral-100 overflow-hidden"
+            className="group relative aspect-square bg-neutral-100 overflow-hidden cursor-pointer"
+            onClick={item.onClick}
           >
             {/* Image */}
             <img

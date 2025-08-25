@@ -5,12 +5,14 @@ import { PortableText } from "@portabletext/react";
 import type { PortableTextBlock } from "sanity";
 import { client, urlFor } from "../sanity/client";
 import { groq } from "next-sanity";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ImageGrid, { type ImageGridItem } from "../components/ImageGrid";
 
 type ProjectDoc = {
   _id: string;
   title?: string;
+  slug?: { current: string };
   coverImage?: any;
 };
 
@@ -18,6 +20,7 @@ export default function Home() {
   // CMS state
   const [introBlocks, setIntroBlocks] = useState<PortableTextBlock[] | null>(null);
   const [projects, setProjects] = useState<ProjectDoc[] | null>(null);
+  const router = useRouter();
 
 
   // Fetch content from Sanity (client-side read with CDN)
@@ -33,7 +36,7 @@ export default function Home() {
         }
 
         const projDocs = await client.fetch<ProjectDoc[]>(
-          groq`*[_type == "project" && defined(coverImage)]|order(featured desc, _createdAt desc)[0...30]{ _id, title, coverImage }`
+          groq`*[_type == "project" && defined(coverImage)]|order(featured desc, _createdAt desc)[0...30]{ _id, title, slug, coverImage }`
         );
         if (mounted) setProjects(projDocs || []);
       } catch (err) {
@@ -52,6 +55,11 @@ export default function Home() {
         key: p._id,
         src: p.coverImage ? urlFor(p.coverImage).width(1200).height(1200).fit("crop").url() : "",
         alt: p.title || `Projekt ${i + 1}`,
+        onClick: () => {
+          if (p.slug?.current) {
+            router.push(`/projekt/${p.slug.current}`);
+          }
+        },
       }));
     }
     
@@ -84,7 +92,7 @@ export default function Home() {
       "https://cdn.sanity.io/images/20rfbnpw/production/6d5fde2384317c88e12f9c08c63ddf4d67b395dd-600x600.jpg",
       "https://cdn.sanity.io/images/20rfbnpw/production/f35272ffc7fcd869807d159d613ddf51ad330d3e-600x600.jpg",
     ].map((src, i) => ({ key: `fallback-${i}`, src, alt: `Projekt ${i + 1}` }));
-  }, [projects]);
+  }, [projects, router]);
 
   return (
     <section className="space-y-6">
