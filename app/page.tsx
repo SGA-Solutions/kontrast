@@ -5,6 +5,7 @@ import { PortableText } from "@portabletext/react";
 import type { PortableTextBlock } from "sanity";
 import { client, urlFor } from "../sanity/client";
 import { groq } from "next-sanity";
+import Image from "next/image";
 import ImageGrid, { type ImageGridItem } from "../components/ImageGrid";
 
 type ProjectDoc = {
@@ -86,7 +87,36 @@ export default function Home() {
   }, [projects]);
 
   return (
-    <section>
+    <section className="space-y-6">
+      {/* Wordmark and subtext (align with sidebar 'K') */}
+      {/*<div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-8 flex flex-col">*/}
+      <div className="flex flex-col sm:flex-row items-start gap-2 sm:gap-6">
+        {/* Wordmark: full text on mobile, image on ≥sm to pair with sidebar 'K' */}
+        <div className="select-none whitespace-nowrap ml-0 sm:-ml-8 lg:-ml-12">
+          <div className="leading-none">
+            <span className="sm:hidden text-5xl sm:text-6xl md:text-7xl font-light tracking-[0.45em]">KONTRAST</span>
+            <span className="hidden sm:inline">
+              <Image
+                src="/Kontrast-logo-2.png"
+                alt="Kontrast wordmark"
+                width={700}
+                height={120}
+                priority
+                className="h-14 sm:h-16 md:h-20 w-auto object-contain"
+              />
+            </span>
+          </div>
+        </div>
+        {/* Subtext */}
+        <div className="text-left text-[10px] sm:text-xs tracking-[0.35em] leading-5">
+          ARKITEKTUR
+          <br />
+          DIGITALISERING
+          <br />
+          PROJEKTLEDNING
+        </div>
+      </div>
+
       <div className="grid gap-4 sm:gap-8 lg:grid-cols-[20%_80%]">
         {/* Intro text (left column) */}
         <div className="text-xs leading-relaxed space-y-4 max-w-none sm:max-w-[60ch]">

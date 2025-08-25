@@ -34,42 +34,8 @@ export default function RootLayout({
         <div className="min-h-screen grid grid-cols-1 sm:grid-cols-[160px_1fr]">
           {/* Left vertical navigation */}
           <Header />
-
-          {/* Main content area */}
-          <div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-8 flex flex-col">
-            {/* Wordmark and subtext (align with sidebar 'K') */}
-            <div className="flex flex-col sm:flex-row items-start gap-2 sm:gap-6">
-              {/* Wordmark: full text on mobile, image on ≥sm to pair with sidebar 'K' */}
-              <div className="select-none whitespace-nowrap ml-0 sm:-ml-8 lg:-ml-12">
-                <div className="leading-none">
-                  <span className="sm:hidden text-5xl sm:text-6xl md:text-7xl font-light tracking-[0.45em]">KONTRAST</span>
-                  <span className="hidden sm:inline">
-                    <Image
-                      src="/Kontrast-logo-2.png"
-                      alt="Kontrast wordmark"
-                      width={700}
-                      height={120}
-                      priority
-                      className="h-14 sm:h-16 md:h-20 w-auto object-contain"
-                    />
-                  </span>
-                </div>
-              </div>
-              {/* Subtext */}
-              <div className="text-left text-[10px] sm:text-xs tracking-[0.35em] leading-5">
-                ARKITEKTUR
-                <br />
-                DIGITALISERING
-                <br />
-                PROJEKTLEDNING
-              </div>
-            </div>
-
-            {/* Page content */}
-            <main className="mt-8 flex-1">{children}</main>
-
-            {/*<Footer />*/}
-          </div>
+          <main className="mt-8 flex-1">{children}</main>
+          {/*<Footer />*/}         
         </div>
       </body>
     </html>
