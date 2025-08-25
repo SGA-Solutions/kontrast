@@ -30,12 +30,13 @@ type ProjectDoc = {
 };
 
 interface ProjectPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export default function ProjectPage({ params }: ProjectPageProps) {
   const [project, setProject] = useState<ProjectDoc | null>(null);
   const [loading, setLoading] = useState(true);
+  const [slug, setSlug] = useState<string>("");
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const targetRef = useRef(0);
   const rafRef = useRef<number | null>(null);
@@ -93,8 +94,17 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     };
   }, []);
 
+  // Resolve params Promise
+  useEffect(() => {
+    params.then(resolvedParams => {
+      setSlug(resolvedParams.slug);
+    });
+  }, [params]);
+
   useEffect(() => {
     let mounted = true;
+    
+    if (!slug) return; // Wait for slug to be resolved
     
     (async () => {
       try {
@@ -117,7 +127,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
             coverImage,
             gallery
           }`,
-          { slug: params.slug }
+          { slug: slug }
         );
         
         if (mounted) {
@@ -138,7 +148,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
     return () => {
       mounted = false;
     };
-  }, [params.slug]);
+  }, [slug]);
 
   if (loading) {
     return (
