@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
+import { futuraBQMedium, futuraBQLight } from "./fonts";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-white text-neutral-900`}
+        className={`${geistSans.variable} ${geistMono.variable} ${futuraBQMedium.variable} ${futuraBQLight.variable} antialiased min-h-screen bg-white text-neutral-900`}
       >
         {/* Two-column layout on ≥sm; single column on mobile */}
         <div className="min-h-screen grid grid-cols-1 sm:grid-cols-[160px_1fr]">

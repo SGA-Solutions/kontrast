@@ -108,7 +108,7 @@ export default function ProjektPage() {
       <div className="flex flex-wrap gap-3 sm:gap-4">
         <button
           onClick={() => handleCategoryClick(null)}
-          className={`px-4 text-xs sm:text-sm tracking-[0.3em] uppercase transition-colors ${
+          className={`px-4 text-xs sm:text-sm tracking-[0.5em] uppercase transition-colors ${
             selectedCategory === null
               ? "text-neutral-900"
               : "text-neutral-400 hover:text-neutral-900"
@@ -120,7 +120,7 @@ export default function ProjektPage() {
           <button
             key={category._id}
             onClick={() => handleCategoryClick(category._id)}
-            className={`px-4 text-xs sm:text-sm tracking-[0.3em] uppercase transition-colors ${
+            className={`px-4 text-xs sm:text-sm tracking-[0.5em] uppercase transition-colors ${
               selectedCategory === category._id
                 ? "text-neutral-900"
                 : "text-neutral-400 hover:text-neutral-900"
