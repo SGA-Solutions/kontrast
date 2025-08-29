@@ -7,8 +7,14 @@ export default defineType({
   fields: [
     defineField({ name: 'title', type: 'string', title: 'Title' }),
     defineField({ name: 'slug', type: 'slug', title: 'Slug', options: { source: 'title' } }),
-    defineField({ name: 'intro', type: 'text', title: 'Intro' }),
+    defineField({
+      name: 'categories',
+      title: 'Categories',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'serviceCategory' }] }],
+    }),
     defineField({ name: 'body', type: 'array', title: 'Body', of: [{ type: 'block' }] }),
+    defineField({ name: 'coverImage', title: 'Cover Image', type: 'image', options: { hotspot: true } }),
     defineField({
       name: 'gallery',
       title: 'Gallery',

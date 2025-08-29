@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
     // You can remove this later once lint issues are fixed or configure .eslintrc.
     ignoreDuringBuilds: true,
   },
+  images: {
+    domains: ['cdn.sanity.io'],
+  },
 };
 
 export default nextConfig;
