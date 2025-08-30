@@ -35,7 +35,7 @@ export function Header() {
       </Link>
 
       {/* Primary nav */}
-      <nav className="flex flex-col gap-3 text-sm tracking-[0.3em] text-neutral-600 dark:text-neutral-400">
+      <nav className="flex flex-col gap-3 text-xs ml-5 tracking-[0.3em] text-neutral-600 dark:text-neutral-400">
         {NAV.map((item) => (
           <Link
             key={item.href}
@@ -54,7 +54,7 @@ export function Header() {
       {/* <div className="flex-1" /> */}
 
       {/* Social links */}
-      <div className="mt-4 flex gap-4 text-neutral-500">
+      <div className="mt-4 ml-5 flex gap-4 text-neutral-500">
         <a
           href="https://www.instagram.com/"
           target="_blank"
