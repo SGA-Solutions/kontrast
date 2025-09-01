@@ -1,11 +1,9 @@
-"use client";
-
-import React, { useEffect, useState} from "react";
+import React from "react";
 import { client, urlFor } from "../../../sanity/client";
-import { groq } from "next-sanity";
-import { useParams, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import { PortableText } from "@portabletext/react";
+import { POST_BY_SLUG_QUERY, POST_SLUGS_QUERY, CACHE_TAGS } from "../../../lib/sanity-queries";
 
 type Post = {
   _id: string;
@@ -19,83 +17,45 @@ type Post = {
   tags?: string[];
 };
 
-export default function ArticlePage() {
-  const params = useParams();
-  const router = useRouter();
-  const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
-  
-  const slug = params?.slug as string;
+type Props = {
+  params: { slug: string };
+};
 
-  // Fetch individual post from Sanity
-  useEffect(() => {
-    if (!slug) return;
-    
-    let mounted = true;
-    (async () => {
-      try {
-        setLoading(true);
-        
-        const postDoc = await client.fetch<Post>(
-          groq`*[_type == "post" && slug.current == $slug][0]{
-            _id,
-            title,
-            slug,
-            excerpt,
-            body,
-            mainImage,
-            publishedAt,
-            author,
-            tags
-          }`,
-          { slug }
-        );
-        
-        if (mounted) {
-          if (postDoc) {
-            setPost(postDoc);
-          } else {
-            setNotFound(true);
-          }
-          setLoading(false);
-        }
-      } catch (err) {
-        console.warn("[ArticlePage] Failed to load post", err);
-        if (mounted) {
-          setNotFound(true);
-          setLoading(false);
+// Generate static params for all posts
+export async function generateStaticParams() {
+  const posts = await client.fetch<{slug: {current: string}}[]>(POST_SLUGS_QUERY);
+  
+  return posts.map((post) => ({
+    slug: post.slug.current,
+  }));
+}
+
+// Server-side data fetching with optimized caching
+async function getPost(slug: string): Promise<Post | null> {
+  try {
+    const post = await client.fetch<Post>(
+      POST_BY_SLUG_QUERY,
+      { slug },
+      {
+        cache: 'force-cache',
+        next: { 
+          revalidate: 3600, // Revalidate every hour
+          tags: [CACHE_TAGS.post, `post-${slug}`]
         }
       }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [slug]);
-  
-  if (loading) {
-    return (
-      <section className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600">Laddar artikel...</div>
-      </section>
     );
+    return post;
+  } catch (err) {
+    console.warn("[ArticlePage] Failed to load post", err);
+    return null;
   }
+}
 
-  if (notFound || !post) {
-    return (
-      <section className="space-y-6">
-        <div className="min-h-12"></div>
-        <div className="text-center space-y-4">
-          <h1 className="text-2xl font-light">Artikeln hittades inte</h1>
-          <button
-            onClick={() => router.push('/nyheter')}
-            className="text-sm text-neutral-600 hover:text-neutral-900 underline"
-          >
-            ← Tillbaka till nyheter
-          </button>
-        </div>
-      </section>
-    );
+export default async function ArticlePage({ params }: Props) {
+  const post = await getPost(params.slug);
+  
+  if (!post) {
+    notFound();
   }
 
   return (
@@ -129,11 +89,14 @@ export default function ArticlePage() {
               }}
             >
               <Image
-                  src={urlFor(post.mainImage).url()}
+                  src={urlFor(post.mainImage).width(500).height(500).format('webp').quality(85).url()}
                   alt={post.title}
                   width={500}
                   height={500}
                   className="h-130 object-top"
+                  priority
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
               />
               <PortableText 
                 value={post.body}

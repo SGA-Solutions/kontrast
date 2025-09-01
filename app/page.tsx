@@ -1,14 +1,11 @@
-"use client";
-
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React from "react";
 import { PortableText } from "@portabletext/react";
 import type { PortableTextBlock } from "sanity";
 import { client, urlFor } from "../sanity/client";
-import { groq } from "next-sanity";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ImageGrid, { type ImageGridItem } from "../components/ImageGrid";
 import Link from "next/link";
+import { PROJECTS_QUERY, SITE_SETTINGS_QUERY, CACHE_TAGS } from "../lib/sanity-queries";
 
 type ProjectDoc = {
   _id: string;
@@ -17,81 +14,57 @@ type ProjectDoc = {
   coverImage?: any;
 };
 
-export default function Home() {
-  // CMS state
-  const [introBlocks, setIntroBlocks] = useState<PortableTextBlock[] | null>(null);
-  const [projects, setProjects] = useState<ProjectDoc[] | null>(null);
-  const router = useRouter();
-
-
-  // Fetch content from Sanity (client-side read with CDN)
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const settings = await client.fetch<{ description?: PortableTextBlock[] }>(
-          groq`*[_type == "siteSettings"][0]{ description }`
-        );
-        if (mounted) {
-          setIntroBlocks(settings?.description && Array.isArray(settings.description) ? settings.description : null);
-        }
-
-        const projDocs = await client.fetch<ProjectDoc[]>(
-          groq`*[_type == "project" && defined(coverImage)]|order(featured desc, _createdAt desc)[0...30]{ _id, title, slug, coverImage }`
-        );
-        if (mounted) setProjects(projDocs || []);
-      } catch (err) {
-        console.warn("[Home] Failed to load CMS content", err);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  // Prevent browser swipe navigation
-  useEffect(() => {
-    const preventSwipeNavigation = (e: TouchEvent) => {
-      // Prevent horizontal swipe gestures from triggering browser navigation
-      if (e.touches.length === 1) {
-        e.preventDefault();
-      }
-    };
-
-    const preventOverscroll = (e: Event) => {
-      e.preventDefault();
-    };
-
-    // Add touch event listeners to prevent swipe navigation
-    document.addEventListener('touchstart', preventSwipeNavigation, { passive: false });
-    document.addEventListener('touchmove', preventSwipeNavigation, { passive: false });
-    document.addEventListener('overscroll', preventOverscroll, { passive: false });
-
-    return () => {
-      document.removeEventListener('touchstart', preventSwipeNavigation);
-      document.removeEventListener('touchmove', preventSwipeNavigation);
-      document.removeEventListener('overscroll', preventOverscroll);
-    };
-  }, []);
-
-  // Memoize image items to avoid recreating on every render
-  const imageItems: ImageGridItem[] = useMemo(() => {
-    if (projects && projects.length > 0) {
-      return projects.map((p, i) => ({
-        key: p._id,
-        src: p.coverImage ? urlFor(p.coverImage).width(1200).height(1200).fit("crop").url() : "",
-        alt: p.title || `Projekt ${i + 1}`,
-        onClick: () => {
-          if (p.slug?.current) {
-            router.push(`/projekt/${p.slug.current}`);
+// Server-side data fetching
+async function getHomeData() {
+  try {
+    const [settings, projects] = await Promise.all([
+      client.fetch<{ description?: PortableTextBlock[] }>(
+        SITE_SETTINGS_QUERY,
+        {},
+        {
+          cache: 'force-cache',
+          next: { 
+            revalidate: 3600, // 1 hour
+            tags: [CACHE_TAGS.settings]
           }
-        },
-      }));
-    }
+        }
+      ),
+      client.fetch<ProjectDoc[]>(
+        PROJECTS_QUERY,
+        {},
+        {
+          cache: 'force-cache',
+          next: { 
+            revalidate: 600, // 10 minutes
+            tags: [CACHE_TAGS.projects]
+          }
+        }
+      )
+    ]);
     
-    // Return empty array if no projects
-    return [];
-  }, [projects, router]);
+    return {
+      introBlocks: settings?.description && Array.isArray(settings.description) ? settings.description : null,
+      projects: projects || []
+    };
+  } catch (err) {
+    console.warn("[Home] Failed to load CMS content", err);
+    return {
+      introBlocks: null,
+      projects: []
+    };
+  }
+}
+
+export default async function Home() {
+  const { introBlocks, projects } = await getHomeData();
+
+  // Prepare image items for the ImageGrid component
+  const imageItems: ImageGridItem[] = projects.map((p, i) => ({
+    key: p._id,
+    src: p.coverImage ? urlFor(p.coverImage).width(1200).height(1200).format('webp').quality(85).fit("crop").url() : "",
+    alt: p.title || `Projekt ${i + 1}`,
+    href: p.slug?.current ? `/projekt/${p.slug.current}` : undefined,
+  }));
 
   return (
     <section >
@@ -109,6 +82,7 @@ export default function Home() {
                 width={700}
                 height={120}
                 priority
+                sizes="(max-width: 768px) 100vw, 700px"
                 className="ml-10 sm:h-16 md:h-15 w-auto object-contain"
               />
             </span>

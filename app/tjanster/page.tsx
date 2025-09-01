@@ -2,6 +2,7 @@ import { client, urlFor } from "../../sanity/client";
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 import Link from "next/link";
+import { SERVICE_CATEGORIES_QUERY, CACHE_TAGS } from "../../lib/sanity-queries";
 
 interface ServiceCategory {
   _id: string;
@@ -12,15 +13,23 @@ interface ServiceCategory {
 }
 
 async function getServiceCategories(): Promise<ServiceCategory[]> {
-  const query = `*[_type == "serviceCategory"] | order(_createdAt asc) {
-    _id,
-    title,
-    slug,
-    body,
-    coverImage
-  }`;
-  
-  return await client.fetch(query);
+  try {
+    const categories = await client.fetch<ServiceCategory[]>(
+      SERVICE_CATEGORIES_QUERY,
+      {},
+      {
+        cache: 'force-cache',
+        next: { 
+          revalidate: 3600, // 1 hour
+          tags: [CACHE_TAGS.serviceCategories]
+        }
+      }
+    );
+    return categories || [];
+  } catch (err) {
+    console.warn("[TjansterPage] Failed to load service categories", err);
+    return [];
+  }
 }
 
 export default async function TjansterPage() {
@@ -44,10 +53,13 @@ export default async function TjansterPage() {
                   <div className="relative h-64 w-full cursor-pointer">
                     {category.coverImage && (
                       <Image
-                        src={urlFor(category.coverImage).width(600).height(400).url()}
+                        src={urlFor(category.coverImage).width(600).height(400).format('webp').quality(85).url()}
                         alt={category.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                       />
                     )}
                   </div>

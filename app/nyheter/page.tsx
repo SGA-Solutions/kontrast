@@ -1,10 +1,8 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { client, urlFor } from "../../sanity/client";
-import { groq } from "next-sanity";
 import Link from "next/link";
 import Image from "next/image";
+import { POSTS_QUERY, CACHE_TAGS } from "../../lib/sanity-queries";
 
 type Post = {
   _id: string;
@@ -16,50 +14,29 @@ type Post = {
   author?: string;
 };
 
-export default function NyheterPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch posts from Sanity
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        setLoading(true);
-        
-        const postDocs = await client.fetch<Post[]>(
-          groq`*[_type == "post" && defined(publishedAt)]|order(publishedAt desc){
-            _id,
-            title,
-            slug,
-            excerpt,
-            mainImage,
-            publishedAt,
-            author
-          }`
-        );
-        
-        if (mounted) {
-          setPosts(postDocs || []);
-          setLoading(false);
+// Server-side data fetching with optimized caching
+async function getPosts(): Promise<Post[]> {
+  try {
+    const posts = await client.fetch<Post[]>(
+      POSTS_QUERY,
+      {},
+      {
+        cache: 'force-cache',
+        next: { 
+          revalidate: 300, // Revalidate every 5 minutes
+          tags: [CACHE_TAGS.posts]
         }
-      } catch (err) {
-        console.warn("[NyheterPage] Failed to load posts", err);
-        if (mounted) setLoading(false);
       }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  if (loading) {
-    return (
-      <section className="flex items-center justify-center min-h-[400px]">
-        <div className="text-neutral-600">Laddar nyheter...</div>
-      </section>
     );
+    return posts || [];
+  } catch (err) {
+    console.warn("[NyheterPage] Failed to load posts", err);
+    return [];
   }
+}
+
+export default async function NyheterPage() {
+  const posts = await getPosts();
 
   return (
     <section className="pl-10 mt-13 space-y-6">
@@ -79,10 +56,14 @@ export default function NyheterPage() {
               <div className="relative aspect-[4/1.8] bg-gray-100">
                 {post.mainImage ? (
                   <Image
-                    src={urlFor(post.mainImage).url()}
+                    src={urlFor(post.mainImage).width(520).height(234).format('webp').quality(85).url()}
                     alt={post.title}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
+                    priority={index < 2}
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                   />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-neutral-100 to-neutral-200 flex items-center justify-center">

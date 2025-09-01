@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import Link from "next/link";
 
 export type ImageGridItem = {
   key?: string;
   src: string;
   alt: string;
   onClick?: () => void;
+  href?: string;
 };
 
 interface ImageGridProps {
@@ -118,37 +120,57 @@ export default function ImageGrid({ items, className = "" }: ImageGridProps) {
       className={`relative overflow-x-auto pb-2 hide-scrollbar ${className}`}
     >
       <div className="grid grid-rows-2 grid-flow-col auto-cols-[var(--col)] gap-4">
-        {items.map((item, i) => (
-          <div
-            key={item.key ?? i}
-            className="group relative aspect-square bg-neutral-100 overflow-hidden cursor-pointer"
-            onClick={item.onClick}
-          >
-            {/* Image */}
-            <img
-              src={item.src}
-              alt={item.alt}
-              className="w-full h-full object-cover transition-opacity duration-300 ease-out group-hover:opacity-50"
-              loading="lazy"
-            />
+        {items.map((item, i) => {
+          const content = (
+            <>
+              {/* Image */}
+              <img
+                src={item.src}
+                alt={item.alt}
+                className="w-full h-full object-cover transition-opacity duration-300 ease-out group-hover:opacity-50"
+                loading={i < 4 ? "eager" : "lazy"}
+              />
 
-            {/* Dark overlay */}
-            <div
-              className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors duration-300 ease-out"
-              aria-hidden="true"
-            />
+              {/* Dark overlay */}
+              <div
+                className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors duration-300 ease-out"
+                aria-hidden="true"
+              />
 
-            {/* Overlay title */}
-            <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-              <span
-                className="px-3 py-1 text-white tracking-widest text-sm sm:text-base font-medium uppercase opacity-0 -translate-x-10 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-x-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]"
-                style={{ textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
+              {/* Overlay title */}
+              <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+                <span
+                  className="px-3 py-1 text-white tracking-widest text-sm sm:text-base font-medium uppercase opacity-0 -translate-x-10 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-x-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.6)]"
+                  style={{ textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}
+                >
+                  {item.alt?.toUpperCase() || `PROJEKT ${i + 1}`}
+                </span>
+              </div>
+            </>
+          );
+
+          if (item.href) {
+            return (
+              <Link
+                key={item.key ?? i}
+                href={item.href}
+                className="group relative aspect-square bg-neutral-100 overflow-hidden cursor-pointer block"
               >
-                {item.alt?.toUpperCase() || `PROJEKT ${i + 1}`}
-              </span>
+                {content}
+              </Link>
+            );
+          }
+
+          return (
+            <div
+              key={item.key ?? i}
+              className="group relative aspect-square bg-neutral-100 overflow-hidden cursor-pointer"
+              onClick={item.onClick}
+            >
+              {content}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
