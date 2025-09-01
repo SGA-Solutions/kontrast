@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import { client, urlFor } from "../../../sanity/client";
 import { groq } from "next-sanity";
 import { useParams, useRouter } from "next/navigation";
@@ -25,7 +25,7 @@ export default function ArticlePage() {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-
+  
   const slug = params?.slug as string;
 
   // Fetch individual post from Sanity
@@ -72,7 +72,7 @@ export default function ArticlePage() {
       mounted = false;
     };
   }, [slug]);
-
+  
   if (loading) {
     return (
       <section className="flex items-center justify-center min-h-[400px]">
@@ -116,36 +116,17 @@ export default function ArticlePage() {
       </h1>
 
       {/* Main content - scrollable layout */}
-      <div className="overflow-x-auto hide-scrollbar" onWheel={(e) => {
-        e.currentTarget.scrollLeft += e.deltaY;
-      }}>
         <div className="flex gap-8 h-130">
-          {/* First column: Image only */}
-          {/*}
-          <div className="w-130 flex-shrink-0">
-            {post.mainImage && (
-              <div className="relative h-full bg-gray-100 overflow-hidden">
-                <Image
-                  src={urlFor(post.mainImage).url()}
-                  alt={post.title}
-                  fill
-                  className="object-cover object-top"
-                  priority
-                />
-              </div>
-            )}
-          </div>
-          */}
           {/* Body text - flows into multiple columns */}
           {post.body && (
             <div 
-              className="prose prose-neutral prose-headings:font-light prose-headings:tracking-wide prose-p:leading-relaxed prose-p:text-neutral-700 h-full overflow-y-hidden"
+              className="hide-scrollbar prose prose-neutral prose-headings:font-light prose-headings:tracking-wide prose-p:leading-relaxed prose-p:text-neutral-700 h-full overflow-y-hidden"
               style={{ 
                 columns: 'auto', 
                 columnWidth: '400px', 
                 columnGap: '32px', 
                 columnFill: 'auto',
-                minWidth: '400px'
+                minWidth: '1200px' // Ensure content is wider than viewport
               }}
             >
               <Image
@@ -172,9 +153,9 @@ export default function ArticlePage() {
             </div>
           )}
         </div>
-      </div>
 
       {/* Tags */}
+      {/*
       {post.tags && post.tags.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-8 border-t border-neutral-200">
           <span className="text-xs text-neutral-500 tracking-[0.2em]">TAGGAR:</span>
@@ -188,6 +169,7 @@ export default function ArticlePage() {
           ))}
         </div>
       )}
+      */}
     </section>
   );
 }

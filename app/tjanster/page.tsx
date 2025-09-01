@@ -35,13 +35,13 @@ export default async function TjansterPage() {
           {serviceCategories.map((category) => (
             <div key={category._id} className="group">
               {/* Service Category Card */}
-              <div className="relative overflow-hidden bg-white">
+              <div className="relative bg-white">
                 <h2 className="text-xl font-medium text-neutral-900 mb-4 uppercase tracking-wide">
                   {category.title}
                 </h2>
                 {/* Clickable Image */}
                 <Link href={`/tjanster/${category.slug.current}`}>
-                  <div className="relative h-64 w-full overflow-hidden cursor-pointer">
+                  <div className="relative h-64 w-full cursor-pointer">
                     {category.coverImage && (
                       <Image
                         src={urlFor(category.coverImage).width(600).height(400).url()}
@@ -76,7 +76,7 @@ export default async function TjansterPage() {
 
         {/* Customer Logos Carousel */}
         <div className="border-t border-neutral-200 pt-12">
-          <div className="overflow-hidden">
+          <div>
             <div className="flex animate-scroll-left space-x-12 items-center">
               {/* First set of logos */}
               <div className="flex space-x-12 items-center min-w-max">

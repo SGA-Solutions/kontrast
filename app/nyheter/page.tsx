@@ -68,7 +68,7 @@ export default function NyheterPage() {
       <span className="text-sm font-light tracking-[0.45em] text-neutral-900">NYHETER</span>
       
       {/* News horizontal scroll with peek */}
-      <div className="overflow-x-auto hide-scrollbar">
+      <div>
         <div className="flex gap-8 pb-4">
           {posts.map((post, index) => (
             <Link
@@ -77,7 +77,7 @@ export default function NyheterPage() {
               className="group flex-none space-y-3 hover:opacity-80 transition-opacity w-130"
             >              
               {/* Article image */}
-              <div className="relative aspect-[4/1.8] bg-gray-100 overflow-hidden">
+              <div className="relative aspect-[4/1.8] bg-gray-100">
                 {post.mainImage ? (
                   <Image
                     src={urlFor(post.mainImage).url()}

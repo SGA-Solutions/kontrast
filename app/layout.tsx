@@ -28,13 +28,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${futuraBQMedium.variable} ${futuraBQLight.variable} antialiased min-h-screen bg-white text-neutral-900`}
+        className={`${geistSans.variable} ${geistMono.variable} ${futuraBQMedium.variable} ${futuraBQLight.variable} antialiased min-h-screen bg-white text-neutral-900 overflow-x-hidden overflow-y-hidden hide-scrollbar`}
       >
         {/* Two-column layout on ≥sm; single column on mobile */}
         <div className="min-h-screen grid grid-cols-1 sm:grid-cols-[160px_1fr]">
           {/* Left vertical navigation */}
           <Header />
-          <main className="mt-8 flex-1">{children}</main>
+          <main className="overflow-x-auto overflow-y-hidden hide-scrollbar mt-8 flex-1">{children}</main>
           {/*<Footer />*/}         
         </div>
       </body>

@@ -110,7 +110,7 @@ export default function Home() {
                 width={700}
                 height={120}
                 priority
-                className="h-14 sm:h-16 md:h-20 w-auto object-contain"
+                className="h-14 ml-10 sm:h-16 md:h-20 w-auto object-contain"
               />
             </span>
           </div>
