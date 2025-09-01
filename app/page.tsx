@@ -8,6 +8,7 @@ import { groq } from "next-sanity";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import ImageGrid, { type ImageGridItem } from "../components/ImageGrid";
+import Link from "next/link";
 
 type ProjectDoc = {
   _id: string;
@@ -117,11 +118,11 @@ export default function Home() {
         </div>
         {/* Subtext */}
         <div className="text-left text-[10px] sm:text-xs tracking-[0.35em] leading-5">
-          ARKITEKTUR
+          <Link href="/tjanster/arkitektur">ARKITEKTUR</Link>
           <br />
-          DIGITALISERING
+          <Link href="/tjanster/digitalisering">DIGITALISERING</Link>
           <br />
-          PROJEKTLEDNING
+          <Link href="/tjanster/projekteringsledning">PROJEKTLEDNING</Link>
         </div>
       </div>
 
