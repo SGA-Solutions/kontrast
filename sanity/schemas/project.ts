@@ -31,6 +31,18 @@ export default defineType({
         { type: 'image', options: { hotspot: true } },
         { type: 'beforeAfter' },
       ],
+      components: {
+        input: (props: any) => {
+          // Only use custom component for image arrays
+          const isImageArray = props.value?.every((item: any) => item._type === 'image') ?? true;
+          if (isImageArray) {
+            const { MultipleImageUpload } = require('../components/MultipleImageUpload');
+            return MultipleImageUpload(props);
+          }
+          // Fall back to default for mixed content
+          return props.renderDefault(props);
+        },
+      },
     }),
     defineField({ name: 'seoTitle', type: 'string', title: 'SEO Title' }),
     defineField({ name: 'seoDescription', type: 'text', title: 'SEO Description' }),
