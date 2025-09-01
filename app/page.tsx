@@ -95,7 +95,7 @@ export default function Home() {
   }, [projects, router]);
 
   return (
-    <section className="space-y-6">
+    <section >
       {/* Wordmark and subtext (align with sidebar 'K') */}
       {/*<div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-8 flex flex-col">*/}
       <div className="flex flex-col sm:flex-row items-start gap-2 sm:gap-6">
@@ -125,7 +125,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:gap-8 lg:grid-cols-[20%_80%]">
+      <div className="ml-10 mt-6 grid gap-4 sm:gap-8 lg:grid-cols-[20%_80%]">
         {/* Intro text (left column) */}
         <div className="text-xs leading-relaxed space-y-4 max-w-none sm:max-w-[60ch]">
           {introBlocks && introBlocks.length > 0 ? (

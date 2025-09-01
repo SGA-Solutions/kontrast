@@ -21,7 +21,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <aside className="hidden sm:flex flex-col p-4 md:p-5 sticky top-0 h-screen">
+    <aside className="hidden sm:flex flex-col pt-5 sticky top-0 h-screen w-fill">
       {/* Logo */}
       <Link href="/" aria-label="Kontrast" className="mb-8 inline-block ml-1 md:ml-2">
         <Image
@@ -33,7 +33,6 @@ export function Header() {
           className="w-14 h-14 md:w-18 md:h-18 lg:w-22 lg:h-22 object-contain"
         />
       </Link>
-
       {/* Primary nav */}
       <nav className="flex flex-col gap-3 text-xs ml-5 tracking-[0.3em] text-neutral-600 dark:text-neutral-400">
         {NAV.map((item) => (
@@ -49,7 +48,6 @@ export function Header() {
           </Link>
         ))}
       </nav>
-
       {/* Spacer to push socials to bottom */}
       {/* <div className="flex-1" /> */}
 
@@ -62,7 +60,6 @@ export function Header() {
           aria-label="Instagram"
           className="hover:text-neutral-900 dark:hover:text-neutral-100"
         >
-          {/* Instagram icon (monochrome via currentColor) */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -84,7 +81,6 @@ export function Header() {
           aria-label="LinkedIn"
           className="hover:text-neutral-900 dark:hover:text-neutral-100"
         >
-          {/* LinkedIn icon (monochrome via currentColor) */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"

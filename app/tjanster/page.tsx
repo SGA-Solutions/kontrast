@@ -29,9 +29,9 @@ export default async function TjansterPage() {
   return (
     <div className="min-h-screen">
       {/* Main content */}
-      <div className="px-6 sm:px-12 py-8">
+      <div className="px-6 mt-18 sm:px-12 py-8">
         {/* Service Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {serviceCategories.map((category) => (
             <div key={category._id} className="group">
               {/* Service Category Card */}
@@ -54,9 +54,7 @@ export default async function TjansterPage() {
                 </Link>
                 
                 {/* Content */}
-                <div className="p-6">
-                  
-                  
+                <div className="pt-6">                
                   {/* Body text */}
                   <div className="text-sm text-neutral-600 leading-relaxed">
                     <PortableText 
@@ -75,9 +73,9 @@ export default async function TjansterPage() {
         </div>
 
         {/* Customer Logos Carousel */}
-        <div className="border-t border-neutral-200 pt-12">
+        <div >
           <div>
-            <div className="flex animate-scroll-left space-x-12 items-center">
+            <div className="mt-10 flex animate-scroll-left space-x-12 items-center">
               {/* First set of logos */}
               <div className="flex space-x-12 items-center min-w-max">
                 <div className="text-neutral-400 font-medium text-lg tracking-wider">WALLFAST</div>
