@@ -184,7 +184,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-white overflow-hidden">
+    <div className="min-h-screen pl-10 bg-white overflow-hidden">
       {/* Header with navigation */}
       {/*}
       <div className="flex items-center justify-between p-6 border-b border-neutral-200 relative z-10">
@@ -272,6 +272,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
             </div>
 
             {/* Project description */}
+            {/*
             {project.summary && (
               <div className="pt-4">
                 <p className="text-sm text-neutral-700 leading-relaxed">
@@ -279,14 +280,14 @@ export default function ProjectPage({ params }: ProjectPageProps) {
                 </p>
               </div>
             )}
-
+            */}
             {/* Body content if available */}
             {project.body && project.body.length > 0 && (
               <div className="space-y-3">
                 {project.body.map((block: any, index: number) => {
                   if (block._type === 'block') {
                     return (
-                      <p key={index} className="text-sm text-neutral-700 leading-relaxed">
+                      <p key={index} className="text-sm text-neutral-700 leading-relaxed text-justify">
                         {block.children?.map((child: any) => child.text).join('')}
                       </p>
                     );

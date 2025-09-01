@@ -64,35 +64,8 @@ export default function Home() {
       }));
     }
     
-    // Fallback images
-    return [
-      "https://cdn.sanity.io/images/20rfbnpw/production/d80b61c2dc0f0a1b1524a3f22d0dda41698c132f-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/9ecb332317c5e2ee5e4e98c783db487856cd0b4c-600x600.jpg",
-      "https://cdn.sanity.io/images/20rfbnpw/production/5f3f14ff88b5fc2944ae85e9b13ab3146092bb13-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/4ac675916c50552bae5d974c58c6dde0659b694d-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/c468d0464587a8e16f3335701b81209a2b2e97c3-600x600.jpg",
-      "https://cdn.sanity.io/images/20rfbnpw/production/4e244d79554680b0999d9cc048eac0ef77c6b91f-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/cbb5bd7c28866b706b519f87793f9a840f12a25a-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/eef64a2a1b8f13b1b69d0af243b2ccb7b058d80e-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/b684c0d32955d2c2da076991aeb11fc151b51eb5-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/b348176da9412e9f63a7a77007349b453ceeac8d-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/f7b4a36f69dcee2e43c5079521e797e026f29ffe-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/6d5fde2384317c88e12f9c08c63ddf4d67b395dd-600x600.jpg",
-      "https://cdn.sanity.io/images/20rfbnpw/production/f35272ffc7fcd869807d159d613ddf51ad330d3e-600x600.jpg",
-      "https://cdn.sanity.io/images/20rfbnpw/production/d80b61c2dc0f0a1b1524a3f22d0dda41698c132f-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/9ecb332317c5e2ee5e4e98c783db487856cd0b4c-600x600.jpg",
-      "https://cdn.sanity.io/images/20rfbnpw/production/5f3f14ff88b5fc2944ae85e9b13ab3146092bb13-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/4ac675916c50552bae5d974c58c6dde0659b694d-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/c468d0464587a8e16f3335701b81209a2b2e97c3-600x600.jpg",
-      "https://cdn.sanity.io/images/20rfbnpw/production/4e244d79554680b0999d9cc048eac0ef77c6b91f-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/cbb5bd7c28866b706b519f87793f9a840f12a25a-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/eef64a2a1b8f13b1b69d0af243b2ccb7b058d80e-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/b684c0d32955d2c2da076991aeb11fc151b51eb5-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/b348176da9412e9f63a7a77007349b453ceeac8d-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/f7b4a36f69dcee2e43c5079521e797e026f29ffe-600x600.png",
-      "https://cdn.sanity.io/images/20rfbnpw/production/6d5fde2384317c88e12f9c08c63ddf4d67b395dd-600x600.jpg",
-      "https://cdn.sanity.io/images/20rfbnpw/production/f35272ffc7fcd869807d159d613ddf51ad330d3e-600x600.jpg",
-    ].map((src, i) => ({ key: `fallback-${i}`, src, alt: `Projekt ${i + 1}` }));
+    // Return empty array if no projects
+    return [];
   }, [projects, router]);
 
   return (
@@ -126,27 +99,13 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="ml-10 mt-6 grid gap-4 sm:gap-8 lg:grid-cols-[20%_80%]">
+      <div className="ml-10 mt-6 grid gap-4 sm:gap-8 lg:grid-cols-[15%_85%]">
         {/* Intro text (left column) */}
-        <div className="text-xs leading-relaxed space-y-4 max-w-none sm:max-w-[60ch]">
-          {introBlocks && introBlocks.length > 0 ? (
-            <div className="prose prose-invert max-w-none">
+        <div className="text-sm leading-relaxed space-y-4 w-55">
+          {introBlocks && introBlocks.length > 0 && (
+            <div className="prose prose-invert text-justify">
               <PortableText value={introBlocks} />
             </div>
-          ) : (
-            <>
-              <p className="mb-4">
-                Kontrast omdefinierar svensk arkitektur genom att förena estetik med
-                den digitala byggprocessen. Vår grundidé är att skapa lösningar där
-                byggnadens identitet formas i symbios med funktion, plats och
-                människor.
-              </p>
-              <p>
-                Vi erbjuder arkitektur, projektledning och digitalisering för
-                fastighetsägare som vill skapa lönsamma, hållbara och tidsbeständiga
-                miljöer.
-              </p>
-            </>
           )}
         </div>
 
