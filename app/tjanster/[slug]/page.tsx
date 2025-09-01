@@ -62,7 +62,7 @@ export default async function ServiceCategoryPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen mt-5">
       {/* Main content */}
       <div className="px-6 sm:px-12 py-8">
         {/* Services Horizontal Scroll */}
@@ -71,7 +71,7 @@ export default async function ServiceCategoryPage({ params }: PageProps) {
             {services.map((service) => (
               <div key={service._id} className="group flex-shrink-0 w-200">
                 {/* Service title */}
-                <h2 className="text-xl font-medium text-neutral-900 mb-4 uppercase tracking-wide">
+                <h2 className="text-xl font-medium text-neutral-900 mb-1 uppercase tracking-wide">
                   {service.title}
                 </h2>
                 

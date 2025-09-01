@@ -117,7 +117,7 @@ export default function ImageGrid({ items, className = "" }: ImageGridProps) {
       onWheel={onWheel}
       className={`relative overflow-x-auto pb-2 hide-scrollbar ${className}`}
     >
-      <div className="grid grid-rows-2 grid-flow-col auto-cols-[var(--col)] gap-4 sm:gap-6 min-h-[0]">
+      <div className="grid grid-rows-2 grid-flow-col auto-cols-[var(--col)] gap-4">
         {items.map((item, i) => (
           <div
             key={item.key ?? i}

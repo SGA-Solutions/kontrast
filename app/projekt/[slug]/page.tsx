@@ -184,7 +184,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
   }
 
   return (
-    <div className="min-h-screen pl-10 bg-white overflow-hidden">
+    <div className="min-h-screen mt-12 pl-10 bg-white overflow-hidden" style={{ overscrollBehavior: 'none' }}>
       {/* Header with navigation */}
       {/*}
       <div className="flex items-center justify-between p-6 border-b border-neutral-200 relative z-10">
@@ -202,12 +202,16 @@ export default function ProjectPage({ params }: ProjectPageProps) {
       </div>
       */}
       {/* Horizontal scrolling container */}
-      <div className="h-17"></div>
       <div 
         ref={scrollerRef}
         onWheel={onWheel}
         className="flex h-[calc(100vh-80px)] overflow-x-scroll overflow-y-hidden hide-scrollbar"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        style={{ 
+          scrollbarWidth: 'none', 
+          msOverflowStyle: 'none',
+          overscrollBehavior: 'none',
+          touchAction: 'pan-x'
+        }}
       >
         {/* Project info section */}
         <div className="flex-shrink-0 w-[500px] pr-8 flex flex-col justify-start pt-1">

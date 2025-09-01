@@ -62,14 +62,13 @@ export default function NyheterPage() {
   }
 
   return (
-    <section className="space-y-6">
+    <section className="pl-10 mt-13 space-y-6">
       {/* Page title */}
-      <div className="min-h-12"></div>
       <span className="text-sm font-light tracking-[0.45em] text-neutral-900">NYHETER</span>
       
       {/* News horizontal scroll with peek */}
       <div>
-        <div className="flex gap-8 pb-4">
+        <div className="flex gap-8 pb-4 mt-3">
           {posts.map((post, index) => (
             <Link
               key={post._id}

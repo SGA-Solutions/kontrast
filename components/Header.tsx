@@ -23,14 +23,14 @@ export function Header() {
   return (
     <aside className="hidden sm:flex flex-col pt-5 sticky top-0 h-screen w-fill">
       {/* Logo */}
-      <Link href="/" aria-label="Kontrast" className="mb-8 inline-block ml-1 md:ml-2">
+      <Link href="/" aria-label="Kontrast" className="pt-2 mb-7 inline-block ml-1 md:ml-2">
         <Image
           src="/Kontrast-logo.png"
           alt="Kontrast logo"
           width={64}
           height={64}
           priority
-          className="w-14 h-14 md:w-18 md:h-18 lg:w-22 lg:h-22 object-contain"
+          className="pl-4 w-14 h-14 md:w-16 md:h-16 lg:h-16 w-auto object-contain"
         />
       </Link>
       {/* Primary nav */}

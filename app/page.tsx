@@ -49,6 +49,31 @@ export default function Home() {
     };
   }, []);
 
+  // Prevent browser swipe navigation
+  useEffect(() => {
+    const preventSwipeNavigation = (e: TouchEvent) => {
+      // Prevent horizontal swipe gestures from triggering browser navigation
+      if (e.touches.length === 1) {
+        e.preventDefault();
+      }
+    };
+
+    const preventOverscroll = (e: Event) => {
+      e.preventDefault();
+    };
+
+    // Add touch event listeners to prevent swipe navigation
+    document.addEventListener('touchstart', preventSwipeNavigation, { passive: false });
+    document.addEventListener('touchmove', preventSwipeNavigation, { passive: false });
+    document.addEventListener('overscroll', preventOverscroll, { passive: false });
+
+    return () => {
+      document.removeEventListener('touchstart', preventSwipeNavigation);
+      document.removeEventListener('touchmove', preventSwipeNavigation);
+      document.removeEventListener('overscroll', preventOverscroll);
+    };
+  }, []);
+
   // Memoize image items to avoid recreating on every render
   const imageItems: ImageGridItem[] = useMemo(() => {
     if (projects && projects.length > 0) {
@@ -84,7 +109,7 @@ export default function Home() {
                 width={700}
                 height={120}
                 priority
-                className="h-14 ml-10 sm:h-16 md:h-20 w-auto object-contain"
+                className="ml-10 sm:h-16 md:h-15 w-auto object-contain"
               />
             </span>
           </div>

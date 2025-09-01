@@ -102,10 +102,9 @@ export default function ProjektPage() {
   }
 
   return (
-    <section>
-      <div className="h-22"></div>
+    <section className="mt-14">
       {/* Category Filter Row */}
-      <div className="flex flex-wrap gap-3 sm:gap-4">
+      <div className="flex flex-wrap pl-6 gap-3 sm:gap-4">
         <button
           onClick={() => handleCategoryClick(null)}
           className={`px-4 text-xs sm:text-sm tracking-[0.5em] uppercase transition-colors ${
@@ -133,9 +132,8 @@ export default function ProjektPage() {
       
       {/* Projects Grid */}
       {filteredProjects.length > 0 ? (
-        <div className="grid gap-4 lg:grid-cols-[20%_80%]">
-          <div></div>
-          <ImageGrid  items={imageItems} />
+        <div className=" pt-3 pl-10">
+          <ImageGrid items={imageItems} />
         </div>
       ) : (
         <div className="flex items-center justify-center min-h-[200px] text-neutral-500">
@@ -144,7 +142,7 @@ export default function ProjektPage() {
       )}
 
       {/* Project count indicator */}
-      
+      {/*
       <div className="text-xs text-neutral-500 tracking-[0.2em]">
         {filteredProjects.length} PROJEKT
         {selectedCategory && (
@@ -153,7 +151,7 @@ export default function ProjektPage() {
           </span>
         )}
       </div>
-      
+      */}
     </section>
   );
 }

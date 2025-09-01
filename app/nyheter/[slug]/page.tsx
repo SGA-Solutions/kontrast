@@ -99,9 +99,8 @@ export default function ArticlePage() {
   }
 
   return (
-    <section>
+    <section className="pl-10 mt-14">
       {/* Navigation */}
-      <div className="min-h-18"></div>
       {/*}
       <button
         onClick={() => router.push('/nyheter')}
@@ -111,7 +110,7 @@ export default function ArticlePage() {
       </button>
       */}
       {/* Article title */}
-      <h1 className="text-sm font-light tracking-[0.1em] text-neutral-900 mb-4">
+      <h1 className="text-sm font-light tracking-[0.1em] text-neutral-900 mb-3">
           {post.title}
       </h1>
 

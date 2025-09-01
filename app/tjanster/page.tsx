@@ -29,14 +29,14 @@ export default async function TjansterPage() {
   return (
     <div className="min-h-screen">
       {/* Main content */}
-      <div className="px-6 mt-18 sm:px-12 py-8">
+      <div className="px-6 mt-6 sm:px-12 py-8">
         {/* Service Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {serviceCategories.map((category) => (
             <div key={category._id} className="group">
               {/* Service Category Card */}
               <div className="relative bg-white">
-                <h2 className="text-xl font-medium text-neutral-900 mb-4 uppercase tracking-wide">
+                <h2 className="text-xl font-medium text-neutral-900 mb-1 uppercase tracking-wide">
                   {category.title}
                 </h2>
                 {/* Clickable Image */}

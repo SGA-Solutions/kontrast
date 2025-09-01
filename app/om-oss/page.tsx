@@ -47,7 +47,7 @@ export default async function OmOssPage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen pl-10 bg-black text-white relative overflow-hidden">
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-auto bg-black bg-cover">
         <div 
@@ -61,18 +61,18 @@ export default async function OmOssPage() {
       {/* Content Overlay */}
       <div className="relative z-100 min-h-screen">
         {/* Side Navigation */}
-        <Link href="/" aria-label="Kontrast" className="fixed left-5 top-5 mb-8  ml-1 md:ml-2">
+        <Link href="/" aria-label="Kontrast" className="fixed left-5 top-7 mb-8  ml-1 md:ml-2">
             <Image
             src="/Kontrast-logo-3.png"
             alt="Kontrast logo"
             width={64}
             height={64}
             priority
-            className="w-14 h-14 md:w-18 md:h-18 lg:w-22 lg:h-22 object-contain"
+            className="w-14 h-14 md:w-16 md:h-16 lg:h-16 w-auto object-contain"
             />
         </Link>
         
-        <nav className="fixed left-8 mt-28 flex flex-col gap-3 text-xs tracking-[0.3em] text-neutral-600 dark:text-neutral-400">
+        <nav className="fixed left-6 mt-8 flex flex-col gap-3 text-xs tracking-[0.3em] text-neutral-600 dark:text-neutral-400">
             {NAV.map((item) => (
             <Link
                 key={item.href}
@@ -99,9 +99,8 @@ export default async function OmOssPage() {
         </div>
         
         {/* Main Content */}
-        <div className="flex justify-center min-h-screen">
+        <div className="mt-14 flex justify-center min-h-screen">
           <div className="max-w-4xl mr-auto">
-            <div className="min-h-27"></div>
             <div className="space-y-1">              
               <div className="space-y-4 mr-auto pr-50 text-sm leading-relaxed">
                 {aboutUsData.map((entry, index) => (
