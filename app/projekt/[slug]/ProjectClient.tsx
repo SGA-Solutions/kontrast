@@ -228,9 +228,13 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                     <div className="space-y-3 mt-4">
                       {project.body.slice(0, visibleBlocks).map((block: any, index: number) => {
                         if (block._type === 'block') {
+                          const isLastVisibleBlock = index === visibleBlocks - 1;
+                          const text = block.children?.map((child: any) => child.text).join('') || '';
+                          
                           return (
                             <p key={index} className="text-sm text-neutral-700 leading-relaxed text-justify">
-                              {block.children?.map((child: any) => child.text).join('')}
+                              {text}
+                              {hasOverflow && isLastVisibleBlock && !isTextExpanded && '...'}
                             </p>
                           );
                         }
