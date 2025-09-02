@@ -91,12 +91,12 @@ export default async function TjansterPage() {
               {/* First set of logos */}
               <div className="flex space-x-12 items-center min-w-max">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((num) => (
-                  <div key={`logo-${num}`} className="relative h-12 w-24 flex items-center justify-center">
+                  <div key={`logo-${num}`} className="relative h-24 w-auto flex items-center justify-center">
                     <Image
                       src={`/clients/${num}.png`}
                       alt={`Client ${num}`}
-                      width={96}
-                      height={48}
+                      width={192}
+                      height={96}
                       className="object-contain opacity-60 hover:opacity-100 transition-opacity duration-300 filter grayscale hover:grayscale-0"
                     />
                   </div>
@@ -106,12 +106,12 @@ export default async function TjansterPage() {
               {/* Duplicate set for seamless loop */}
               <div className="flex space-x-12 items-center min-w-max">
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((num) => (
-                  <div key={`logo-duplicate-${num}`} className="relative h-12 w-24 flex items-center justify-center">
+                  <div key={`logo-duplicate-${num}`} className="relative h-24 w-auto flex items-center justify-center">
                     <Image
                       src={`/clients/${num}.png`}
                       alt={`Client ${num}`}
-                      width={96}
-                      height={48}
+                      width={192}
+                      height={96}
                       className="object-contain opacity-60 hover:opacity-100 transition-opacity duration-300 filter grayscale hover:grayscale-0"
                     />
                   </div>

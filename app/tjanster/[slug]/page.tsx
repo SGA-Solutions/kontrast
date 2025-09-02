@@ -23,7 +23,8 @@ interface ServiceCategory {
 }
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // Generate static params for all service categories
@@ -76,9 +77,10 @@ async function getServicesByCategory(categorySlug: string): Promise<Service[]> {
 }
 
 export default async function ServiceCategoryPage({ params }: PageProps) {
+  const { slug } = await params;
   const [category, services] = await Promise.all([
-    getServiceCategory(params.slug),
-    getServicesByCategory(params.slug)
+    getServiceCategory(slug),
+    getServicesByCategory(slug)
   ]);
 
   if (!category) {

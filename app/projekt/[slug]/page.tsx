@@ -28,7 +28,8 @@ type ProjectDoc = {
 };
 
 interface ProjectPageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // Generate static params for all projects
@@ -62,7 +63,8 @@ async function getProject(slug: string): Promise<ProjectDoc | null> {
 }
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
-  const project = await getProject(params.slug);
+  const { slug } = await params;
+  const project = await getProject(slug);
   
   if (!project) {
     notFound();

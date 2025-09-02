@@ -100,7 +100,7 @@ export default async function Home() {
 
       <div className="ml-10 mt-6 grid gap-4 sm:gap-8 lg:grid-cols-[15%_85%]">
         {/* Intro text (left column) */}
-        <div className="text-sm leading-relaxed space-y-4 w-55">
+        <div className="text-sm  space-y-4 w-55">
           {introBlocks && introBlocks.length > 0 && (
             <div className="prose prose-invert text-justify">
               <PortableText value={introBlocks} />

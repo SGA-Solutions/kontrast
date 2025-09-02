@@ -17,9 +17,10 @@ type Post = {
   tags?: string[];
 };
 
-type Props = {
-  params: { slug: string };
-};
+interface ArticlePageProps {
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
 
 // Generate static params for all posts
 export async function generateStaticParams() {
@@ -51,8 +52,9 @@ async function getPost(slug: string): Promise<Post | null> {
   }
 }
 
-export default async function ArticlePage({ params }: Props) {
-  const post = await getPost(params.slug);
+export default async function ArticlePage({ params }: ArticlePageProps) {
+  const { slug } = await params;
+  const post = await getPost(slug);
   
   if (!post) {
     notFound();

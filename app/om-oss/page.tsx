@@ -116,7 +116,7 @@ export default async function OmOssPage() {
                         block: {
                           normal: ({ children }) => (
                             <div className="">
-                              <p className="text-sm  text-gray-200">
+                              <p className="text-sm  text-gray-200 text-justify">
                                 {children}
                               </p>
                             </div>
