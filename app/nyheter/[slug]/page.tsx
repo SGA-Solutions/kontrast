@@ -100,6 +100,23 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   placeholder="blur"
                   blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
               />
+              {/* Article metadata */}
+              <div className="mb-6 text-xs text-neutral-500 tracking-[0.2em] space-y-1">
+                {post.publishedAt && (
+                  <div>
+                    PUBLICERAD: {new Date(post.publishedAt).toLocaleDateString('sv-SE', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    })}
+                  </div>
+                )}
+                {post.author && (
+                  <div>
+                    FÖRFATTARE: {post.author}
+                  </div>
+                )}
+              </div>
               <PortableText 
                 value={post.body}
                 components={{
