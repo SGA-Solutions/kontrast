@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../styles/cross-browser.css";
 
 :root {
   --background: #ffffff;
@@ -43,31 +44,52 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
 }
 
-/* Utility to hide horizontal scrollbar (while preserving scroll) */
+/* Enhanced cross-browser scrollbar hiding */
 .hide-scrollbar {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
+  overflow: -moz-scrollbars-none; /* Old Firefox */
 }
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none; /* Chrome/Safari/Opera */
+  width: 0;
+  height: 0;
 }
 
-/* Scrolling animation for customer logos */
-@keyframes scroll-left {
+/* Cross-browser scrolling animation for customer logos */
+@-webkit-keyframes scroll-left {
   0% {
+    -webkit-transform: translateX(0);
     transform: translateX(0);
   }
   100% {
+    -webkit-transform: translateX(-2592px);
+    transform: translateX(-2592px);
+  }
+}
+
+@keyframes scroll-left {
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(0);
+  }
+  100% {
+    -webkit-transform: translateX(-2592px);
     transform: translateX(-2592px);
   }
 }
 
 .animate-scroll-left {
+  -webkit-animation: scroll-left 30s linear infinite;
   animation: scroll-left 30s linear infinite;
+  will-change: transform;
 }
 
-/* Vertical text writing mode for navigation */
+/* Cross-browser vertical text writing mode for navigation */
 .writing-mode-vertical {
   writing-mode: vertical-rl;
+  -webkit-writing-mode: vertical-rl;
+  -ms-writing-mode: tb-rl;
   text-orientation: mixed;
+  -webkit-text-orientation: mixed;
 }

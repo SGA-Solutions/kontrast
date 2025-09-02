@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { urlFor } from "../../../sanity/client";
-import Image from "next/image";
+import { getOptimizedImageUrls } from "../../../lib/image-utils";
+import CrossBrowserImage from "../../../components/CrossBrowserImage";
+import CrossBrowserScrollContainer from "../../../components/CrossBrowserScrollContainer";
 
 type ProjectCategory = {
   _id: string;
@@ -39,19 +40,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   const [overflowBlocks, setOverflowBlocks] = useState<any[]>([]);
 
 
-  const onWheel: React.WheelEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault();
-
-    const el = e.currentTarget;
-    
-    // Direct scroll approach for immediate response
-    const scrollAmount = e.deltaY;
-    const currentScroll = el.scrollLeft;
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    const newScroll = Math.max(0, Math.min(maxScroll, currentScroll + scrollAmount));
-    
-    el.scrollLeft = newScroll;
-  };
+  // Using the cross-browser scroll hook will be handled by CrossBrowserScrollContainer
 
 
   // Check for text overflow and calculate visible content
@@ -113,11 +102,17 @@ export default function ProjectClient({ project }: ProjectClientProps) {
     }
   }, [project.body, project.assignment, project.categories, project.location, project.client, project.status, project.startDate, project.endDate]);
 
-  // Prepare all images for horizontal layout with optimized URLs
+  // Prepare all images for horizontal layout with cross-browser optimized URLs
   const allImages = [];
   if (project.coverImage) {
+    const imageUrls = getOptimizedImageUrls(project.coverImage, {
+      width: 1200,
+      height: 800,
+      quality: 85,
+      fit: 'crop'
+    });
     allImages.push({
-      src: urlFor(project.coverImage).width(1200).height(800).format('webp').quality(85).fit("crop").url(),
+      ...imageUrls,
       alt: project.title || "Project image",
       isCover: true
     });
@@ -126,8 +121,14 @@ export default function ProjectClient({ project }: ProjectClientProps) {
     project.gallery.forEach((image: any, index: number) => {
       // Handle different gallery image structures
       if (image && (image._type === 'image' || image.asset || image.url)) {
+        const imageUrls = getOptimizedImageUrls(image, {
+          width: 800,
+          height: 800,
+          quality: 85,
+          fit: 'crop'
+        });
         allImages.push({
-          src: urlFor(image).width(800).height(800).format('webp').quality(85).fit("crop").url(),
+          ...imageUrls,
           alt: `${project.title} gallery image ${index + 1}`,
           isCover: false
         });
@@ -136,18 +137,14 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   }
 
   return (
-    <div className="min-h-screen mt-12 pl-10 bg-white overflow-hidden" style={{ overscrollBehavior: 'none' }}>
-      {/* Horizontal scrolling container */}
-      <div 
+    <div className="min-h-screen mt-12 pl-10 bg-white overflow-hidden no-overscroll">
+      {/* Cross-browser horizontal scrolling container */}
+      <CrossBrowserScrollContainer
         ref={scrollerRef}
-        onWheel={onWheel}
-        className="flex h-[calc(100vh-80px)] overflow-x-scroll overflow-y-hidden hide-scrollbar"
-        style={{ 
-          scrollbarWidth: 'none', 
-          msOverflowStyle: 'none',
-          overscrollBehavior: 'none',
-          touchAction: 'pan-x'
-        }}
+        className="flex h-[calc(100vh-80px)] overflow-x-scroll overflow-y-hidden"
+        direction="horizontal"
+        sensitivity={1}
+        smoothness={0.15}
       >
         {/* Project info section */}
         <div className="flex-shrink-0 pr-8 flex flex-col justify-start pt-1">
@@ -304,15 +301,14 @@ export default function ProjectClient({ project }: ProjectClientProps) {
               marginRight: index < allImages.length - 1 ? '2rem' : '0'
             }}
           >
-            <Image
-              src={image.src}
+            <CrossBrowserImage
+              src={image.primary}
               alt={image.alt}
               fill
               className="object-cover"
               priority={index === 0}
               sizes="(max-width: 768px) 100vw, 80vw"
               placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             />
             
             {/* Gradient overlay for peek effect on non-last images */}
@@ -324,16 +320,14 @@ export default function ProjectClient({ project }: ProjectClientProps) {
         
         {/* Extra spacing at the end */}
         <div className="flex-shrink-0 w-8" />
-      </div>
+      </CrossBrowserScrollContainer>
 
-      {/* Custom scrollbar styles */}
+      {/* Component-specific styles */}
       <style jsx>{`
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
+        /* Ensure proper stacking context */
+        .relative {
+          position: relative;
+          z-index: 1;
         }
       `}</style>
     </div>

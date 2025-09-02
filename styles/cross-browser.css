@@ -1,0 +1,235 @@
+/**
+ * Cross-browser compatibility utilities and fallbacks
+ */
+
+/* Modern viewport units with fallbacks */
+:root {
+  --vh: 1vh;
+}
+
+/* Dynamic viewport height for modern browsers */
+.min-h-screen-safe {
+  min-height: 100vh; /* Fallback */
+  min-height: 100dvh; /* Dynamic viewport height for modern browsers */
+}
+
+.h-screen-safe {
+  height: 100vh; /* Fallback */
+  height: 100dvh; /* Dynamic viewport height for modern browsers */
+}
+
+/* Cross-browser scrollbar hiding */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Opera */
+}
+
+/* Cross-browser smooth scrolling */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-scroll-behavior: smooth;
+}
+
+/* Cross-browser overscroll behavior */
+.no-overscroll {
+  overscroll-behavior: none;
+  -webkit-overscroll-behavior: none;
+  -ms-scroll-chaining: none;
+}
+
+/* Cross-browser touch action */
+.touch-pan-x {
+  touch-action: pan-x;
+  -webkit-touch-action: pan-x;
+  -ms-touch-action: pan-x;
+}
+
+.touch-pan-y {
+  touch-action: pan-y;
+  -webkit-touch-action: pan-y;
+  -ms-touch-action: pan-y;
+}
+
+.touch-none {
+  touch-action: none;
+  -webkit-touch-action: none;
+  -ms-touch-action: none;
+}
+
+/* Cross-browser writing mode */
+.writing-vertical {
+  writing-mode: vertical-rl;
+  -webkit-writing-mode: vertical-rl;
+  -ms-writing-mode: tb-rl;
+  text-orientation: mixed;
+  -webkit-text-orientation: mixed;
+}
+
+/* Cross-browser backdrop filter */
+.backdrop-blur {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Cross-browser aspect ratio fallback */
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+/* Fallback for browsers without aspect-ratio support */
+@supports not (aspect-ratio: 1) {
+  .aspect-square {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+  }
+  
+  .aspect-square > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+/* Cross-browser flexbox with prefixes */
+.flex-cross-browser {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.flex-shrink-0-cross-browser {
+  -webkit-box-flex: 0;
+  -ms-flex: 0 0 auto;
+  flex: 0 0 auto;
+}
+
+.flex-1-cross-browser {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 0%;
+  flex: 1 1 0%;
+}
+
+/* Cross-browser grid fallbacks */
+@supports not (display: grid) {
+  .grid-fallback {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+  }
+  
+  .grid-cols-2-fallback > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+  }
+  
+  .grid-cols-3-fallback > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+  }
+  
+  .grid-cols-4-fallback > * {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+  }
+}
+
+/* Cross-browser transform with prefixes */
+.transform-cross-browser {
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Cross-browser transition with prefixes */
+.transition-cross-browser {
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+/* Cross-browser animation with prefixes */
+@-webkit-keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@-moz-keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in-cross-browser {
+  -webkit-animation: fadeIn 0.3s ease-in-out;
+  -moz-animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Cross-browser user-select */
+.select-none-cross-browser {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Cross-browser appearance reset */
+.appearance-none-cross-browser {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Cross-browser box-sizing */
+.border-box-cross-browser {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* Legacy mobile viewport height fix (if needed) */
+@supports not (height: 100dvh) {
+  .min-h-screen-safe {
+    min-height: calc(var(--vh, 1vh) * 100);
+  }
+  
+  .h-screen-safe {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+}
+
+/* Cross-browser font smoothing */
+.font-smooth-cross-browser {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Cross-browser will-change optimization */
+.will-change-scroll {
+  will-change: scroll-position;
+  -webkit-will-change: scroll-position;
+}
+
+.will-change-transform {
+  will-change: transform;
+  -webkit-will-change: transform;
+}

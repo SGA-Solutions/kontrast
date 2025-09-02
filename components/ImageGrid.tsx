@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
+import { normalizeWheelDelta } from "../lib/browser-utils";
+import CrossBrowserImage from "./CrossBrowserImage";
 
 export type ImageGridItem = {
   key?: string;
@@ -94,9 +96,10 @@ export default function ImageGrid({ items, className = "" }: ImageGridProps) {
       targetRef.current = el.scrollLeft;
     }
 
-    // Update target with the new delta and clamp to bounds.
+    // Use normalized wheel delta for cross-browser compatibility
+    const normalizedDelta = normalizeWheelDelta(e.deltaY);
     const maxScroll = el.scrollWidth - el.clientWidth;
-    const nextTarget = Math.max(0, Math.min(maxScroll, targetRef.current + e.deltaY));
+    const nextTarget = Math.max(0, Math.min(maxScroll, targetRef.current + normalizedDelta));
     targetRef.current = nextTarget;
 
     // Start a new ease animation from the current position towards the updated target.
@@ -117,18 +120,20 @@ export default function ImageGrid({ items, className = "" }: ImageGridProps) {
     <div
       ref={scrollerRef}
       onWheel={onWheel}
-      className={`relative overflow-x-auto pb-2 hide-scrollbar ${className}`}
+      className={`relative overflow-x-auto pb-2 hide-scrollbar no-overscroll touch-pan-x ${className}`}
     >
       <div className="grid grid-rows-2 grid-flow-col auto-cols-[var(--col)] gap-4">
         {items.map((item, i) => {
           const content = (
             <>
               {/* Image */}
-              <img
+              <CrossBrowserImage
                 src={item.src}
                 alt={item.alt}
-                className="w-full h-full object-cover transition-opacity duration-300 ease-out group-hover:opacity-50"
-                loading={i < 4 ? "eager" : "lazy"}
+                fill
+                className="object-cover transition-opacity duration-300 ease-out group-hover:opacity-50"
+                priority={i < 4}
+                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
               />
 
               {/* Dark overlay */}
