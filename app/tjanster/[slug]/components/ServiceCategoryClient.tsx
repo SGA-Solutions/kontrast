@@ -31,7 +31,7 @@ interface ServiceCategoryClientProps {
 export default function ServiceCategoryClient({ category, services }: ServiceCategoryClientProps) {
   const { ref: scrollRef, onWheel } = useCrossBrowserScroll({ 
     direction: 'horizontal',
-    sensitivity: 50,
+    sensitivity: 5,
     smoothness: 0.15
   });
 
