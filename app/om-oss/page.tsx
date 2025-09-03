@@ -47,11 +47,11 @@ export default async function OmOssPage() {
   }
 
   return (
-    <div className="min-h-screen pl-10 bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen pl-10  text-white relative overflow-hidden">
       {/* Background Image */}
       <div className="fixed inset-0 w-full h-auto bg-black bg-cover">
         <div 
-            className="fixed inset-0 w-full h-auto ml-30 bg-black bg-cover opacity-100 z-0"
+            className="fixed inset-0 w-full h-auto ml-30  bg-cover opacity-100 z-0"
             style={{
             backgroundImage: 'url(/about_us_background.jpg)'
             }}
@@ -59,7 +59,7 @@ export default async function OmOssPage() {
       </div>
 
       {/* Content Overlay */}
-      <div className="relative z-100 min-h-screen">
+      <div className="relative min-h-screen">
         {/* Side Navigation */}
         <Link href="/" aria-label="Kontrast" className="fixed left-5 top-7 mb-8  ml-1 md:ml-2">
             <Image
@@ -85,7 +85,7 @@ export default async function OmOssPage() {
         </nav>
 
         {/* Social Links */}
-        <div className="fixed left-8 top-90 z-50 flex space-x-4">
+        <div className="fixed left-7 top-72 flex space-x-4">
           <a href="#" className="text-white hover:text-gray-300 transition-colors">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8A1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.65-1.25M12 7a5 5 0 0 1 5 5a5 5 0 0 1-5 5a5 5 0 0 1-5-5a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3a3 3 0 0 0 3 3a3 3 0 0 0 3-3a3 3 0 0 0-3-3z"/>
