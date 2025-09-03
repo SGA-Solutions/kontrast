@@ -91,17 +91,17 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               }}
             >
               <Image
-                  src={urlFor(post.mainImage).width(500).height(500).format('webp').quality(85).url()}
+                  src={urlFor(post.mainImage).width(520).format('webp').quality(85).url()}
                   alt={post.title}
-                  width={500}
-                  height={500}
-                  className="h-130 object-top"
+                  width={520}
+                  height={300}
+                  className="w-full max-w-md object-cover mb-4"
                   priority
                   placeholder="blur"
                   blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
               />
-              {/* Article metadata */}
-              <div className="mb-6 text-xs text-neutral-500 tracking-[0.2em] space-y-1">
+              {/* Article metadata - force column break */}
+              <div className="mb-6 text-xs text-neutral-500 tracking-[0.2em] space-y-1 break-before-column">
                 {post.publishedAt && (
                   <div>
                     PUBLICERAD: {new Date(post.publishedAt).toLocaleDateString('sv-SE', {
