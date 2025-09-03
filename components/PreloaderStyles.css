@@ -1,0 +1,31 @@
+/* Preloader specific styles for smooth animations */
+.preloader-fade-out {
+  animation: fadeOut 0.1s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* Ensure preloader is above everything */
+.preloader-overlay {
+  z-index: 9999;
+  backdrop-filter: blur(2px);
+}
+
+/* Smooth progress bar animation */
+.progress-bar {
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Prevent body scroll during preload */
+.preloader-active {
+  overflow: hidden !important;
+}
