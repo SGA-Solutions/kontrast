@@ -143,7 +143,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
         ref={scrollerRef}
         className="flex h-[calc(100vh-80px)] overflow-x-scroll overflow-y-hidden"
         direction="horizontal"
-        sensitivity={1}
+        sensitivity={5}
         smoothness={0.15}
       >
         {/* Project info section */}
