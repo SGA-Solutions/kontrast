@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
-import { normalizeWheelDelta } from "../lib/browser-utils";
 import CrossBrowserImage from "./CrossBrowserImage";
+import { useCrossBrowserScroll } from "../hooks/useCrossBrowserScroll";
 
 export type ImageGridItem = {
   key?: string;
@@ -20,12 +20,18 @@ interface ImageGridProps {
 
 export default function ImageGrid({ items, className = "" }: ImageGridProps) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const targetRef = useRef(0);
-  const rafRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number>(0);
-  const fromRef = useRef<number>(0);
-  const toRef = useRef<number>(0);
-  const durationRef = useRef<number>(400);
+  const { ref: hookScrollRef, onWheel: hookOnWheel } = useCrossBrowserScroll({
+    direction: 'horizontal',
+    sensitivity: 8,
+    smoothness: 0.10
+  });
+
+  // Sync refs - use the hook's ref but keep our own for ResizeObserver
+  useEffect(() => {
+    if (hookScrollRef.current && scrollerRef.current !== hookScrollRef.current) {
+      scrollerRef.current = hookScrollRef.current;
+    }
+  });
 
   useEffect(() => {
     const el = scrollerRef.current;
@@ -47,80 +53,13 @@ export default function ImageGrid({ items, className = "" }: ImageGridProps) {
     return () => ro.disconnect();
   }, []);
 
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  // Easing: easeOutCubic (starts fast, then decelerates)
-  const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-
-  const animate = () => {
-    const el = scrollerRef.current;
-    if (!el) return;
-
-    const now = performance.now();
-    const start = startTimeRef.current;
-    const from = fromRef.current;
-    const dur = Math.max(120, durationRef.current);
-
-    // If targetRef has drifted (more wheel input), update the 'to' progressively
-    const latestTarget = targetRef.current;
-    const to = latestTarget;
-    toRef.current = to;
-
-    const t = Math.min(1, (now - start) / dur);
-    const eased = easeOutCubic(t);
-    const pos = from + (to - from) * eased;
-    el.scrollLeft = pos;
-
-    if (t >= 1) {
-      // Snap to final
-      el.scrollLeft = to;
-      rafRef.current = null;
-      return;
-    }
-    rafRef.current = requestAnimationFrame(animate);
-  };
-
-  const onWheel: React.WheelEventHandler<HTMLDivElement> = (e) => {
-    if (e.deltaY === 0) return;
-    e.preventDefault();
-
-    const el = e.currentTarget;
-    const now = performance.now();
-
-    // If we're not animating, initialize target to current position.
-    if (rafRef.current === null) {
-      targetRef.current = el.scrollLeft;
-    }
-
-    // Use normalized wheel delta for cross-browser compatibility
-    const normalizedDelta = normalizeWheelDelta(e.deltaY);
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    const nextTarget = Math.max(0, Math.min(maxScroll, targetRef.current + normalizedDelta));
-    targetRef.current = nextTarget;
-
-    // Start a new ease animation from the current position towards the updated target.
-    fromRef.current = el.scrollLeft;
-    toRef.current = nextTarget;
-    startTimeRef.current = now;
-
-    // Duration scaled by distance, clamped for consistency
-    const distance = Math.abs(toRef.current - fromRef.current);
-    durationRef.current = Math.min(1000, Math.max(250, 0.6 * distance * 2));
-
-    if (rafRef.current === null) {
-      rafRef.current = requestAnimationFrame(animate);
-    }
-  };
+  // Use the hook's wheel handler for consistent cross-browser scrolling
 
   return (
     <div
-      ref={scrollerRef}
-      onWheel={onWheel}
-      className={`relative overflow-x-auto pb-2 hide-scrollbar no-overscroll touch-pan-x ${className}`}
+      ref={hookScrollRef}
+      onWheel={hookOnWheel}
+      className={`relative overflow-x-auto pb-2 hide-scrollbar no-overscroll touch-pan-x cursor-grab active:cursor-grabbing ${className}`}
     >
       <div className="grid grid-rows-2 grid-flow-col auto-cols-[var(--col)] gap-4">
         {items.map((item, i) => {
