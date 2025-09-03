@@ -3,7 +3,7 @@
  */
 "use client";
 
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 import { normalizeWheelDelta } from '../lib/browser-utils';
 
 interface ScrollOptions {
@@ -19,13 +19,16 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
     sensitivity = 1
   } = options;
   const elementRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number | undefined>();
+  const animationRef = useRef<number | undefined>(undefined);
   const targetScrollRef = useRef<number>(0);
   const currentScrollRef = useRef<number>(0);
 
   const animate = useCallback(() => {
     const element = elementRef.current;
-    if (!element) return;
+    if (!element) {
+      animationRef.current = undefined;
+      return;
+    }
 
     const diff = targetScrollRef.current - currentScrollRef.current;
     
@@ -37,6 +40,7 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
         element.scrollTop = targetScrollRef.current;
       }
       currentScrollRef.current = targetScrollRef.current;
+      animationRef.current = undefined; // Reset animation frame
       return;
     }
 
@@ -78,6 +82,16 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
       cancelAnimationFrame(animationRef.current);
       animationRef.current = undefined;
     }
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (animationRef.current !== undefined) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = undefined;
+      }
+    };
   }, []);
 
   return {
