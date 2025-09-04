@@ -52,7 +52,7 @@ export default function KontaktPage() {
             {/* Company logo */}
             <div className="flex justify-center h-0 sm:h-10 justify-end sm:justify-start">
               <img
-                src="/Kontrast-logo-4.png"
+                src="/kontrast-logo-4.png"
                 alt="Kontrast logo"
                 width={700}
                 height={120}
