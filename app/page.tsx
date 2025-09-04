@@ -67,14 +67,12 @@ export default async function Home() {
   }));
 
   return (
-    <section >
-      {/* Wordmark and subtext (align with sidebar 'K') */}
-      {/*<div className="px-4 sm:px-8 lg:px-12 py-6 sm:py-8 flex flex-col">*/}
-      <div className="flex flex-col sm:flex-row items-start gap-2 sm:gap-6">
+    <section className="px-4 sm:px-0">
+      {/* Wordmark and subtext */}
+      <div className="flex flex-col sm:flex-row items-start mb-6 sm:mb-8">
         {/* Wordmark: full text on mobile, image on ≥sm to pair with sidebar 'K' */}
         <div className="select-none whitespace-nowrap ml-0 sm:-ml-8 lg:-ml-12">
           <div className="leading-none">
-            <span className="sm:hidden text-5xl sm:text-6xl md:text-7xl font-light tracking-[0.45em]">KONTRAST</span>
             <span className="hidden sm:inline">
               <Image
                 src="/Kontrast-logo-2.png"
@@ -88,28 +86,35 @@ export default async function Home() {
             </span>
           </div>
         </div>
+        
         {/* Subtext */}
-        <div className="text-left text-[10px] sm:text-xs tracking-[0.35em] leading-5">
-          <Link href="/tjanster/arkitektur">ARKITEKTUR</Link>
-          <br />
-          <Link href="/tjanster/digitalisering">DIGITALISERING</Link>
-          <br />
-          <Link href="/tjanster/projekteringsledning">PROJEKTLEDNING</Link>
+        <div className="text-left text-xs sm:text-sm tracking-[0.35em] space-y-1">
+          <Link href="/tjanster/arkitektur" className="block hover:text-neutral-600 transition-colors touch-manipulation">
+            ARKITEKTUR
+          </Link>
+          <Link href="/tjanster/digitalisering" className="block hover:text-neutral-600 transition-colors touch-manipulation">
+            DIGITALISERING
+          </Link>
+          <Link href="/tjanster/projekteringsledning" className="block hover:text-neutral-600 transition-colors touch-manipulation">
+            PROJEKTLEDNING
+          </Link>
         </div>
       </div>
 
-      <div className="ml-10 mt-6 grid gap-4 sm:gap-8 lg:grid-cols-[15%_85%]">
+      <div className="ml-0 sm:ml-10 grid gap-6 sm:gap-8 lg:grid-cols-[15%_85%]">
         {/* Intro text (left column) */}
-        <div className="text-sm  space-y-4 w-55">
+        <div className="text-sm space-y-4 max-w-none lg:max-w-55">
           {introBlocks && introBlocks.length > 0 && (
-            <div className="prose prose-invert text-justify">
+            <div className="prose prose-sm prose-neutral max-w-none text-justify">
               <PortableText value={introBlocks} />
             </div>
           )}
         </div>
 
         {/* Image grid (right column): 2 rows, horizontal scroll */}
-        <ImageGrid items={imageItems} />
+        <div className="w-full overflow-hidden">
+          <ImageGrid items={imageItems} />
+        </div>
       </div>
     </section>
   );
