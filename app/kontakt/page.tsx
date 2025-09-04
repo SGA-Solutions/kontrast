@@ -51,13 +51,12 @@ export default function KontaktPage() {
           <div className="space-y-6 order-1 lg:order-2">
             {/* Company logo */}
             <div className="flex justify-center h-0 sm:h-10 justify-end sm:justify-start">
-              <Image
+              <img
                 src="/Kontrast-logo-4.png"
                 alt="Kontrast logo"
                 width={700}
                 height={120}
                 className="h-0 sm:h-10 w-auto object-contain"
-                unoptimized
               />
             </div>
 
