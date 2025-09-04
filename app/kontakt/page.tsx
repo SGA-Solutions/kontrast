@@ -56,7 +56,7 @@ export default function KontaktPage() {
                 alt="Kontrast logo"
                 width={700}
                 height={120}
-                className="object-contain"
+                className="h-0 sm:h-10 w-auto object-contain"
               />
             </div>
 
