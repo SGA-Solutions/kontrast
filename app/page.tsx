@@ -88,7 +88,7 @@ export default async function Home() {
         </div>
         
         {/* Subtext */}
-        <div className="text-left text-xs sm:text-sm tracking-[0.35em] space-y-1">
+        <div className="text-left text-xs  tracking-[0.35em] space-y-1">
           <Link href="/tjanster/arkitektur" className="block hover:text-neutral-600 transition-colors touch-manipulation">
             ARKITEKTUR
           </Link>
@@ -101,7 +101,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="ml-0 sm:ml-10 grid gap-6 sm:gap-8 lg:grid-cols-[15%_85%]">
+      <div className="ml-0 sm:ml-10 grid gap-6 sm:gap-8 lg:grid-cols-[15%_85%] mt-6">
         {/* Intro text (left column) */}
         <div className="text-sm space-y-4 max-w-none lg:max-w-55">
           {introBlocks && introBlocks.length > 0 && (
