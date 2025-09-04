@@ -68,7 +68,7 @@ export default async function OmOssPage() {
             width={64}
             height={64}
             priority
-            className="w-14 h-14 md:w-16 md:h-16 lg:h-16 w-auto object-contain"
+            className="w-14 h-14 md:w-16 md:h-16 lg:h-16 w-auto object-contain filter brightness-0 invert"
             />
         </Link>
         

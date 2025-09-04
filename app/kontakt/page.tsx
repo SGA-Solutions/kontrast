@@ -66,7 +66,14 @@ export default function KontaktPage() {
           </div>
           <div className="flex justify-start">
             <div className="w-16 h-16 bg-black rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-xl">K</span>
+              <Image
+                src="/Kontrast-logo.png"
+                alt="Kontrast logo"
+                width={64}
+                height={64}
+                priority
+                className="pl-2 w-14 h-10 w-auto object-contain filter brightness-0 invert"
+              />
             </div>
           </div>
 
