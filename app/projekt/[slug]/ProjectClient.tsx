@@ -163,7 +163,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                 >
                   {/* Project title */}
                   <div>
-                    <h1 className="text-xl font-normal text-neutral-900 tracking-wide mb-4">
+                    <h1 className="text-xl font-normal text-neutral-900 tracking-wide">
                       {project.title}
                     </h1>
                   </div>
