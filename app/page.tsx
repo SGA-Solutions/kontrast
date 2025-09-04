@@ -69,7 +69,7 @@ export default async function Home() {
   return (
     <section className="px-4 sm:px-0">
       {/* Wordmark and subtext */}
-      <div className="flex flex-col sm:flex-row items-start mb-6 sm:mb-8">
+      <div className="flex flex-col sm:flex-row items-start mb-2 sm:mb-4">
         {/* Wordmark: full text on mobile, image on ≥sm to pair with sidebar 'K' */}
         <div className="select-none whitespace-nowrap ml-0 sm:-ml-8 lg:-ml-12">
           <div className="leading-none">
