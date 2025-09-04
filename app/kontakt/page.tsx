@@ -57,6 +57,7 @@ export default function KontaktPage() {
                 width={700}
                 height={120}
                 className="h-0 sm:h-10 w-auto object-contain"
+                unoptimized
               />
             </div>
 
