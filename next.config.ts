@@ -24,8 +24,7 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
   compress: true,
-  // Optimize bundle
-  swcMinify: true,
+  // Optimize bundle - SWC minification is now default
 };
 
 export default nextConfig;
