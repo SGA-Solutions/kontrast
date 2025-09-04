@@ -54,8 +54,8 @@ export default function KontaktPage() {
               <Image
                 src="/Kontrast-logo-4.png"
                 alt="Kontrast logo"
-                width={300}
-                height={60}
+                width={700}
+                height={120}
                 className="object-contain"
               />
             </div>
