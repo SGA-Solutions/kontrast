@@ -27,12 +27,11 @@ export function MobileNav() {
       <div className="sm:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-neutral-200 px-4 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" onClick={closeMenu} className="flex items-center">
-          <Image
-            src="/Kontrast-logo-4.png"
+          <img
+            src="/kontrast-logo-4.png"
             alt="Kontrast logo"
             width={700}
             height={120}
-            priority
             className="w-50 h-auto object-contain"
           />
         </Link>
