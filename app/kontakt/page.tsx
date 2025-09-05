@@ -8,7 +8,7 @@ export default function KontaktPage() {
     <section className="px-4 sm:pl-10 mt-4 sm:mt-14 space-y-6 pb-8">
       {/* Page title */}
       <div className="space-y-8">
-        <span className="text-sm font-light tracking-[0.45em]">KONTAKT</span>
+        <span className="text-xl font-futura-medium tracking-wide">KONTAKT</span>
         {/* Mobile-first layout: stack vertically on mobile, side-by-side on larger screens */}
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 mt-2">
           {/* Left column: Map, Hours, Address */}
