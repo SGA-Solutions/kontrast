@@ -157,7 +157,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
               }}
             >
               {/* First column - always visible */}
-              <div className="w-[400px] h-120 overflow-hidden relative flex-shrink-0">
+              <div className="w-[400px] h-130 overflow-hidden relative flex-shrink-0">
                 <div 
                   ref={textContainerRef}
                   className="h-full space-y-2"
@@ -232,7 +232,6 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                           return (
                             <p key={index} className="text-sm text-neutral-700 leading-relaxed text-justify">
                               {text}
-                              {hasOverflow && isLastVisibleBlock && !isTextExpanded && '...'}
                             </p>
                           );
                         }
@@ -246,7 +245,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                 {hasOverflow && (
                   <button
                     onClick={() => setIsTextExpanded(!isTextExpanded)}
-                    className="absolute bottom-0 right-0 bg-white text-xs uppercase tracking-wider text-neutral-500 hover:text-neutral-700 transition-colors duration-200 flex items-center gap-2 p-2"
+                    className="absolute bottom-0 right-0 bg-white text-xs uppercase tracking-wider text-neutral-500 hover:text-neutral-700 transition-colors duration-200 flex items-center gap-2"
                   >
                     {isTextExpanded ? 'Komprimera' : 'Expandera'}
                     <svg 
