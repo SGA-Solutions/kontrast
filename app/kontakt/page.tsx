@@ -32,7 +32,13 @@ export default function KontaktPage() {
               {/* Business hours */}
               <div className="text-neutral-600">
                 <p className="flex items-center gap-2">
-                  <span>🕘</span>
+                  <Image
+                    src="/time.png"
+                    alt="Time icon"
+                    width={16}
+                    height={16}
+                    className="w-4 h-4 object-contain"
+                  />
                   <span>09:00-18:00</span>
                 </p>
               </div>
@@ -40,7 +46,13 @@ export default function KontaktPage() {
               {/* Address */}
               <div className="text-neutral-600">
                 <p className="flex items-start gap-2">
-                  <span className="filter grayscale mt-0.5">🏠</span>
+                  <Image
+                    src="/address.png"
+                    alt="Address icon"
+                    width={16}
+                    height={16}
+                    className="w-4 h-4 object-contain mt-0.5"
+                  />
                   <span>Hammarby allé 51B<br />120 30 Stockholm Sweden</span>
                 </p>
               </div>
@@ -68,7 +80,13 @@ export default function KontaktPage() {
                 </h3>
                 <div className="text-neutral-600 space-y-3 text-sm">
                   <p className="flex items-center justify-center lg:justify-start gap-2">
-                    <span>📧</span>
+                    <Image
+                      src="/email.png"
+                      alt="Email icon"
+                      width={16}
+                      height={16}
+                      className="w-4 h-4 object-contain"
+                    />
                     <a 
                       href="mailto:info@kontrastarkitekter.se"
                       className="hover:text-neutral-900 transition-colors touch-manipulation"
@@ -77,12 +95,18 @@ export default function KontaktPage() {
                     </a>
                   </p>
                   <p className="flex items-center justify-center lg:justify-start gap-2">
-                    <span>📞</span>
+                    <Image
+                      src="/phone.png"
+                      alt="Phone icon"
+                      width={16}
+                      height={16}
+                      className="w-4 h-4 object-contain"
+                    />
                     <a 
-                      href="tel:+4676XXXXXXX"
+                      href="tel:+46736797940"
                       className="hover:text-neutral-900 transition-colors touch-manipulation"
                     >
-                      +46 76 XXX XX XX
+                      +46 73 679 7940
                     </a>
                   </p>
                 </div>
