@@ -133,6 +133,13 @@ export function MultipleMediaUpload(props: ArrayOfObjectsInputProps) {
     onChange(newValue.length > 0 ? set(newValue) : unset());
   }, [onChange, value]);
 
+  const moveImage = useCallback((fromIndex: number, toIndex: number) => {
+    const newValue = [...value];
+    const [movedItem] = newValue.splice(fromIndex, 1);
+    newValue.splice(toIndex, 0, movedItem);
+    onChange(set(newValue));
+  }, [onChange, value]);
+
   const getImageUrl = (item: any) => {
     if (!item.asset?._ref) return null;
     try {
@@ -187,6 +194,44 @@ export function MultipleMediaUpload(props: ArrayOfObjectsInputProps) {
     justifyContent: 'center',
   };
 
+  const orderControlsStyle: React.CSSProperties = {
+    position: 'absolute',
+    bottom: '4px',
+    left: '4px',
+    display: 'flex',
+    gap: '2px',
+  };
+
+  const orderButtonStyle: React.CSSProperties = {
+    background: 'rgba(0, 0, 0, 0.7)',
+    color: 'white',
+    border: 'none',
+    borderRadius: '3px',
+    width: '20px',
+    height: '20px',
+    cursor: 'pointer',
+    fontSize: '10px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
+
+  const indexBadgeStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: '4px',
+    left: '4px',
+    background: 'rgba(0, 102, 204, 0.9)',
+    color: 'white',
+    borderRadius: '50%',
+    width: '20px',
+    height: '20px',
+    fontSize: '10px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold',
+  };
+
   return (
     <div>
       <div
@@ -235,6 +280,11 @@ Select Files
           <div style={imageGridStyle}>
             {value.map((item: any, index: number) => (
               <div key={item._key || index} style={imageItemStyle}>
+                {/* Index Badge */}
+                <div style={indexBadgeStyle}>
+                  {index + 1}
+                </div>
+                
                 {item._type === 'image' && getImageUrl(item) ? (
                   <img
                     src={getImageUrl(item)!}
@@ -278,15 +328,41 @@ Select Files
                     Loading...
                   </div>
                 )}
+                
                 {!readOnly && (
-                  <button
-                    type="button"
-                    style={removeButtonStyle}
-                    onClick={() => removeImage(index)}
-                    title={`Remove ${item._type === 'file' ? 'video' : 'image'}`}
-                  >
-                    ×
-                  </button>
+                  <>
+                    {/* Remove Button */}
+                    <button
+                      type="button"
+                      style={removeButtonStyle}
+                      onClick={() => removeImage(index)}
+                      title={`Remove ${item._type === 'file' ? 'video' : 'image'}`}
+                    >
+                      ×
+                    </button>
+                    
+                    {/* Order Controls */}
+                    <div style={orderControlsStyle}>
+                      <button
+                        type="button"
+                        style={orderButtonStyle}
+                        onClick={() => moveImage(index, Math.max(0, index - 1))}
+                        disabled={index === 0}
+                        title="Move left"
+                      >
+                        ←
+                      </button>
+                      <button
+                        type="button"
+                        style={orderButtonStyle}
+                        onClick={() => moveImage(index, Math.min(value.length - 1, index + 1))}
+                        disabled={index === value.length - 1}
+                        title="Move right"
+                      >
+                        →
+                      </button>
+                    </div>
+                  </>
                 )}
               </div>
             ))}
