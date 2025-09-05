@@ -29,17 +29,27 @@ export default defineType({
       type: 'array',
       of: [
         { type: 'image', options: { hotspot: true } },
+        { 
+          type: 'file',
+          title: 'Video',
+          options: {
+            accept: 'video/*'
+          }
+        },
         { type: 'beforeAfter' },
       ],
       components: {
         input: (props: any) => {
-          // Only use custom component for image arrays
-          const isImageArray = props.value?.every((item: any) => item._type === 'image') ?? true;
-          if (isImageArray) {
-            const { MultipleImageUpload } = require('../components/MultipleImageUpload');
-            return MultipleImageUpload(props);
+          // Use custom component for media uploads (images and videos)
+          const hasOnlyMediaTypes = props.value?.every((item: any) => 
+            item._type === 'image' || item._type === 'file'
+          ) ?? true;
+          
+          if (hasOnlyMediaTypes) {
+            const { MultipleMediaUpload } = require('../components/MultipleImageUpload');
+            return MultipleMediaUpload(props);
           }
-          // Fall back to default for mixed content
+          // Fall back to default for mixed content with beforeAfter
           return props.renderDefault(props);
         },
       },

@@ -3,8 +3,8 @@ import { ArrayOfObjectsInputProps, set, unset } from 'sanity';
 import { useClient } from 'sanity';
 import imageUrlBuilder from '@sanity/image-url';
 
-interface ImageItem {
-  _type: 'image';
+interface MediaItem {
+  _type: 'image' | 'file';
   _key: string;
   asset?: {
     _ref: string;
@@ -14,7 +14,7 @@ interface ImageItem {
   crop?: any;
 }
 
-export function MultipleImageUpload(props: ArrayOfObjectsInputProps) {
+export function MultipleMediaUpload(props: ArrayOfObjectsInputProps) {
   const { onChange, value = [], readOnly } = props;
   const client = useClient({ apiVersion: '2025-05-01' });
   const [isUploading, setIsUploading] = useState(false);
@@ -32,40 +32,54 @@ export function MultipleImageUpload(props: ArrayOfObjectsInputProps) {
     setIsUploading(true);
     
     const uploadPromises = Array.from(files).map(async (file, index) => {
-      if (!file.type.startsWith('image/')) {
-        console.log(`File ${index} is not an image:`, file);
+      const isImage = file.type.startsWith('image/');
+      const isVideo = file.type.startsWith('video/');
+      
+      if (!isImage && !isVideo) {
+        console.log(`File ${index} is not an image or video:`, file);
         return null;
       }
 
       console.log(`Uploading file ${index}:`, file.name, file.type);
       
       try {
-        const asset = await client.assets.upload('image', file, {
+        const asset = await client.assets.upload(isImage ? 'image' : 'file', file, {
           filename: file.name,
         });
 
         console.log(`Upload successful for file ${index}:`, asset._id);
 
-        return {
-          _type: 'image' as const,
-          _key: `image-${Date.now()}-${Math.random()}-${index}`,
+        const baseItem = {
+          _key: `${isImage ? 'image' : 'video'}-${Date.now()}-${Math.random()}-${index}`,
           asset: {
             _type: 'reference' as const,
             _ref: asset._id,
           },
-          hotspot: {
-            x: 0.5,
-            y: 0.5,
-            height: 1,
-            width: 1,
-          },
-          crop: {
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
-          },
         };
+
+        if (isImage) {
+          return {
+            ...baseItem,
+            _type: 'image' as const,
+            hotspot: {
+              x: 0.5,
+              y: 0.5,
+              height: 1,
+              width: 1,
+            },
+            crop: {
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+            },
+          };
+        } else {
+          return {
+            ...baseItem,
+            _type: 'file' as const,
+          };
+        }
       } catch (error) {
         console.error(`Upload failed for file ${index}:`, error);
         return null;
@@ -73,12 +87,12 @@ export function MultipleImageUpload(props: ArrayOfObjectsInputProps) {
     });
 
     try {
-      const uploadedImages = (await Promise.all(uploadPromises)).filter(Boolean) as ImageItem[];
-      console.log(`Successfully uploaded ${uploadedImages.length} images`);
+      const uploadedItems = (await Promise.all(uploadPromises)).filter(Boolean) as MediaItem[];
+      console.log(`Successfully uploaded ${uploadedItems.length} items`);
       
-      if (uploadedImages.length > 0) {
-        const newValue = [...value, ...uploadedImages];
-        console.log('Updating value with new images:', newValue);
+      if (uploadedItems.length > 0) {
+        const newValue = [...value, ...uploadedItems];
+        console.log('Updating value with new items:', newValue);
         onChange(set(newValue));
       }
     } catch (error) {
@@ -184,8 +198,8 @@ export function MultipleImageUpload(props: ArrayOfObjectsInputProps) {
         <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📁</div>
         <p style={{ margin: '0 0 1rem 0', color: '#666' }}>
           {isUploading 
-            ? 'Uploading images...' 
-            : 'Drag and drop multiple images here, or click to select files'
+            ? 'Uploading files...' 
+            : 'Drag and drop images and videos here, or click to select files'
           }
         </p>
         {!readOnly && (
@@ -205,23 +219,23 @@ export function MultipleImageUpload(props: ArrayOfObjectsInputProps) {
               const input = document.createElement('input');
               input.type = 'file';
               input.multiple = true;
-              input.accept = 'image/*';
+              input.accept = 'image/*,video/*';
               input.onchange = (e) => handleFileInput(e as any);
               input.click();
             }}
           >
-            Select Images
+Select Files
           </button>
         )}
       </div>
 
       {value.length > 0 && (
         <div style={{ marginTop: '1rem' }}>
-          <h4 style={{ margin: '0 0 1rem 0' }}>Gallery Images ({value.length})</h4>
+          <h4 style={{ margin: '0 0 1rem 0' }}>Gallery Items ({value.length})</h4>
           <div style={imageGridStyle}>
             {value.map((item: any, index: number) => (
               <div key={item._key || index} style={imageItemStyle}>
-                {getImageUrl(item) ? (
+                {item._type === 'image' && getImageUrl(item) ? (
                   <img
                     src={getImageUrl(item)!}
                     alt={`Gallery image ${index + 1}`}
@@ -231,6 +245,23 @@ export function MultipleImageUpload(props: ArrayOfObjectsInputProps) {
                       objectFit: 'cover',
                     }}
                   />
+                ) : item._type === 'file' ? (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: '#2a2a2a',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+                      fontSize: '24px',
+                      color: 'white',
+                    }}
+                  >
+                    🎥
+                    <div style={{ fontSize: '10px', marginTop: '4px' }}>Video</div>
+                  </div>
                 ) : (
                   <div
                     style={{
@@ -252,7 +283,7 @@ export function MultipleImageUpload(props: ArrayOfObjectsInputProps) {
                     type="button"
                     style={removeButtonStyle}
                     onClick={() => removeImage(index)}
-                    title="Remove image"
+                    title={`Remove ${item._type === 'file' ? 'video' : 'image'}`}
                   >
                     ×
                   </button>

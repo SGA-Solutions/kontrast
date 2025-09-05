@@ -122,12 +122,14 @@ export const PROJECT_BY_SLUG_QUERY = groq`
       }
     },
     gallery[] {
+      _type,
       asset->{
         _id,
         url,
         metadata {
           dimensions,
-          lqip
+          lqip,
+          mimeType
         }
       }
     }

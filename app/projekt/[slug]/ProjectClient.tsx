@@ -6,6 +6,22 @@ import CrossBrowserImage from "../../../components/CrossBrowserImage";
 import CrossBrowserScrollContainer from "../../../components/CrossBrowserScrollContainer";
 import ScrollIcon from "../../../components/ScrollIcon";
 
+// Helper function to construct video URL from Sanity asset reference
+function getVideoUrl(asset: any, projectId: string, dataset: string): string {
+  if (!asset?._ref) return '';
+  
+  // Extract the file ID and extension from the asset reference
+  // Format: file-{id}-{extension}
+  const ref = asset._ref;
+  const parts = ref.split('-');
+  if (parts.length < 3) return '';
+  
+  const fileId = parts.slice(1, -1).join('-');
+  const extension = parts[parts.length - 1];
+  
+  return `https://cdn.sanity.io/files/${projectId}/${dataset}/${fileId}.${extension}`;
+}
+
 type ProjectCategory = {
   _id: string;
   title: string;
@@ -103,8 +119,10 @@ export default function ProjectClient({ project }: ProjectClientProps) {
     }
   }, [project.body, project.assignment, project.categories, project.location, project.client, project.status, project.startDate, project.endDate]);
 
-  // Prepare all images for horizontal layout with high-quality cross-browser optimized URLs
-  const allImages = [];
+  // Prepare all media items (images and videos) for horizontal layout
+  const allMediaItems = [];
+  
+  
   if (project.coverImage) {
     const imageUrls = getOptimizedImageUrls(project.coverImage, {
       width: 1920,
@@ -113,27 +131,71 @@ export default function ProjectClient({ project }: ProjectClientProps) {
       fit: 'crop',
       format: 'auto'
     });
-    allImages.push({
+    allMediaItems.push({
       ...imageUrls,
       alt: project.title || "Project image",
-      isCover: true
+      isCover: true,
+      type: 'image'
     });
   }
+  
   if (project.gallery && project.gallery.length > 0) {
-    project.gallery.forEach((image: any, index: number) => {
-      // Handle different gallery image structures
-      if (image && (image._type === 'image' || image.asset || image.url)) {
-        const imageUrls = getOptimizedImageUrls(image, {
+    project.gallery.forEach((item: any, index: number) => {
+      console.log(`Gallery item ${index}:`, item);
+      
+      // Handle videos - check for asset structure and video MIME type
+      if (item && item.asset && item.asset.url && item.asset.metadata?.mimeType?.startsWith('video/')) {
+        // For videos, use the direct URL from the asset
+        allMediaItems.push({
+          primary: item.asset.url,
+          alt: `${project.title} gallery video ${index + 1}`,
+          isCover: false,
+          type: 'video',
+          asset: item.asset
+        });
+      }
+      // Handle videos without MIME type (fallback based on file extension)
+      else if (item && item.asset && item.asset.url && (item.asset.url.includes('.mp4') || item.asset.url.includes('.mov') || item.asset.url.includes('.avi') || item.asset.url.includes('.webm'))) {
+        allMediaItems.push({
+          primary: item.asset.url,
+          alt: `${project.title} gallery video ${index + 1}`,
+          isCover: false,
+          type: 'video',
+          asset: item.asset
+        });
+      }
+      // Handle images - check for asset structure and image MIME type
+      else if (item && item.asset && item.asset.url && item.asset.metadata?.mimeType?.startsWith('image/')) {
+        // Use optimized image URLs for fast loading
+        const imageUrls = getOptimizedImageUrls(item, {
           width: 1600,
           height: 1200,
           quality: 92,
           fit: 'crop',
           format: 'auto'
         });
-        allImages.push({
+        allMediaItems.push({
           ...imageUrls,
           alt: `${project.title} gallery image ${index + 1}`,
-          isCover: false
+          isCover: false,
+          type: 'image'
+        });
+      }
+      // Handle legacy images without MIME type check
+      else if (item && item.asset && item.asset.url && !item.asset.url.includes('.mp4') && !item.asset.url.includes('.mov') && !item.asset.url.includes('.avi') && !item.asset.url.includes('.webm')) {
+        // Use optimized image URLs for fast loading
+        const imageUrls = getOptimizedImageUrls(item, {
+          width: 1600,
+          height: 1200,
+          quality: 92,
+          fit: 'crop',
+          format: 'auto'
+        });
+        allMediaItems.push({
+          ...imageUrls,
+          alt: `${project.title} gallery image ${index + 1}`,
+          isCover: false,
+          type: 'image'
         });
       }
     });
@@ -293,29 +355,43 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           </div>
         </div>
 
-        {/* Images section with peek effect */}
-        {allImages.map((image, index) => (
+        {/* Media section (images and videos) with peek effect */}
+        {allMediaItems.map((item, index) => (
           <div 
             key={index} 
             className={`flex-shrink-0 relative w-[calc(100vw-750px-2rem)] h-120 pt-8 mt-10 transition-all duration-700 ease-in-out`}
             style={{
               marginLeft: '0',
-              marginRight: index < allImages.length - 1 ? '2rem' : '0'
+              marginRight: index < allMediaItems.length - 1 ? '2rem' : '0'
             }}
           >
-            <CrossBrowserImage
-              src={image.primary}
-              alt={image.alt}
-              fill
-              className="object-cover"
-              priority={index === 0}
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, (max-width: 1440px) 80vw, 75vw"
-              quality={95}
-              placeholder="blur"
-            />
+            {item.type === 'image' ? (
+              <CrossBrowserImage
+                src={item.primary}
+                alt={item.alt}
+                fill
+                className="object-cover"
+                priority={index === 0}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, (max-width: 1440px) 80vw, 75vw"
+                quality={95}
+                placeholder="blur"
+              />
+            ) : (
+              <video
+                src={item.primary}
+                className="w-full h-full object-cover"
+                controls
+                preload="metadata"
+                style={{
+                  backgroundColor: '#000'
+                }}
+              >
+                Your browser does not support the video tag.
+              </video>
+            )}
             
-            {/* Gradient overlay for peek effect on non-last images */}
-            {index < allImages.length - 1 && (
+            {/* Gradient overlay for peek effect on non-last items */}
+            {index < allMediaItems.length - 1 && (
               <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-r from-transparent to-white/20 pointer-events-none" />
             )}
           </div>
