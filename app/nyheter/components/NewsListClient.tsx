@@ -30,7 +30,7 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
   return (
     <section className="pl-10 mt-13 space-y-6">
       {/* Page title */}
-      <span className="text-sm font-light tracking-[0.45em] text-neutral-900">NYHETER</span>
+      <span className="text-xl font-futura-medium text-neutral-900 uppercase tracking-wide">NYHETER</span>
       
       {/* News horizontal scroll with peek */}
       <div>
