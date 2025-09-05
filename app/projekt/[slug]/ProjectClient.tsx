@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { getOptimizedImageUrls } from "../../../lib/image-utils";
 import CrossBrowserImage from "../../../components/CrossBrowserImage";
 import CrossBrowserScrollContainer from "../../../components/CrossBrowserScrollContainer";
+import ScrollIcon from "../../../components/ScrollIcon";
 
 type ProjectCategory = {
   _id: string;
@@ -330,6 +331,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           z-index: 1;
         }
       `}</style>
+      <ScrollIcon />
     </div>
   );
 }

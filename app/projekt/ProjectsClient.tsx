@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react";
 import { urlFor } from "../../sanity/client";
 import ImageGrid, { type ImageGridItem } from "../../components/ImageGrid";
+import ScrollIcon from "../../components/ScrollIcon";
 
 type ProjectCategory = {
   _id: string;
@@ -87,6 +88,7 @@ export default function ProjectsClient({ initialCategories, initialProjects }: P
           Inga projekt hittades för den valda kategorin.
         </div>
       )}
+      <ScrollIcon />
     </section>
   );
 }

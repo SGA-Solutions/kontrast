@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "../../../../sanity/client";
 import { useCrossBrowserScroll } from "../../../../hooks/useCrossBrowserScroll";
+import ScrollIcon from "../../../../components/ScrollIcon";
 
 interface Service {
   _id: string;
@@ -122,6 +123,7 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
           </Link>
         </div>
       </div>
+      <ScrollIcon />
     </div>
   );
 }

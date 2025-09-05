@@ -4,6 +4,7 @@ import Image from "next/image";
 import { PortableText } from "@portabletext/react";
 import { urlFor } from "../../../../sanity/client";
 import { useCrossBrowserScroll } from "../../../../hooks/useCrossBrowserScroll";
+import ScrollIcon from "../../../../components/ScrollIcon";
 
 type Post = {
   _id: string;
@@ -99,6 +100,7 @@ export default function ArticleClient({ post }: ArticleClientProps) {
           </div>
         )}
       </div>
+      <ScrollIcon />
     </section>
   );
 }

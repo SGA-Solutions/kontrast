@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "../../../sanity/client";
 import { useCrossBrowserScroll } from "../../../hooks/useCrossBrowserScroll";
+import ScrollIcon from "../../../components/ScrollIcon";
 
 type Post = {
   _id: string;
@@ -88,6 +89,7 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
           Inga nyheter publicerade än.
         </div>
       )}
+      <ScrollIcon />
     </section>
   );
 }

@@ -6,6 +6,7 @@ import Image from "next/image";
 import ImageGrid, { type ImageGridItem } from "../components/ImageGrid";
 import Link from "next/link";
 import { PROJECTS_QUERY, SITE_SETTINGS_QUERY, CACHE_TAGS } from "../lib/sanity-queries";
+import ScrollIcon from "../components/ScrollIcon";
 
 type ProjectDoc = {
   _id: string;
@@ -116,6 +117,7 @@ export default async function Home() {
           <ImageGrid items={imageItems} />
         </div>
       </div>
+      <ScrollIcon />
     </section>
   );
 }
