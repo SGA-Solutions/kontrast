@@ -119,7 +119,7 @@ export default async function OmOssPage() {
                 {aboutUsData.map((entry, index) => (
                   <div key={index}>
                     {entry.title && (
-                      <h2 className="text-xl sm:text-2xl lg:text-3xl font-medium uppercase tracking-wider text-white">
+                      <h2 className="text-xl font-futura-medium uppercase tracking-wider text-white">
                         {entry.title}
                       </h2>
                     )}

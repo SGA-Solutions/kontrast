@@ -70,7 +70,7 @@ export default function ArticleClient({ post }: ArticleClientProps) {
             <div className="mb-6 text-xs text-neutral-500 tracking-[0.2em] space-y-1 break-before-column">
               {post.publishedAt && (
                 <div>
-                  PUBLICERAD: {new Date(post.publishedAt).toLocaleDateString('sv-SE', {
+                  {new Date(post.publishedAt).toLocaleDateString('sv-SE', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -79,7 +79,7 @@ export default function ArticleClient({ post }: ArticleClientProps) {
               )}
               {post.author && (
                 <div>
-                  FÖRFATTARE: {post.author}
+                  {post.author}
                 </div>
               )}
             </div>

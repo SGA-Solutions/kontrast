@@ -45,7 +45,7 @@ export default async function TjansterPage() {
             <div key={category._id} className="group">
               {/* Service Category Card */}
               <div className="relative bg-white">
-                <h2 className="text-xl font-medium text-neutral-900 mb-1 uppercase tracking-wide">
+                <h2 className="text-xl font-futura-medium text-neutral-900 mb-1 uppercase tracking-wide">
                   {category.title}
                 </h2>
                 {/* Clickable Image */}
