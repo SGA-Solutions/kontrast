@@ -13,6 +13,7 @@ type ProjectDoc = {
   title?: string;
   slug?: { current: string };
   coverImage?: any;
+  gallery?: any[];
 };
 
 // Server-side data fetching
@@ -59,12 +60,33 @@ async function getHomeData() {
 export default async function Home() {
   const { introBlocks, projects } = await getHomeData();
 
+  // Helper function to check if project has videos in gallery
+  const hasVideoInGallery = (project: ProjectDoc): boolean => {
+    if (!project.gallery || project.gallery.length === 0) return false;
+    
+    return project.gallery.some((item: any) => {
+      // Check for video MIME type
+      if (item?.asset?.metadata?.mimeType?.startsWith('video/')) {
+        return true;
+      }
+      
+      // Fallback: check file extension
+      if (item?.asset?.url) {
+        const url = item.asset.url.toLowerCase();
+        return url.includes('.mp4') || url.includes('.mov') || url.includes('.avi') || url.includes('.webm');
+      }
+      
+      return false;
+    });
+  };
+
   // Prepare image items for the ImageGrid component
   const imageItems: ImageGridItem[] = projects.map((p, i) => ({
     key: p._id,
     src: p.coverImage ? urlFor(p.coverImage).width(1200).height(1200).format('webp').quality(85).fit("crop").url() : "",
     alt: p.title || `Projekt ${i + 1}`,
     href: p.slug?.current ? `/projekt/${p.slug.current}` : undefined,
+    hasVideo: hasVideoInGallery(p),
   }));
 
   return (

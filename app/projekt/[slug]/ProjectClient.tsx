@@ -141,7 +141,6 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   
   if (project.gallery && project.gallery.length > 0) {
     project.gallery.forEach((item: any, index: number) => {
-      console.log(`Gallery item ${index}:`, item);
       
       // Handle videos - check for asset structure and video MIME type
       if (item && item.asset && item.asset.url && item.asset.metadata?.mimeType?.startsWith('video/')) {

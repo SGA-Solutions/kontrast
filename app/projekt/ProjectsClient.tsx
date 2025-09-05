@@ -17,6 +17,7 @@ type ProjectDoc = {
   slug?: { current: string };
   coverImage?: any;
   categories?: ProjectCategory[];
+  gallery?: any[];
 };
 
 interface ProjectsClientProps {
@@ -35,6 +36,26 @@ export default function ProjectsClient({ initialCategories, initialProjects }: P
     );
   }, [initialProjects, selectedCategory]);
 
+  // Helper function to check if project has videos in gallery
+  const hasVideoInGallery = (project: ProjectDoc): boolean => {
+    if (!project.gallery || project.gallery.length === 0) return false;
+    
+    return project.gallery.some((item: any) => {
+      // Check for video MIME type
+      if (item?.asset?.metadata?.mimeType?.startsWith('video/')) return true;
+      
+      // Check for video file extensions as fallback
+      if (item?.asset?.url && (
+        item.asset.url.includes('.mp4') || 
+        item.asset.url.includes('.mov') || 
+        item.asset.url.includes('.avi') || 
+        item.asset.url.includes('.webm')
+      )) return true;
+      
+      return false;
+    });
+  };
+
   // Memoize image items for the ImageGrid component
   const imageItems: ImageGridItem[] = useMemo(() => {
     return filteredProjects.map((project) => ({
@@ -42,6 +63,7 @@ export default function ProjectsClient({ initialCategories, initialProjects }: P
       src: project.coverImage ? urlFor(project.coverImage).width(1200).height(1200).format('webp').quality(85).fit("crop").url() : "",
       alt: project.title || "Projekt",
       href: project.slug?.current ? `/projekt/${project.slug.current}` : undefined,
+      hasVideo: hasVideoInGallery(project),
     }));
   }, [filteredProjects]);
 

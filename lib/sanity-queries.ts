@@ -66,6 +66,18 @@ export const PROJECTS_QUERY = groq`
           lqip
         }
       }
+    },
+    gallery[] {
+      _type,
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions,
+          lqip,
+          mimeType
+        }
+      }
     }
   }
 `;
@@ -85,7 +97,19 @@ export const PROJECTS_WITH_CATEGORIES_QUERY = groq`
         }
       }
     },
-    categories[]->{ _id, title, slug }
+    categories[]->{ _id, title, slug },
+    gallery[] {
+      _type,
+      asset->{
+        _id,
+        url,
+        metadata {
+          dimensions,
+          lqip,
+          mimeType
+        }
+      }
+    }
   }
 `;
 

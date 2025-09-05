@@ -11,6 +11,7 @@ export type ImageGridItem = {
   alt: string;
   onClick?: () => void;
   href?: string;
+  hasVideo?: boolean;
 };
 
 interface ImageGridProps {
@@ -80,6 +81,17 @@ export default function ImageGrid({ items, className = "" }: ImageGridProps) {
                 className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-colors duration-300 ease-out"
                 aria-hidden="true"
               />
+
+              {/* Play button overlay for videos */}
+              {item.hasVideo && (
+                <div className="absolute bottom-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out">
+                  <div className="w-6 h-6 border-3 border-white rounded-full flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white " fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                </div>
+              )}
 
               {/* Overlay title */}
               <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
