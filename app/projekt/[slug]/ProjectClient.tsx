@@ -103,14 +103,15 @@ export default function ProjectClient({ project }: ProjectClientProps) {
     }
   }, [project.body, project.assignment, project.categories, project.location, project.client, project.status, project.startDate, project.endDate]);
 
-  // Prepare all images for horizontal layout with cross-browser optimized URLs
+  // Prepare all images for horizontal layout with high-quality cross-browser optimized URLs
   const allImages = [];
   if (project.coverImage) {
     const imageUrls = getOptimizedImageUrls(project.coverImage, {
-      width: 1200,
-      height: 800,
-      quality: 85,
-      fit: 'crop'
+      width: 1920,
+      height: 1280,
+      quality: 95,
+      fit: 'crop',
+      format: 'auto'
     });
     allImages.push({
       ...imageUrls,
@@ -123,10 +124,11 @@ export default function ProjectClient({ project }: ProjectClientProps) {
       // Handle different gallery image structures
       if (image && (image._type === 'image' || image.asset || image.url)) {
         const imageUrls = getOptimizedImageUrls(image, {
-          width: 800,
-          height: 800,
-          quality: 85,
-          fit: 'crop'
+          width: 1600,
+          height: 1200,
+          quality: 92,
+          fit: 'crop',
+          format: 'auto'
         });
         allImages.push({
           ...imageUrls,
@@ -307,7 +309,8 @@ export default function ProjectClient({ project }: ProjectClientProps) {
               fill
               className="object-cover"
               priority={index === 0}
-              sizes="(max-width: 768px) 100vw, 80vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, (max-width: 1440px) 80vw, 75vw"
+              quality={95}
               placeholder="blur"
             />
             

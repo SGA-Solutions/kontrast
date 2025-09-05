@@ -26,51 +26,93 @@ export function getOptimizedImageUrls(
   options: ImageOptions = {}
 ): OptimizedImageUrls {
   const {
-    width = 800,
-    height = 600,
-    quality = 85,
+    width = 1200,
+    height = 900,
+    quality = 92,
     fit = 'crop',
     format = 'auto'
   } = options;
 
-  // Always default to JPG for SSR to prevent hydration issues
-  // Format detection will happen on client-side in components
-  let selectedFormat: 'avif' | 'webp' | 'jpg' = 'jpg';
+  // Enhanced format selection for better quality
+  let selectedFormat: 'avif' | 'webp' | 'jpg' = 'webp'; // Default to WebP for better quality
   
   if (format !== 'auto') {
     selectedFormat = format as 'avif' | 'webp' | 'jpg';
   }
 
-  // Generate URLs for different formats
+  // Generate URLs for different formats with enhanced quality settings
   const baseBuilder = urlFor(imageSource)
     .width(width)
     .height(height)
     .quality(quality)
-    .fit(fit);
+    .fit(fit)
+    .auto('format'); // Let Sanity choose the best format
 
   return {
-    primary: baseBuilder.format(selectedFormat === 'avif' ? 'webp' : selectedFormat).url(), // Use webp instead of avif for Sanity compatibility
-    fallback: baseBuilder.format('jpg').url(),
+    primary: baseBuilder.format('webp').url(), // Primary WebP for modern browsers
+    fallback: baseBuilder.format('jpg').quality(Math.min(quality + 3, 100)).url(), // Slightly higher quality fallback
     format: selectedFormat
   };
 }
 
 /**
- * Generate responsive image sizes for different breakpoints
+ * Generate responsive image sizes for different breakpoints with high-quality presets
  */
 export function getResponsiveSizes(breakpoints: Record<string, string> = {}): string {
   const defaultBreakpoints = {
     '(max-width: 640px)': '100vw',
-    '(max-width: 768px)': '80vw',
-    '(max-width: 1024px)': '60vw',
+    '(max-width: 768px)': '90vw',
+    '(max-width: 1024px)': '80vw',
+    '(max-width: 1440px)': '75vw',
+    '(max-width: 1920px)': '70vw',
     ...breakpoints
   };
 
   const sizeEntries = Object.entries(defaultBreakpoints);
   const mediaQueries = sizeEntries.slice(0, -1).map(([query, size]) => `${query} ${size}`);
-  const defaultSize = sizeEntries[sizeEntries.length - 1][1];
+  const defaultSize = sizeEntries[sizeEntries.length - 1][1] || '65vw';
 
   return [...mediaQueries, defaultSize].join(', ');
+}
+
+/**
+ * Get high-quality image options for different use cases
+ */
+export function getHighQualityImageOptions(type: 'cover' | 'gallery' | 'thumbnail'): ImageOptions {
+  switch (type) {
+    case 'cover':
+      return {
+        width: 1920,
+        height: 1280,
+        quality: 95,
+        fit: 'crop',
+        format: 'auto'
+      };
+    case 'gallery':
+      return {
+        width: 1600,
+        height: 1200,
+        quality: 92,
+        fit: 'crop',
+        format: 'auto'
+      };
+    case 'thumbnail':
+      return {
+        width: 800,
+        height: 600,
+        quality: 88,
+        fit: 'crop',
+        format: 'auto'
+      };
+    default:
+      return {
+        width: 1200,
+        height: 900,
+        quality: 90,
+        fit: 'crop',
+        format: 'auto'
+      };
+  }
 }
 
 /**
