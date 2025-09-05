@@ -40,7 +40,7 @@ export default function ArticleClient({ post }: ArticleClientProps) {
       <div 
         ref={scrollRef}
         onWheel={onWheel}
-        className="flex gap-8 h-130 overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
+        className="flex gap-8 h-120 overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
       >
         {/* Body text - flows into multiple columns */}
         {post.body && (
