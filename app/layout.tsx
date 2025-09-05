@@ -37,7 +37,7 @@ export default function RootLayout({
           <div className="min-h-screen-safe grid grid-cols-1 sm:grid-cols-[100px_1fr] grid-fallback">
             {/* Left vertical navigation */}
             <Header />
-            <main className="overflow-x-auto overflow-y-hidden hide-scrollbar mt-8 sm:mt-8 pt-16 sm:pt-0 flex-1 no-overscroll">{children}</main>
+            <main className="overflow-x-hidden overflow-y-hidden hide-scrollbar mt-8 sm:mt-8 pt-16 sm:pt-0 flex-1 no-overscroll">{children}</main>
             {/*<Footer />*/}         
           </div>
         </PreloaderProvider>
