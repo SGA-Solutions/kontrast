@@ -57,7 +57,7 @@ export default async function TjansterPage() {
                         alt={category.title}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        className="object-cover"
                         placeholder="blur"
                         blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                       />
@@ -85,7 +85,7 @@ export default async function TjansterPage() {
         </div>
 
         {/* Customer Logos Carousel */}
-        <div className="overflow-hidden mt-10">
+        <div className="overflow-hidden mt-25">
           <div className="flex animate-scroll-left gap-x-12 items-center">
             {/* First set of logos */}
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((num) => (
@@ -95,7 +95,7 @@ export default async function TjansterPage() {
                   alt={`Client ${num}`}
                   width={192}
                   height={96}
-                  className="object-contain opacity-60 hover:opacity-100 transition-opacity duration-300 filter grayscale hover:grayscale-0"
+                  className="object-contain opacity-100 transition-opacity duration-300 filter grayscale hover:grayscale-0"
                 />
               </div>
             ))}
@@ -109,7 +109,7 @@ export default async function TjansterPage() {
                   alt={`Client ${num}`}
                   width={192}
                   height={96}
-                  className="object-contain opacity-60 hover:opacity-100 transition-opacity duration-300 filter grayscale hover:grayscale-0"
+                  className="object-contain opacity-100 transition-opacity duration-300 filter grayscale hover:grayscale-0"
                 />
               </div>
             ))}

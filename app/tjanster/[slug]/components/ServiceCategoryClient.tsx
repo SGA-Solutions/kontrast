@@ -62,7 +62,7 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
                       alt={service.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 600px"
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="object-cover"
                       priority={index === 0}
                       placeholder="blur"
                       blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
@@ -81,46 +81,9 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
                     }}
                   />
                 </div>
-                
-                {/* Service gallery thumbnails */}
-                {service.gallery && service.gallery.length > 0 && (
-                  <div className="mt-6">
-                    <div className="flex space-x-2 overflow-x-auto">
-                      {service.gallery.slice(0, 4).map((image, imgIndex) => (
-                        <div key={imgIndex} className="relative w-16 h-16 flex-shrink-0 overflow-hidden">
-                          <Image
-                            src={urlFor(image).width(100).height(100).format('webp').quality(85).url()}
-                            alt={`${service.title} gallery ${imgIndex + 1}`}
-                            fill
-                            sizes="100px"
-                            className="object-cover"
-                          />
-                        </div>
-                      ))}
-                      {service.gallery.length > 4 && (
-                        <div className="w-16 h-16 flex-shrink-0 bg-neutral-100 flex items-center justify-center text-xs text-neutral-600">
-                          +{service.gallery.length - 4}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Back to services link */}
-        <div className="mt-16 pt-8 border-t border-neutral-200">
-          <Link 
-            href="/tjanster"
-            className="inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900 transition-colors"
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Tillbaka till tjänster
-          </Link>
         </div>
       </div>
       <ScrollIcon />
