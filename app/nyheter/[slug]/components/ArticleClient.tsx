@@ -87,9 +87,9 @@ export default function ArticleClient({ post }: ArticleClientProps) {
               value={post.body}
               components={{
                 block: {
-                  normal: ({children}) => <p className="mb-4 leading-relaxed text-neutral-700 text-sm break-inside-avoid text-justify">{children}</p>,
-                  h2: ({children}) => <h2 className="text-lg font-light tracking-wide mt-6 mb-3 text-neutral-900 break-inside-avoid">{children}</h2>,
-                  h3: ({children}) => <h3 className="text-base font-light tracking-wide mt-4 mb-2 text-neutral-900 break-inside-avoid">{children}</h3>,
+                  normal: ({children}) => <p className="mb-4 leading-relaxed text-neutral-700 text-sm text-justify">{children}</p>,
+                  h2: ({children}) => <h2 className="text-lg font-light tracking-wide mt-6 mb-3 text-neutral-900">{children}</h2>,
+                  h3: ({children}) => <h3 className="text-base font-light tracking-wide mt-4 mb-2 text-neutral-900">{children}</h3>,
                 },
                 marks: {
                   strong: ({children}) => <strong className="font-semibold text-neutral-900">{children}</strong>,
