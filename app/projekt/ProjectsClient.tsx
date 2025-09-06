@@ -102,8 +102,8 @@ export default function ProjectsClient({ initialCategories, initialProjects }: P
       
       {/* Projects Grid */}
       {filteredProjects.length > 0 ? (
-        <div className="pt-3 pl-10">
-          <ImageGrid items={imageItems} />
+        <div className="w-full h-full overflow-hidden pt-3 pl-10">
+          <ImageGrid items={imageItems} visibleColumns={5.8} />
         </div>
       ) : (
         <div className="flex items-center justify-center min-h-[200px] text-neutral-500">

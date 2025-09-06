@@ -139,7 +139,7 @@ export default async function Home() {
 
         {/* Image grid (right column): 2 rows, horizontal scroll */}
         <div className="w-full overflow-hidden">
-          <ImageGrid items={imageItems} />
+          <ImageGrid items={imageItems} visibleColumns={4.8} />
         </div>
       </div>
       <ScrollIcon />

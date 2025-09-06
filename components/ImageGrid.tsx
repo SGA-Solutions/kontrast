@@ -17,9 +17,10 @@ export type ImageGridItem = {
 interface ImageGridProps {
   items: ImageGridItem[];
   className?: string;
+  visibleColumns?: number;
 }
 
-export default function ImageGrid({ items, className = "" }: ImageGridProps) {
+export default function ImageGrid({ items, className = "", visibleColumns = 4.8 }: ImageGridProps) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const { ref: hookScrollRef, onWheel: hookOnWheel } = useCrossBrowserScroll({
     direction: 'horizontal',
@@ -43,8 +44,8 @@ export default function ImageGrid({ items, className = "" }: ImageGridProps) {
       const width = el.clientWidth;
       const isSmall = width < 640; // ~sm breakpoint
       const gap = isSmall ? 16 : 24; // gap-4 vs gap-6
-      const visibleColumns = isSmall ? 2.2 : 4.8; // make tiles larger on phones
-      const col = (width - gap * 3) / visibleColumns; // 4 cols => 3 gaps between
+      const visibleColumnsValue = isSmall ? 2.2 : visibleColumns; // make tiles larger on phones
+      const col = (width - gap * 3) / visibleColumnsValue; // 4 cols => 3 gaps between
       el.style.setProperty("--col", `${col}px`);
     };
 
@@ -52,7 +53,7 @@ export default function ImageGrid({ items, className = "" }: ImageGridProps) {
     const ro = new ResizeObserver(compute);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [visibleColumns]);
 
   // Use the hook's wheel handler for consistent cross-browser scrolling
 
