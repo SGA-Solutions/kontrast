@@ -6,6 +6,7 @@ import CrossBrowserImage from "../../../components/CrossBrowserImage";
 import CrossBrowserScrollContainer from "../../../components/CrossBrowserScrollContainer";
 import ScrollIcon from "../../../components/ScrollIcon";
 import BeforeAfterViewer from "../../../components/BeforeAfterViewer";
+import Image360Viewer from "../../../components/Image360Viewer";
 
 // Helper function to construct video URL from Sanity asset reference
 function getVideoUrl(asset: any, projectId: string, dataset: string): string {
@@ -36,6 +37,12 @@ type BeforeAfterObject = {
   caption?: string;
 };
 
+type Image360Object = {
+  _type: 'image360';
+  image: any;
+  caption?: string;
+};
+
 type ProjectDoc = {
   _id: string;
   title?: string;
@@ -49,7 +56,7 @@ type ProjectDoc = {
   endDate?: string;
   body?: any[];
   coverImage?: any;
-  gallery?: (any | BeforeAfterObject)[];
+  gallery?: (any | BeforeAfterObject | Image360Object)[];
 };
 
 interface ProjectClientProps {
@@ -190,9 +197,9 @@ export default function ProjectClient({ project }: ProjectClientProps) {
     }
   }, [project.body, project.assignment, project.categories, project.location, project.client, project.status, project.startDate, project.endDate]);
 
-  // Prepare all media items (images, videos, and before/after) for horizontal layout
+  // Prepare all media items (images, videos, before/after, and 360°) for horizontal layout
   const allMediaItems: Array<{
-    type: 'image' | 'video' | 'beforeAfter';
+    type: 'image' | 'video' | 'beforeAfter' | 'image360';
     alt: string;
     isCover: boolean;
     primary?: string;
@@ -201,6 +208,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
     asset?: any;
     beforeImage?: any;
     afterImage?: any;
+    image360?: any;
     caption?: string;
   }> = [];
   
@@ -233,6 +241,16 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           alt: `${project.title} before/after comparison ${index + 1}`,
           isCover: false,
           type: 'beforeAfter'
+        });
+      }
+      // Handle 360° images
+      else if (item && item._type === 'image360' && item.image) {
+        allMediaItems.push({
+          image360: item.image,
+          caption: item.caption,
+          alt: `${project.title} 360° view ${index + 1}`,
+          isCover: false,
+          type: 'image360'
         });
       }
       // Handle videos - check for asset structure and video MIME type
@@ -465,6 +483,13 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                 caption={item.caption}
                 alt={item.alt}
                 className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : item.type === 'image360' ? (
+              <Image360Viewer
+                image={item.image360}
+                caption={item.caption}
+                alt={item.alt}
+                className="absolute inset-0 w-full h-full"
               />
             ) : item.type === 'image' && item.primary ? (
               <CrossBrowserImage

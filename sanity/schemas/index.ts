@@ -3,6 +3,7 @@ import serviceCategory from './serviceCategory';
 import service from './service';
 import projectCategory from './projectCategory';
 import beforeAfter from './objects/beforeAfter';
+import image360 from './objects/image360';
 import project from './project';
 import post from './post';
 import person from './person';
@@ -22,4 +23,5 @@ export const schemaTypes = [
   menu,
   // Objects
   beforeAfter,
+  image360,
 ];

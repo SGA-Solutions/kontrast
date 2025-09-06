@@ -44,6 +44,7 @@ export default defineType({
           }
         },
         { type: 'beforeAfter' },
+        { type: 'image360' },
       ],
       components: {
         input: (props: any) => {

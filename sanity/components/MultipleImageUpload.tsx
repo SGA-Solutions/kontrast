@@ -4,7 +4,7 @@ import { useClient } from 'sanity';
 import imageUrlBuilder from '@sanity/image-url';
 
 interface MediaItem {
-  _type: 'image' | 'file' | 'beforeAfter';
+  _type: 'image' | 'file' | 'beforeAfter' | 'image360';
   _key: string;
   asset?: {
     _ref: string;
@@ -14,6 +14,7 @@ interface MediaItem {
   crop?: any;
   beforeImage?: any;
   afterImage?: any;
+  image?: any;
   caption?: string;
 }
 
@@ -129,6 +130,54 @@ export function MultipleMediaUpload(props: ArrayOfObjectsInputProps) {
       handleFiles(e.target.files);
     }
   }, [handleFiles]);
+
+  const handle360ImageSelection = useCallback(() => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    
+    input.onchange = async (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (!files || files.length !== 1) {
+        alert('Please select exactly 1 panoramic image for 360° view.');
+        return;
+      }
+      
+      setIsUploading(true);
+      
+      try {
+        const imageFile = files[0];
+        
+        // Upload the 360° image
+        const imageAsset = await client.assets.upload('image', imageFile, { filename: imageFile.name });
+        
+        // Create 360° image object
+        const image360Item = {
+          _type: 'image360' as const,
+          _key: `image360-${Date.now()}-${Math.random()}`,
+          image: {
+            _type: 'image' as const,
+            asset: {
+              _type: 'reference' as const,
+              _ref: imageAsset._id,
+            },
+            hotspot: { x: 0.5, y: 0.5, height: 1, width: 1 },
+            crop: { top: 0, bottom: 0, left: 0, right: 0 },
+          },
+          caption: '', // Can be edited later in the interface
+        };
+        
+        const newValue = [...value, image360Item];
+        onChange(set(newValue));
+      } catch (error) {
+        console.error('Failed to upload 360° image:', error);
+      } finally {
+        setIsUploading(false);
+      }
+    };
+    
+    input.click();
+  }, [client, onChange, value]);
 
   const handleBeforeAfterSelection = useCallback(() => {
     const input = document.createElement('input');
@@ -353,6 +402,22 @@ export function MultipleMediaUpload(props: ArrayOfObjectsInputProps) {
             >
               Select Before/After Pair
             </button>
+            <button
+              type="button"
+              disabled={isUploading}
+              style={{
+                background: '#6f42c1',
+                color: 'white',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                cursor: isUploading ? 'not-allowed' : 'pointer',
+                opacity: isUploading ? 0.6 : 1,
+              }}
+              onClick={() => handle360ImageSelection()}
+            >
+              Select 360° Image
+            </button>
           </div>
         )}
       </div>
@@ -394,6 +459,39 @@ export function MultipleMediaUpload(props: ArrayOfObjectsInputProps) {
                   >
                     🎥
                     <div style={{ fontSize: '10px', marginTop: '4px' }}>Video</div>
+                  </div>
+                ) : item._type === 'image360' ? (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: '#6f42c1',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+                      fontSize: '20px',
+                      color: 'white',
+                      position: 'relative',
+                    }}
+                  >
+                    🌐
+                    <div style={{ fontSize: '10px', marginTop: '4px' }}>360° Image</div>
+                    {item.image && getImageUrl(item.image) && (
+                      <img
+                        src={getImageUrl(item.image)!}
+                        alt="360° preview"
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          opacity: 0.7,
+                        }}
+                      />
+                    )}
                   </div>
                 ) : item._type === 'beforeAfter' ? (
                   <div

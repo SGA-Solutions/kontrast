@@ -79,6 +79,16 @@ export const PROJECTS_QUERY = groq`
           lqip,
           mimeType
         }
+      },
+      image {
+        asset->{
+          _id,
+          url,
+          metadata {
+            dimensions,
+            lqip
+          }
+        }
       }
     }
   }
@@ -111,6 +121,16 @@ export const PROJECTS_WITH_CATEGORIES_QUERY = groq`
           dimensions,
           lqip,
           mimeType
+        }
+      },
+      image {
+        asset->{
+          _id,
+          url,
+          metadata {
+            dimensions,
+            lqip
+          }
         }
       }
     }
@@ -171,6 +191,16 @@ export const PROJECT_BY_SLUG_QUERY = groq`
         }
       },
       afterImage {
+        asset->{
+          _id,
+          url,
+          metadata {
+            dimensions,
+            lqip
+          }
+        }
+      },
+      image {
         asset->{
           _id,
           url,
