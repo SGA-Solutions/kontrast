@@ -22,7 +22,7 @@ interface ImageGridProps {
 
 export default function ImageGrid({ items, className = "", visibleColumns = 4.8 }: ImageGridProps) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
-  const { ref: hookScrollRef, onWheel: hookOnWheel } = useCrossBrowserScroll({
+  const { ref: hookScrollRef } = useCrossBrowserScroll({
     direction: 'horizontal',
     sensitivity: 8,
     smoothness: 0.10
@@ -60,7 +60,6 @@ export default function ImageGrid({ items, className = "", visibleColumns = 4.8 
   return (
     <div
       ref={hookScrollRef}
-      onWheel={hookOnWheel}
       className={`relative overflow-x-auto pb-2 hide-scrollbar no-overscroll touch-pan-x cursor-grab active:cursor-grabbing ${className}`}
     >
       <div className="grid grid-rows-2 grid-flow-col auto-cols-[var(--col)] gap-4">

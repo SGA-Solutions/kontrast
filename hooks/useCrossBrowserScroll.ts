@@ -56,10 +56,10 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
     animationRef.current = requestAnimationFrame(animate);
   }, [direction, smoothness]);
 
-  const handleWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+  const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault();
     
-    const element = e.currentTarget;
+    const element = e.currentTarget as HTMLDivElement;
     const normalizedDelta = normalizeWheelDelta(e.deltaY) * sensitivity;
     
     // Update target scroll position
@@ -84,19 +84,24 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
     }
   }, []);
 
-  // Cleanup on unmount
+  // Set up native wheel event listener with passive: false
   useEffect(() => {
+    const element = elementRef.current;
+    if (!element) return;
+
+    element.addEventListener('wheel', handleWheel, { passive: false });
+
     return () => {
+      element.removeEventListener('wheel', handleWheel);
       if (animationRef.current !== undefined) {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = undefined;
       }
     };
-  }, []);
+  }, [handleWheel]);
 
   return {
     ref: elementRef,
-    onWheel: handleWheel,
     cleanup
   };
 }
