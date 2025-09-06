@@ -57,23 +57,51 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
   }, [direction, smoothness]);
 
   const handleWheel = useCallback((e: WheelEvent) => {
-    e.preventDefault();
-    
     const element = e.currentTarget as HTMLDivElement;
-    const normalizedDelta = normalizeWheelDelta(e.deltaY) * sensitivity;
     
-    // Update target scroll position
+    // Check if we can actually scroll in the intended direction
     const currentScroll = direction === 'horizontal' ? element.scrollLeft : element.scrollTop;
     const maxScroll = direction === 'horizontal' 
       ? element.scrollWidth - element.clientWidth
       : element.scrollHeight - element.clientHeight;
     
-    targetScrollRef.current = Math.max(0, Math.min(maxScroll, currentScroll + normalizedDelta));
-    currentScrollRef.current = currentScroll;
+    // Only handle scroll if there's content to scroll
+    if (maxScroll <= 0) return;
+    
+    // Detect touchpad vs mouse wheel
+    // Touchpad: deltaMode = 0 (pixels), usually has deltaX for horizontal scrolling
+    // Mouse wheel: deltaMode = 1 (lines) or larger delta values
+    const isTouchpad = e.deltaMode === 0 && Math.abs(e.deltaX) > 0;
+    
+    // For horizontal scrolling containers, let touchpad horizontal gestures work naturally
+    if (direction === 'horizontal' && isTouchpad && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      // This is a horizontal touchpad gesture, let the browser handle it
+      return;
+    }
+    
+    // For vertical scrolling on horizontal containers, only intercept mouse wheel
+    if (direction === 'horizontal' && isTouchpad) {
+      // Let touchpad vertical gestures pass through for page scrolling
+      return;
+    }
+    
+    const normalizedDelta = normalizeWheelDelta(e.deltaY) * sensitivity;
+    const newScroll = currentScroll + normalizedDelta;
+    
+    // Only prevent default if we're handling the scroll
+    if ((newScroll >= 0 && newScroll <= maxScroll) || 
+        (newScroll < 0 && currentScroll > 0) || 
+        (newScroll > maxScroll && currentScroll < maxScroll)) {
+      e.preventDefault();
+      
+      // Update target scroll position
+      targetScrollRef.current = Math.max(0, Math.min(maxScroll, newScroll));
+      currentScrollRef.current = currentScroll;
 
-    // Start animation if not already running
-    if (animationRef.current === undefined) {
-      animationRef.current = requestAnimationFrame(animate);
+      // Start animation if not already running
+      if (animationRef.current === undefined) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
     }
   }, [direction, sensitivity, animate]);
 

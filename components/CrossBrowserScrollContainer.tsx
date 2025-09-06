@@ -32,8 +32,8 @@ const CrossBrowserScrollContainer = forwardRef<HTMLDivElement, CrossBrowserScrol
       msOverflowStyle: 'none',
       overscrollBehavior: 'none',
       
-      // Touch properties with fallbacks
-      touchAction: direction === 'horizontal' ? 'pan-x' : 'pan-y',
+      // Touch properties with fallbacks - allow both directions for touchpad compatibility
+      touchAction: 'auto',
       
       // Webkit-specific properties (will be ignored by non-webkit browsers)
       WebkitOverflowScrolling: 'touch',
