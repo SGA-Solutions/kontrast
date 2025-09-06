@@ -378,20 +378,16 @@ export default function ProjectClient({ project }: ProjectClientProps) {
             ) : (
               <video
                 src={item.primary}
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
                 controls
                 preload="metadata"
+                poster={`${item.primary}#t=5`}
                 style={{
                   backgroundColor: '#000'
                 }}
               >
                 Your browser does not support the video tag.
               </video>
-            )}
-            
-            {/* Gradient overlay for peek effect on non-last items */}
-            {index < allMediaItems.length - 1 && (
-              <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-r from-transparent to-white/20 pointer-events-none" />
             )}
           </div>
         ))}
