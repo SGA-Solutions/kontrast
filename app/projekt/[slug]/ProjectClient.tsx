@@ -53,14 +53,14 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   const [isTextExpanded, setIsTextExpanded] = useState(false);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
-  const [visibleBlocks, setVisibleBlocks] = useState<number>(0);
+  const [visibleBlocks, setVisibleBlocks] = useState<any[]>([]);
   const [overflowBlocks, setOverflowBlocks] = useState<any[]>([]);
 
 
   // Using the cross-browser scroll hook will be handled by CrossBrowserScrollContainer
 
 
-  // Check for text overflow and calculate visible content
+  // Check for text overflow and calculate visible content line by line
   useEffect(() => {
     if (textContainerRef.current && project.body) {
       const container = textContainerRef.current;
@@ -73,11 +73,10 @@ export default function ProjectClient({ project }: ProjectClientProps) {
       tempDiv.style.width = '400px';
       tempDiv.style.fontSize = '14px';
       tempDiv.style.lineHeight = '1.625';
+      tempDiv.style.textAlign = 'justify';
       document.body.appendChild(tempDiv);
       
       let currentHeight = 0;
-      let visibleBlockCount = 0;
-      const overflow = [];
       
       // Add title height (approximate)
       currentHeight += 60; // Title + margin
@@ -93,29 +92,93 @@ export default function ProjectClient({ project }: ProjectClientProps) {
       ].filter(Boolean).length;
       currentHeight += detailsCount * 24 + 32; // Each detail line + spacing
       
-      // Check body blocks
+      // Add space for the mt-4 margin
+      currentHeight += 16;
+      
+      const visibleBlocksArray: any[] = [];
+      const overflowBlocksArray: any[] = [];
+      let isOverflowing = false;
+      
       if (project.body) {
         for (let i = 0; i < project.body.length; i++) {
           const block = project.body[i];
           if (block._type === 'block') {
             const text = block.children?.map((child: any) => child.text).join('') || '';
-            tempDiv.innerHTML = `<p style="margin-bottom: 12px;">${text}</p>`;
-            const blockHeight = tempDiv.offsetHeight;
             
-            if (currentHeight + blockHeight <= containerHeight) {
-              currentHeight += blockHeight;
-              visibleBlockCount++;
-            } else {
-              overflow.push(block);
+            if (!isOverflowing) {
+              // Test if this block fits in the remaining space
+              tempDiv.innerHTML = `<p style="margin-bottom: 12px; font-size: 14px; line-height: 1.625; text-align: justify;">${text}</p>`;
+              const blockHeight = tempDiv.offsetHeight;
+              
+              if (currentHeight + blockHeight <= containerHeight) {
+                // Block fits completely
+                visibleBlocksArray.push(block);
+                currentHeight += blockHeight;
+              } else {
+                // Block doesn't fit, need to split it
+                const words = text.split(' ');
+                let visibleWords: string[] = [];
+                let overflowWords: string[] = [];
+                let testText = '';
+                
+                for (let j = 0; j < words.length; j++) {
+                  const testWithWord = testText + (testText ? ' ' : '') + words[j];
+                  tempDiv.innerHTML = `<p style="margin-bottom: 12px; font-size: 14px; line-height: 1.625; text-align: justify;">${testWithWord}</p>`;
+                  const testHeight = tempDiv.offsetHeight;
+                  
+                  if (currentHeight + testHeight <= containerHeight) {
+                    testText = testWithWord;
+                    visibleWords.push(words[j]);
+                  } else {
+                    overflowWords = words.slice(j);
+                    break;
+                  }
+                }
+                
+                // Add visible part to visible blocks
+                if (visibleWords.length > 0) {
+                  const visibleBlock = {
+                    ...block,
+                    children: [{
+                      _type: 'span',
+                      text: visibleWords.join(' ')
+                    }]
+                  };
+                  visibleBlocksArray.push(visibleBlock);
+                }
+                
+                // Add overflow part to overflow blocks
+                if (overflowWords.length > 0) {
+                  const overflowBlock = {
+                    ...block,
+                    children: [{
+                      _type: 'span',
+                      text: overflowWords.join(' ')
+                    }]
+                  };
+                  overflowBlocksArray.push(overflowBlock);
+                }
+                
+                // Add remaining blocks to overflow
+                for (let k = i + 1; k < project.body.length; k++) {
+                  if (project.body[k]._type === 'block') {
+                    overflowBlocksArray.push(project.body[k]);
+                  }
+                }
+                
+                isOverflowing = true;
+                break;
+              }
             }
           }
         }
       }
       
+      setVisibleBlocks(visibleBlocksArray);
+      setOverflowBlocks(overflowBlocksArray);
+      setHasOverflow(overflowBlocksArray.length > 0);
+      
       document.body.removeChild(tempDiv);
-      setVisibleBlocks(visibleBlockCount);
-      setOverflowBlocks(overflow);
-      setHasOverflow(overflow.length > 0);
     }
   }, [project.body, project.assignment, project.categories, project.location, project.client, project.status, project.startDate, project.endDate]);
 
@@ -285,11 +348,10 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                   </div>
 
                   {/* Body content if available */}
-                  {project.body && project.body.length > 0 && (
+                  {visibleBlocks.length > 0 && (
                     <div className="space-y-3 mt-4">
-                      {project.body.slice(0, visibleBlocks).map((block: any, index: number) => {
+                      {visibleBlocks.map((block: any, index: number) => {
                         if (block._type === 'block') {
-                          const isLastVisibleBlock = index === visibleBlocks - 1;
                           const text = block.children?.map((child: any) => child.text).join('') || '';
                           
                           return (
@@ -338,9 +400,11 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                     <div className="space-y-3">
                       {overflowBlocks.map((block: any, index: number) => {
                         if (block._type === 'block') {
+                          const text = block.children?.map((child: any) => child.text).join('') || '';
+                          
                           return (
                             <p key={`overflow-${index}`} className="text-sm text-neutral-700 leading-relaxed text-justify">
-                              {block.children?.map((child: any) => child.text).join('')}
+                              {text}
                             </p>
                           );
                         }
