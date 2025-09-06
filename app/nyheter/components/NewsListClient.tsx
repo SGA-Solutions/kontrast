@@ -28,16 +28,15 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
   });
 
   return (
-    <section className="pl-10 mt-13 space-y-6">
+    <section className="pl-10 mt-13">
       {/* Page title */}
-      <span className="text-xl font-futura-medium text-neutral-900 uppercase tracking-wide">NYHETER</span>
+      <h2 className="text-xl font-futura-medium text-neutral-900 uppercase tracking-wide">NYHETER</h2>
       
       {/* News horizontal scroll with peek */}
-      <div>
         <div 
           ref={scrollRef}
           onWheel={onWheel}
-          className="flex gap-8 pb-4 mt-3 overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
+          className="flex gap-8 pb-4 mt-2 overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
         >
           {posts.map((post, index) => (
             <Link
@@ -81,7 +80,6 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
             </Link>
           ))}
         </div>
-      </div>
       
       {/* No posts message */}
       {posts.length === 0 && (

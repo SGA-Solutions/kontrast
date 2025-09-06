@@ -5,12 +5,11 @@ import Image from "next/image";
 
 export default function KontaktPage() {
   return (
-    <section className="px-4 sm:pl-10 mt-4 sm:mt-14 space-y-6 pb-8">
+    <section className="px-4 sm:pl-10 mt-4 sm:mt-14 pb-8">
       {/* Page title */}
-      <div className="space-y-8">
-        <span className="text-xl font-futura-medium text-neutral-900 uppercase tracking-wide">KONTAKT</span>
+        <h2 className="text-xl font-futura-medium text-neutral-900 uppercase tracking-wide">KONTAKT</h2>
         {/* Mobile-first layout: stack vertically on mobile, side-by-side on larger screens */}
-        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 mt-2">
+        <div className="grid gap-8 lg:grid-cols-2 lg:gap-12 mt-1">
           {/* Left column: Map, Hours, Address */}
           <div className="space-y-6 order-2 lg:order-1">
             {/* Map */}
@@ -127,7 +126,6 @@ export default function KontaktPage() {
             </div>
           </div>
         </div>
-      </div>
     </section>
   );
 }
