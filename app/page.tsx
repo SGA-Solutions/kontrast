@@ -14,6 +14,9 @@ type ProjectDoc = {
   slug?: { current: string };
   coverImage?: any;
   gallery?: any[];
+  featured?: boolean;
+  sortOrder?: number;
+  _createdAt?: string;
 };
 
 // Server-side data fetching

@@ -53,10 +53,12 @@ export const POST_SLUGS_QUERY = groq`
 
 // Project queries
 export const PROJECTS_QUERY = groq`
-  *[_type == "project" && defined(coverImage)] | order(featured desc, _createdAt desc)[0...30] {
+  *[_type == "project" && defined(coverImage)] | order( select(featured == true => 0, featured == false => 1, 2), coalesce(sortOrder, 999999) asc, _createdAt desc)[0...30] {
     _id,
     title,
     slug,
+    featured,
+    sortOrder,    
     coverImage {
       asset->{
         _id,
@@ -83,10 +85,12 @@ export const PROJECTS_QUERY = groq`
 `;
 
 export const PROJECTS_WITH_CATEGORIES_QUERY = groq`
-  *[_type == "project" && defined(coverImage)] | order(featured desc, _createdAt desc) {
+  *[_type == "project" && defined(coverImage)] | order( select(featured == true => 0, featured == false => 1, 2), coalesce(sortOrder, 999999) asc, _createdAt desc) {
     _id,
     title,
     slug,
+    featured,
+    sortOrder,    
     coverImage {
       asset->{
         _id,

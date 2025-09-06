@@ -8,6 +8,13 @@ export default defineType({
     defineField({ name: 'title', type: 'string', title: 'Title' }),
     defineField({ name: 'slug', type: 'slug', title: 'Slug', options: { source: 'title' } }),
     defineField({ name: 'featured', type: 'boolean', title: 'Featured' }),
+    defineField({ 
+      name: 'sortOrder', 
+      type: 'number', 
+      title: 'Sort Order',
+      description: 'Lower numbers appear first in the grid. Leave empty for automatic ordering.',
+      validation: Rule => Rule.min(0).integer()
+    }),
     defineField({ name: 'assignment', title: 'Uppdrag (Assignment)', type: 'string' }),
     defineField({
       name: 'categories',
