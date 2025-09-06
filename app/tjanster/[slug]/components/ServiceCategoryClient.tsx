@@ -30,7 +30,7 @@ interface ServiceCategoryClientProps {
 }
 
 export default function ServiceCategoryClient({ category, services }: ServiceCategoryClientProps) {
-  const { ref: scrollRef, onWheel } = useCrossBrowserScroll({ 
+  const { ref: scrollRef } = useCrossBrowserScroll({ 
     direction: 'horizontal',
     sensitivity: 5,
     smoothness: 0.15
@@ -43,7 +43,6 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
         {/* Services Horizontal Scroll */}
         <div 
           ref={scrollRef}
-          onWheel={onWheel}
           className="overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
         >
           <div className="flex space-x-8 pb-4">

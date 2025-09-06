@@ -466,7 +466,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                 alt={item.alt}
                 className="absolute inset-0 w-full h-full object-cover"
               />
-            ) : item.type === 'image' ? (
+            ) : item.type === 'image' && item.primary ? (
               <CrossBrowserImage
                 src={item.primary}
                 alt={item.alt}
@@ -477,7 +477,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                 quality={95}
                 placeholder="blur"
               />
-            ) : (
+            ) : item.primary ? (
               <video
                 src={item.primary}
                 className="absolute inset-0 w-full h-full object-cover"
@@ -490,7 +490,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
               >
                 Your browser does not support the video tag.
               </video>
-            )}
+            ) : null}
           </div>
         ))}
         

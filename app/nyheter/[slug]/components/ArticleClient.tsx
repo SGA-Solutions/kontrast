@@ -23,7 +23,7 @@ interface ArticleClientProps {
 }
 
 export default function ArticleClient({ post }: ArticleClientProps) {
-  const { ref: scrollRef, onWheel } = useCrossBrowserScroll({ 
+  const { ref: scrollRef } = useCrossBrowserScroll({ 
     direction: 'horizontal',
     sensitivity: 5,
     smoothness: 0.15
@@ -39,7 +39,6 @@ export default function ArticleClient({ post }: ArticleClientProps) {
       {/* Main content - scrollable layout */}
       <div 
         ref={scrollRef}
-        onWheel={onWheel}
         className="flex gap-8 h-120 overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
       >
         {/* Image section */}

@@ -17,7 +17,7 @@ interface CrossBrowserScrollContainerProps {
 
 const CrossBrowserScrollContainer = forwardRef<HTMLDivElement, CrossBrowserScrollContainerProps>(
   ({ children, className = '', style = {}, direction = 'horizontal', smoothness = 0.1, sensitivity = 1 }, forwardedRef) => {
-    const { ref, onWheel } = useCrossBrowserScroll({ direction, smoothness, sensitivity });
+    const { ref } = useCrossBrowserScroll({ direction, smoothness, sensitivity });
 
     // Merge refs
     const setRef = (node: HTMLDivElement | null) => {
@@ -45,7 +45,6 @@ const CrossBrowserScrollContainer = forwardRef<HTMLDivElement, CrossBrowserScrol
       <>
         <div
           ref={setRef}
-          onWheel={onWheel}
           className={`hide-scrollbar ${className}`}
           style={containerStyle}
         >

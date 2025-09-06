@@ -21,7 +21,7 @@ interface NewsListClientProps {
 }
 
 export default function NewsListClient({ posts }: NewsListClientProps) {
-  const { ref: scrollRef, onWheel } = useCrossBrowserScroll({ 
+  const { ref: scrollRef } = useCrossBrowserScroll({ 
     direction: 'horizontal',
     sensitivity: 5,
     smoothness: 0.15
@@ -35,7 +35,6 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
       {/* News horizontal scroll with peek */}
         <div 
           ref={scrollRef}
-          onWheel={onWheel}
           className="flex gap-8 pb-4 mt-2 overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
         >
           {posts.map((post, index) => (
