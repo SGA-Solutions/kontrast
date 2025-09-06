@@ -42,14 +42,14 @@ export function Header() {
         </Link>
         
         {/* Primary nav */}
-        <nav className="flex flex-col gap-3 text-xs ml-5 tracking-[0.3em] text-neutral-600 dark:text-neutral-400">
+        <nav className="flex flex-col gap-3 text-xs ml-5 tracking-[0.3em] text-neutral-400 font-semibold">
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
                 "hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors touch-manipulation",
-                pathname === item.href && "font-semibold text-neutral-900 dark:text-neutral-100"
+                pathname === item.href && "font-semibold text-neutral-900"
               )}
             >
               {item.label.toUpperCase()}
