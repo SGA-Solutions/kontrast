@@ -5,6 +5,7 @@ import { getOptimizedImageUrls } from "../../../lib/image-utils";
 import CrossBrowserImage from "../../../components/CrossBrowserImage";
 import CrossBrowserScrollContainer from "../../../components/CrossBrowserScrollContainer";
 import ScrollIcon from "../../../components/ScrollIcon";
+import BeforeAfterViewer from "../../../components/BeforeAfterViewer";
 
 // Helper function to construct video URL from Sanity asset reference
 function getVideoUrl(asset: any, projectId: string, dataset: string): string {
@@ -28,6 +29,13 @@ type ProjectCategory = {
   slug: { current: string };
 };
 
+type BeforeAfterObject = {
+  _type: 'beforeAfter';
+  beforeImage: any;
+  afterImage: any;
+  caption?: string;
+};
+
 type ProjectDoc = {
   _id: string;
   title?: string;
@@ -41,7 +49,7 @@ type ProjectDoc = {
   endDate?: string;
   body?: any[];
   coverImage?: any;
-  gallery?: any[];
+  gallery?: (any | BeforeAfterObject)[];
 };
 
 interface ProjectClientProps {
@@ -182,8 +190,19 @@ export default function ProjectClient({ project }: ProjectClientProps) {
     }
   }, [project.body, project.assignment, project.categories, project.location, project.client, project.status, project.startDate, project.endDate]);
 
-  // Prepare all media items (images and videos) for horizontal layout
-  const allMediaItems = [];
+  // Prepare all media items (images, videos, and before/after) for horizontal layout
+  const allMediaItems: Array<{
+    type: 'image' | 'video' | 'beforeAfter';
+    alt: string;
+    isCover: boolean;
+    primary?: string;
+    fallback?: string;
+    format?: string;
+    asset?: any;
+    beforeImage?: any;
+    afterImage?: any;
+    caption?: string;
+  }> = [];
   
   
   if (project.coverImage) {
@@ -205,8 +224,19 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   if (project.gallery && project.gallery.length > 0) {
     project.gallery.forEach((item: any, index: number) => {
       
+      // Handle before/after objects
+      if (item && item._type === 'beforeAfter' && item.beforeImage && item.afterImage) {
+        allMediaItems.push({
+          beforeImage: item.beforeImage,
+          afterImage: item.afterImage,
+          caption: item.caption,
+          alt: `${project.title} before/after comparison ${index + 1}`,
+          isCover: false,
+          type: 'beforeAfter'
+        });
+      }
       // Handle videos - check for asset structure and video MIME type
-      if (item && item.asset && item.asset.url && item.asset.metadata?.mimeType?.startsWith('video/')) {
+      else if (item && item.asset && item.asset.url && item.asset.metadata?.mimeType?.startsWith('video/')) {
         // For videos, use the direct URL from the asset
         allMediaItems.push({
           primary: item.asset.url,
@@ -422,13 +452,21 @@ export default function ProjectClient({ project }: ProjectClientProps) {
         {allMediaItems.map((item, index) => (
           <div 
             key={index} 
-            className={`flex-shrink-0 relative w-[calc(100vw-750px-2rem)] h-120 pt-8 mt-10 transition-all duration-700 ease-in-out`}
+            className={`flex-shrink-0 relative w-[calc(100vw-750px-2rem)] h-120  mt-10 transition-all duration-700 ease-in-out`}
             style={{
               marginLeft: '0',
               marginRight: index < allMediaItems.length - 1 ? '2rem' : '0'
             }}
           >
-            {item.type === 'image' ? (
+            {item.type === 'beforeAfter' ? (
+              <BeforeAfterViewer
+                beforeImage={item.beforeImage}
+                afterImage={item.afterImage}
+                caption={item.caption}
+                alt={item.alt}
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            ) : item.type === 'image' ? (
               <CrossBrowserImage
                 src={item.primary}
                 alt={item.alt}

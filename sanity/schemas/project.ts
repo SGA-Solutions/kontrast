@@ -47,17 +47,9 @@ export default defineType({
       ],
       components: {
         input: (props: any) => {
-          // Use custom component for media uploads (images and videos)
-          const hasOnlyMediaTypes = props.value?.every((item: any) => 
-            item._type === 'image' || item._type === 'file'
-          ) ?? true;
-          
-          if (hasOnlyMediaTypes) {
-            const { MultipleMediaUpload } = require('../components/MultipleImageUpload');
-            return MultipleMediaUpload(props);
-          }
-          // Fall back to default for mixed content with beforeAfter
-          return props.renderDefault(props);
+          // Always use the custom component with both buttons
+          const { MultipleMediaUpload } = require('../components/MultipleImageUpload');
+          return MultipleMediaUpload(props);
         },
       },
     }),

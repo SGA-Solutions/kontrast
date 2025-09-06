@@ -4,7 +4,7 @@ import { useClient } from 'sanity';
 import imageUrlBuilder from '@sanity/image-url';
 
 interface MediaItem {
-  _type: 'image' | 'file';
+  _type: 'image' | 'file' | 'beforeAfter';
   _key: string;
   asset?: {
     _ref: string;
@@ -12,6 +12,9 @@ interface MediaItem {
   };
   hotspot?: any;
   crop?: any;
+  beforeImage?: any;
+  afterImage?: any;
+  caption?: string;
 }
 
 export function MultipleMediaUpload(props: ArrayOfObjectsInputProps) {
@@ -126,6 +129,68 @@ export function MultipleMediaUpload(props: ArrayOfObjectsInputProps) {
       handleFiles(e.target.files);
     }
   }, [handleFiles]);
+
+  const handleBeforeAfterSelection = useCallback(() => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = 'image/*';
+    
+    input.onchange = async (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (!files || files.length !== 2) {
+        alert('Please select exactly 2 images. The first will be "before" and the second will be "after".');
+        return;
+      }
+      
+      setIsUploading(true);
+      
+      try {
+        const beforeFile = files[0];
+        const afterFile = files[1];
+        
+        // Upload both images
+        const [beforeAsset, afterAsset] = await Promise.all([
+          client.assets.upload('image', beforeFile, { filename: beforeFile.name }),
+          client.assets.upload('image', afterFile, { filename: afterFile.name })
+        ]);
+        
+        // Create before/after object
+        const beforeAfterItem = {
+          _type: 'beforeAfter' as const,
+          _key: `beforeafter-${Date.now()}-${Math.random()}`,
+          beforeImage: {
+            _type: 'image' as const,
+            asset: {
+              _type: 'reference' as const,
+              _ref: beforeAsset._id,
+            },
+            hotspot: { x: 0.5, y: 0.5, height: 1, width: 1 },
+            crop: { top: 0, bottom: 0, left: 0, right: 0 },
+          },
+          afterImage: {
+            _type: 'image' as const,
+            asset: {
+              _type: 'reference' as const,
+              _ref: afterAsset._id,
+            },
+            hotspot: { x: 0.5, y: 0.5, height: 1, width: 1 },
+            crop: { top: 0, bottom: 0, left: 0, right: 0 },
+          },
+          caption: '', // Can be edited later in the interface
+        };
+        
+        const newValue = [...value, beforeAfterItem];
+        onChange(set(newValue));
+      } catch (error) {
+        console.error('Failed to upload before/after images:', error);
+      } finally {
+        setIsUploading(false);
+      }
+    };
+    
+    input.click();
+  }, [client, onChange, value]);
 
   const removeImage = useCallback((index: number) => {
     const newValue = [...value];
@@ -244,33 +309,51 @@ export function MultipleMediaUpload(props: ArrayOfObjectsInputProps) {
         <p style={{ margin: '0 0 1rem 0', color: '#666' }}>
           {isUploading 
             ? 'Uploading files...' 
-            : 'Drag and drop images and videos here, or click to select files'
+            : 'Drag and drop images and videos here, or use the buttons below'
           }
         </p>
         {!readOnly && (
-          <button
-            type="button"
-            disabled={isUploading}
-            style={{
-              background: '#0066cc',
-              color: 'white',
-              border: 'none',
-              padding: '0.5rem 1rem',
-              borderRadius: '4px',
-              cursor: isUploading ? 'not-allowed' : 'pointer',
-              opacity: isUploading ? 0.6 : 1,
-            }}
-            onClick={() => {
-              const input = document.createElement('input');
-              input.type = 'file';
-              input.multiple = true;
-              input.accept = 'image/*,video/*';
-              input.onchange = (e) => handleFileInput(e as any);
-              input.click();
-            }}
-          >
-Select Files
-          </button>
+          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+            <button
+              type="button"
+              disabled={isUploading}
+              style={{
+                background: '#0066cc',
+                color: 'white',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                cursor: isUploading ? 'not-allowed' : 'pointer',
+                opacity: isUploading ? 0.6 : 1,
+              }}
+              onClick={() => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.multiple = true;
+                input.accept = 'image/*,video/*';
+                input.onchange = (e) => handleFileInput(e as any);
+                input.click();
+              }}
+            >
+              Select Images/Videos
+            </button>
+            <button
+              type="button"
+              disabled={isUploading}
+              style={{
+                background: '#28a745',
+                color: 'white',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '4px',
+                cursor: isUploading ? 'not-allowed' : 'pointer',
+                opacity: isUploading ? 0.6 : 1,
+              }}
+              onClick={() => handleBeforeAfterSelection()}
+            >
+              Select Before/After Pair
+            </button>
+          </div>
         )}
       </div>
 
@@ -311,6 +394,54 @@ Select Files
                   >
                     🎥
                     <div style={{ fontSize: '10px', marginTop: '4px' }}>Video</div>
+                  </div>
+                ) : item._type === 'beforeAfter' ? (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: '#4a90e2',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexDirection: 'column',
+                      fontSize: '20px',
+                      color: 'white',
+                      position: 'relative',
+                    }}
+                  >
+                    ⚖️
+                    <div style={{ fontSize: '10px', marginTop: '4px' }}>Before/After</div>
+                    {item.beforeImage && getImageUrl(item.beforeImage) && (
+                      <img
+                        src={getImageUrl(item.beforeImage)!}
+                        alt="Before preview"
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '50%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          opacity: 0.7,
+                        }}
+                      />
+                    )}
+                    {item.afterImage && getImageUrl(item.afterImage) && (
+                      <img
+                        src={getImageUrl(item.afterImage)!}
+                        alt="After preview"
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          width: '50%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          opacity: 0.7,
+                        }}
+                      />
+                    )}
                   </div>
                 ) : (
                   <div

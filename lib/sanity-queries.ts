@@ -159,7 +159,28 @@ export const PROJECT_BY_SLUG_QUERY = groq`
           lqip,
           mimeType
         }
-      }
+      },
+      beforeImage {
+        asset->{
+          _id,
+          url,
+          metadata {
+            dimensions,
+            lqip
+          }
+        }
+      },
+      afterImage {
+        asset->{
+          _id,
+          url,
+          metadata {
+            dimensions,
+            lqip
+          }
+        }
+      },
+      caption
     }
   }
 `;
