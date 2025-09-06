@@ -42,6 +42,22 @@ export default function ArticleClient({ post }: ArticleClientProps) {
         onWheel={onWheel}
         className="flex gap-8 h-120 overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
       >
+        {/* Image section */}
+        {post.mainImage && (
+          <div className="flex-shrink-0 h-full">
+            <Image
+              src={urlFor(post.mainImage).width(520).format('webp').quality(85).url()}
+              alt={post.title}
+              width={520}
+              height={480}
+              className="w-full h-full object-cover"
+              priority
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            />
+          </div>
+        )}
+
         {/* Body text - flows into multiple columns */}
         {post.body && (
           <div 
@@ -54,20 +70,8 @@ export default function ArticleClient({ post }: ArticleClientProps) {
               minWidth: '1200px' // Ensure content is wider than viewport
             }}
           >
-            {post.mainImage && (
-              <Image
-                src={urlFor(post.mainImage).width(520).format('webp').quality(85).url()}
-                alt={post.title}
-                width={520}
-                height={300}
-                className="w-full max-w-md object-cover mb-4"
-                priority
-                placeholder="blur"
-                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-              />
-            )}
-            {/* Article metadata - force column break */}
-            <div className="mb-6 text-xs text-neutral-500 tracking-[0.2em] space-y-1 break-before-column">
+            {/* Article metadata */}
+            <div className="mb-6 text-xs text-neutral-500 tracking-[0.2em] space-y-1">
               {post.publishedAt && (
                 <div>
                   {new Date(post.publishedAt).toLocaleDateString('sv-SE', {
@@ -87,7 +91,7 @@ export default function ArticleClient({ post }: ArticleClientProps) {
               value={post.body}
               components={{
                 block: {
-                  normal: ({children}) => <p className="mb-4 leading-relaxed text-neutral-700 text-sm text-justify">{children}</p>,
+                  normal: ({children}) => <p className="mb- leading-relaxed text-neutral-700 text-sm text-justify">{children}</p>,
                   h2: ({children}) => <h2 className="text-lg font-light tracking-wide mt-6 mb-3 text-neutral-900">{children}</h2>,
                   h3: ({children}) => <h3 className="text-base font-light tracking-wide mt-4 mb-2 text-neutral-900">{children}</h3>,
                 },
