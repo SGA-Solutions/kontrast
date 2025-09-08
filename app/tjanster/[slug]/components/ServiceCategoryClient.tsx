@@ -47,7 +47,7 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
         >
           <div className="flex space-x-8 pb-4">
             {services.map((service, index) => (
-              <div key={service._id} className="group flex-shrink-0 w-200">
+              <div key={service._id} className="group flex-shrink-0 w-120">
                 {/* Service title */}
                 <h2 className="text-xl font-medium text-neutral-900 mb-1 uppercase tracking-wide">
                   {service.title}
@@ -55,7 +55,7 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
                 
                 {/* Service image */}
                 {service.coverImage && (
-                  <div className="relative h-64 w-full overflow-hidden mb-6">
+                  <div className="relative h-32 w-full overflow-hidden mb-6">
                     <Image
                       src={urlFor(service.coverImage).width(600).height(400).format('webp').quality(85).url()}
                       alt={service.title}
@@ -70,7 +70,7 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
                 )}
                 
                 {/* Service description */}
-                <div className="text-sm text-neutral-600 leading-relaxed">
+                <div className="text-xs text-neutral-600">
                   <PortableText 
                     value={service.body}
                     components={{
