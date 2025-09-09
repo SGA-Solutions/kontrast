@@ -73,18 +73,33 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
     // Mouse wheel: deltaMode = 1 (lines) or larger delta values
     const isTouchpad = e.deltaMode === 0 && Math.abs(e.deltaX) > 0;
     
-    // For horizontal scrolling containers, let touchpad horizontal gestures work naturally
-    if (direction === 'horizontal' && isTouchpad && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-      // This is a horizontal touchpad gesture, let the browser handle it
+    // For horizontal scrolling containers, prioritize horizontal gestures
+    if (direction === 'horizontal') {
+      // If it's a horizontal touchpad gesture, let browser handle it
+      if (isTouchpad && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        return;
+      }
+      
+      // For vertical gestures on horizontal containers, always prevent and convert to horizontal
+      e.preventDefault();
+      
+      // Use deltaY for vertical wheel/touchpad gestures, deltaX for horizontal
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      const normalizedDelta = normalizeWheelDelta(delta) * sensitivity;
+      const newScroll = currentScroll + normalizedDelta;
+      
+      // Update target scroll position
+      targetScrollRef.current = Math.max(0, Math.min(maxScroll, newScroll));
+      currentScrollRef.current = currentScroll;
+
+      // Start animation if not already running
+      if (animationRef.current === undefined) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
       return;
     }
     
-    // For vertical scrolling on horizontal containers, only intercept mouse wheel
-    if (direction === 'horizontal' && isTouchpad) {
-      // Let touchpad vertical gestures pass through for page scrolling
-      return;
-    }
-    
+    // For vertical containers, handle normally
     const normalizedDelta = normalizeWheelDelta(e.deltaY) * sensitivity;
     const newScroll = currentScroll + normalizedDelta;
     

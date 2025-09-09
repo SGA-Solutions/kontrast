@@ -32,11 +32,14 @@ const CrossBrowserScrollContainer = forwardRef<HTMLDivElement, CrossBrowserScrol
       msOverflowStyle: 'none',
       overscrollBehavior: 'none',
       
-      // Touch properties with fallbacks - allow both directions for touchpad compatibility
-      touchAction: 'auto',
+      // Touch properties - restrict to horizontal scrolling only on mobile
+      touchAction: direction === 'horizontal' ? 'pan-x' : 'pan-y',
       
       // Webkit-specific properties (will be ignored by non-webkit browsers)
       WebkitOverflowScrolling: 'touch',
+      
+      // Prevent vertical scrolling completely
+      overflowY: 'hidden',
       
       ...style
     };

@@ -37,9 +37,9 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
   });
 
   return (
-    <div className="min-h-screen mt-5">
+    <div className="min-h-screen mt-13 mobile-vh-fit">
       {/* Main content */}
-      <div className="px-6 sm:px-12 py-8">
+      <div className="px-6 sm:px-12 mobile-compact">
         {/* Services Horizontal Scroll */}
         <div 
           ref={scrollRef}
@@ -49,13 +49,13 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
             {services.map((service, index) => (
               <div key={service._id} className="group flex-shrink-0 w-120">
                 {/* Service title */}
-                <h2 className="text-xl font-medium text-neutral-900 mb-1 uppercase tracking-wide">
+                <h2 className="text-fluid-xl font-medium text-neutral-900 space-fluid-1 uppercase tracking-wide">
                   {service.title}
                 </h2>
                 
                 {/* Service image */}
                 {service.coverImage && (
-                  <div className="relative h-32 w-full overflow-hidden mb-6">
+                  <div className="relative h-32 w-full overflow-hidden space-fluid-3">
                     <Image
                       src={urlFor(service.coverImage).width(600).height(400).format('webp').quality(85).url()}
                       alt={service.title}
@@ -70,12 +70,12 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
                 )}
                 
                 {/* Service description */}
-                <div className="text-xs text-neutral-600">
+                <div className="text-fluid-xs text-neutral-600 mobile-fit-text leading-fluid-normal">
                   <PortableText 
                     value={service.body}
                     components={{
                       block: {
-                        normal: ({ children }) => <p className="mb-3">{children}</p>,
+                        normal: ({ children }) => <p className="space-fluid-2">{children}</p>,
                       },
                     }}
                   />

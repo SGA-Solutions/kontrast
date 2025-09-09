@@ -88,6 +88,25 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-text-orientation: mixed;
 }
 
+/* Fluid typography that scales with viewport height */
+.text-fluid-xs { font-size: clamp(0.625rem, 1.5vh, 0.75rem); }
+.text-fluid-sm { font-size: clamp(0.75rem, 2vh, 0.875rem); }
+.text-fluid-base { font-size: clamp(0.875rem, 2.5vh, 1rem); }
+.text-fluid-lg { font-size: clamp(1rem, 3vh, 1.125rem); }
+.text-fluid-xl { font-size: clamp(1.125rem, 3.5vh, 1.25rem); }
+.text-fluid-2xl { font-size: clamp(1.25rem, 4vh, 1.5rem); }
+
+/* Fluid line heights that scale with text */
+.leading-fluid-tight { line-height: clamp(1.2, 1.3, 1.4); }
+.leading-fluid-normal { line-height: clamp(1.4, 1.5, 1.6); }
+.leading-fluid-relaxed { line-height: clamp(1.5, 1.625, 1.75); }
+
+/* Fluid spacing that scales with viewport height */
+.space-fluid-1 { margin-bottom: clamp(0.25rem, 1vh, 0.5rem); }
+.space-fluid-2 { margin-bottom: clamp(0.5rem, 1.5vh, 0.75rem); }
+.space-fluid-3 { margin-bottom: clamp(0.75rem, 2vh, 1rem); }
+.space-fluid-4 { margin-bottom: clamp(1rem, 2.5vh, 1.5rem); }
+
 /* Mobile-specific improvements */
 @media (max-width: 640px) {
   /* Ensure proper touch targets */
@@ -100,12 +119,44 @@ h1, h2, h3, h4, h5, h6 {
   body {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    /* Prevent any vertical scrolling on mobile */
+    overflow-y: hidden !important;
+    height: 100vh;
+    height: 100dvh;
   }
   
-  /* Better mobile scrolling */
+  /* Better mobile scrolling - horizontal only */
   .mobile-scroll {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
+  }
+  
+  /* Force horizontal-only scrolling on all containers */
+  .horizontal-only {
+    overflow-y: hidden !important;
+    touch-action: pan-x !important;
+    -webkit-touch-action: pan-x !important;
+    -ms-touch-action: pan-x !important;
+  }
+  
+  /* Mobile-specific text sizing to fit screen height */
+  .mobile-fit-text {
+    font-size: clamp(0.75rem, 2.5vh, 1rem);
+    line-height: clamp(1.3, 1.4, 1.5);
+  }
+  
+  /* Compact spacing for mobile */
+  .mobile-compact {
+    padding-top: clamp(0.5rem, 2vh, 1rem);
+    padding-bottom: clamp(0.5rem, 2vh, 1rem);
+    margin-bottom: clamp(0.25rem, 1vh, 0.5rem);
+  }
+  
+  /* Ensure content fits within viewport height */
+  .mobile-vh-fit {
+    max-height: calc(100vh - 4rem);
+    max-height: calc(100dvh - 4rem);
+    overflow-y: hidden;
   }
 }
 

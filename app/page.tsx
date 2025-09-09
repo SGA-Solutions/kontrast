@@ -93,9 +93,9 @@ export default async function Home() {
   }));
 
   return (
-    <section className="px-4 sm:px-0">
+    <section className="px-4 sm:px-0 mobile-vh-fit">
       {/* Wordmark and subtext */}
-      <div className="flex flex-col sm:flex-row items-start mb-2 sm:mb-4">
+      <div className="flex flex-col sm:flex-row items-start mobile-compact sm:mb-4">
         {/* Wordmark: full text on mobile, image on ≥sm to pair with sidebar 'K' */}
         <div className="select-none whitespace-nowrap ml-0 sm:-ml-8 lg:-ml-12">
           <div className="leading-none">
@@ -114,7 +114,7 @@ export default async function Home() {
         </div>
         
         {/* Subtext */}
-        <div className="text-left text-xs  tracking-[0.35em] space-y-1">
+        <div className="hidden sm:inline text-left text-fluid-xs tracking-[0.35em] space-y-1">
           <Link href="/tjanster/arkitektur" className="block hover:text-neutral-600 transition-colors touch-manipulation">
             ARKITEKTUR
           </Link>
@@ -129,9 +129,9 @@ export default async function Home() {
 
       <div className="ml-0 sm:ml-10 grid gap-6 sm:gap-8 lg:grid-cols-[15%_85%] mt-6">
         {/* Intro text (left column) */}
-        <div className="text-sm space-y-4 max-w-none lg:max-w-55">
+        <div className="text-fluid-sm space-fluid-2 max-w-none lg:max-w-55">
           {introBlocks && introBlocks.length > 0 && (
-            <div className="prose prose-sm prose-neutral max-w-none text-justify">
+            <div className="prose prose-sm prose-neutral max-w-none text-justify mobile-fit-text leading-fluid-normal">
               <PortableText value={introBlocks} />
             </div>
           )}
