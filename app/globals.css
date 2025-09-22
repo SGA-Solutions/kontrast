@@ -119,10 +119,10 @@ h1, h2, h3, h4, h5, h6 {
   body {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    /* Prevent any vertical scrolling on mobile */
-    overflow-y: hidden !important;
-    height: 100vh;
-    height: 100dvh;
+    /* Allow vertical scrolling on mobile */
+    overflow-y: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
   }
   
   /* Better mobile scrolling - horizontal only */
@@ -131,12 +131,12 @@ h1, h2, h3, h4, h5, h6 {
     overscroll-behavior: contain;
   }
   
-  /* Force horizontal-only scrolling on all containers */
-  .horizontal-only {
-    overflow-y: hidden !important;
-    touch-action: pan-x !important;
-    -webkit-touch-action: pan-x !important;
-    -ms-touch-action: pan-x !important;
+  /* Allow both horizontal and vertical scrolling on mobile */
+  .mobile-scroll-enabled {
+    overflow-y: auto;
+    touch-action: pan-y pan-x;
+    -webkit-touch-action: pan-y pan-x;
+    -ms-touch-action: pan-y pan-x;
   }
   
   /* Mobile-specific text sizing to fit screen height */
@@ -152,11 +152,11 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: clamp(0.25rem, 1vh, 0.5rem);
   }
   
-  /* Ensure content fits within viewport height */
+  /* Allow content to scroll when it exceeds viewport height */
   .mobile-vh-fit {
-    max-height: calc(100vh - 4rem);
-    max-height: calc(100dvh - 4rem);
-    overflow-y: hidden;
+    min-height: calc(100vh - 4rem);
+    min-height: calc(100dvh - 4rem);
+    overflow-y: auto;
   }
 }
 
