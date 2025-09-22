@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function ScrollIcon() {
   return (
-    <div className="fixed bottom-6 right-20 z-45 p-3">
+    <div className="fixed bottom-6 right-20 z-45 p-3 hidden sm:block">
       <Image
         src="/scroll-icon.webp"
         alt="Scroll icon"
