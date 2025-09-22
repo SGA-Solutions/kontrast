@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { urlFor } from "../../sanity/client";
 import ImageGrid, { type ImageGridItem } from "../../components/ImageGrid";
 import ScrollIcon from "../../components/ScrollIcon";
@@ -27,6 +27,19 @@ interface ProjectsClientProps {
 
 export default function ProjectsClient({ initialCategories, initialProjects }: ProjectsClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Filtered projects based on selected category
   const filteredProjects = useMemo(() => {
@@ -72,16 +85,20 @@ export default function ProjectsClient({ initialCategories, initialProjects }: P
   };
 
   return (
-    <section className="mt-14">
+    <section className={`${
+      isMobile ? 'mt-4 px-4' : 'mt-14'
+    }`}>
       {/* Category Filter Row */}
-      <div className="flex flex-wrap pl-6 gap-3 sm:gap-4">
+      <div className={`flex flex-wrap gap-3 sm:gap-4 ${
+        isMobile ? 'justify-center mb-6' : 'pl-6'
+      }`}>
         <button
           onClick={() => handleCategoryClick(null)}
-          className={`px-4 text-xs sm:text-sm tracking-[0.2em] uppercase transition-colors ${
+          className={`px-3 py-2 text-xs tracking-[0.2em] uppercase transition-colors ${
             selectedCategory === null
-              ? "text-neutral-900"
-              : "text-neutral-400 hover:text-neutral-900"
-          }`}
+              ? "text-white bg-neutral-900 border-neutral-900"
+              : "text-neutral-600 bg-white border-neutral-300 hover:text-neutral-900"
+          } ${isMobile ? 'text-xs' : 'sm:text-sm'}`}
         >
           ALLA
         </button>
@@ -89,11 +106,11 @@ export default function ProjectsClient({ initialCategories, initialProjects }: P
           <button
             key={category._id}
             onClick={() => handleCategoryClick(category._id)}
-            className={`px-4 text-xs sm:text-sm tracking-[0.2em] uppercase transition-colors ${
+            className={`px-3 py-2 text-xs tracking-[0.2em] uppercase transition-colors ${
               selectedCategory === category._id
-                ? "text-neutral-900"
-                : "text-neutral-400 hover:text-neutral-900"
-            }`}
+                ? "text-white bg-neutral-900 border-neutral-900"
+                : "text-neutral-600 bg-white border-neutral-300 hover:text-neutral-900"
+            } ${isMobile ? 'text-xs' : 'sm:text-sm'}`}
           >
             {category.title}
           </button>
@@ -102,15 +119,21 @@ export default function ProjectsClient({ initialCategories, initialProjects }: P
       
       {/* Projects Grid */}
       {filteredProjects.length > 0 ? (
-        <div className="w-full h-full overflow-hidden pt-3 pl-10">
-          <ImageGrid items={imageItems} visibleColumns={5.8} />
+        <div className={`w-full h-full overflow-hidden ${
+          isMobile ? 'pt-0' : 'pt-3 pl-10'
+        }`}>
+          <ImageGrid items={imageItems} visibleColumns={isMobile ? 1 : 5.8} />
         </div>
       ) : (
         <div className="flex items-center justify-center min-h-[200px] text-neutral-500">
-          Inga projekt hittades för den valda kategorin.
+          <p className={`text-center ${
+            isMobile ? 'text-sm px-4' : 'text-base'
+          }`}>
+            Inga projekt hittades för den valda kategorin.
+          </p>
         </div>
       )}
-      <ScrollIcon />
+      {!isMobile && <ScrollIcon />}
     </section>
   );
 }
