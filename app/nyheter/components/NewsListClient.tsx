@@ -22,7 +22,7 @@ interface NewsListClientProps {
 
 export default function NewsListClient({ posts }: NewsListClientProps) {
   const { ref: scrollRef } = useCrossBrowserScroll({ 
-    direction: 'horizontal',
+    direction: 'responsive',
     sensitivity: 5,
     smoothness: 0.15
   });
@@ -32,16 +32,20 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
       {/* Page title */}
       <h2 className="text-xl font-futura-medium text-neutral-900 uppercase tracking-wide">NYHETER</h2>
       
-      {/* News horizontal scroll with peek */}
+      {/* News scroll container - horizontal on desktop, vertical on mobile */}
         <div 
           ref={scrollRef}
-          className="flex gap-8 pb-4 mt-2 overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
+          className="pb-4 mt-2 hide-scrollbar cursor-grab active:cursor-grabbing
+            md:flex md:gap-8 md:overflow-x-auto
+            max-md:flex max-md:flex-col max-md:gap-6 max-md:overflow-y-auto max-md:max-h-screen"
         >
           {posts.map((post, index) => (
             <Link
               key={post._id}
               href={`/nyheter/${post.slug.current}`}
-              className="group flex-none space-y-3 hover:opacity-80 transition-opacity w-130"
+              className="group space-y-3 hover:opacity-80 transition-opacity
+                md:flex-none md:w-130
+                max-md:block max-md:w-full"
             >              
               {/* Article image */}
               <div className="relative aspect-[4/1.8] bg-gray-100">
