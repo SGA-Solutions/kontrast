@@ -101,8 +101,7 @@ export default function Image360Viewer({
       {/* Photo Sphere Viewer Container */}
       <div 
         ref={containerRef}
-        className="w-full h-full"
-        style={{ minHeight: '400px' }}
+        className="w-full h-full"        
       />
 
       {/* 360° Indicator */}
