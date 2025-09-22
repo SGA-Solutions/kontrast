@@ -212,7 +212,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
     caption?: string;
   }> = [];
   
-  
+  /*
   if (project.coverImage) {
     const imageUrls = getOptimizedImageUrls(project.coverImage, {
       width: 1920,
@@ -228,7 +228,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
       type: 'image'
     });
   }
-  
+  */
   if (project.gallery && project.gallery.length > 0) {
     project.gallery.forEach((item: any, index: number) => {
       
