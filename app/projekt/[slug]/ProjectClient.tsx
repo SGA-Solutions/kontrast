@@ -70,6 +70,19 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   const [hasOverflow, setHasOverflow] = useState(false);
   const [visibleBlocks, setVisibleBlocks] = useState<any[]>([]);
   const [overflowBlocks, setOverflowBlocks] = useState<any[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
 
   // Using the cross-browser scroll hook will be handled by CrossBrowserScrollContainer
@@ -312,15 +325,154 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   }
 
   return (
-    <div className="min-h-screen mt-12 pl-10 bg-white overflow-hidden no-overscroll">
-      {/* Cross-browser horizontal scrolling container */}
-      <CrossBrowserScrollContainer
-        ref={scrollerRef}
-        className="flex h-[calc(100vh-80px)] overflow-x-scroll overflow-y-hidden"
-        direction="horizontal"
-        sensitivity={5}
-        smoothness={0.15}
-      >
+    <div className={`min-h-screen bg-white no-overscroll ${
+      isMobile ? 'mt-4 px-4' : 'mt-12 pl-10 overflow-hidden'
+    }`}>
+      {isMobile ? (
+        /* Mobile: Vertical scrolling layout */
+        <div className="space-y-8">
+          {/* Project info section - mobile */}
+          <div className="w-full">
+            <div className="space-y-4">
+              {/* Project title */}
+              <div>
+                <h1 className="text-lg font-futura-medium uppercase text-neutral-900 tracking-wide">
+                  {project.title}
+                </h1>
+              </div>
+
+              {/* Project details */}
+              <div className="space-y-2">
+                {project.assignment && (
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-xs uppercase tracking-wider text-neutral-500">UPPDRAG</span>
+                    <span className="text-xs uppercase tracking-wider text-neutral-700">{project.assignment}</span>
+                  </div>
+                )}
+
+                {project.categories && project.categories.length > 0 && (
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-xs uppercase tracking-wider text-neutral-500">KATEGORI</span>
+                    <span className="text-xs uppercase tracking-wider text-neutral-700">
+                      {project.categories.map(cat => cat.title).join(", ")}
+                    </span>
+                  </div>
+                )}
+
+                {project.location && (
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-xs uppercase tracking-wider text-neutral-500">PLATS</span>
+                    <span className="text-xs uppercase tracking-wider text-neutral-700">{project.location}</span>
+                  </div>
+                )}
+
+                {project.client && (
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-xs uppercase tracking-wider text-neutral-500">BESTÄLLARE</span>
+                    <span className="text-xs uppercase tracking-wider text-neutral-700">{project.client}</span>
+                  </div>
+                )}
+
+                {project.status && (
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-xs uppercase tracking-wider text-neutral-500">STATUS</span>
+                    <span className="text-xs uppercase tracking-wider text-neutral-700">{project.status}</span>
+                  </div>
+                )}
+
+                {(project.startDate || project.endDate) && (
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-xs uppercase tracking-wider text-neutral-500">DATUM</span>
+                    <span className="text-xs uppercase tracking-wider text-neutral-700">
+                      FÄRDIGSTÄLLD, {project.startDate && new Date(project.startDate).getFullYear()}
+                      {project.endDate && project.startDate !== project.endDate && 
+                        ` - ${new Date(project.endDate).getFullYear()}`
+                      }
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Body content - mobile */}
+              {project.body && project.body.length > 0 && (
+                <div className="space-y-3 mt-4">
+                  {project.body.map((block: any, index: number) => {
+                    if (block._type === 'block') {
+                      const text = block.children?.map((child: any) => child.text).join('') || '';
+                      
+                      return (
+                        <p key={index} className="text-sm text-neutral-700 leading-relaxed text-justify">
+                          {text}
+                        </p>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Media section - mobile vertical stack */}
+          <div className="space-y-6">
+            {allMediaItems.map((item, index) => (
+              <div 
+                key={index} 
+                className="w-full aspect-[4/3] relative"
+              >
+                {item.type === 'beforeAfter' ? (
+                  <BeforeAfterViewer
+                    beforeImage={item.beforeImage}
+                    afterImage={item.afterImage}
+                    caption={item.caption}
+                    alt={item.alt}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                ) : item.type === 'image360' ? (
+                  <Image360Viewer
+                    image={item.image360}
+                    caption={item.caption}
+                    alt={item.alt}
+                    className="absolute inset-0 w-full h-full"
+                  />
+                ) : item.type === 'image' && item.primary ? (
+                  <CrossBrowserImage
+                    src={item.primary}
+                    alt={item.alt}
+                    fill
+                    className="object-cover"
+                    priority={index === 0}
+                    sizes="100vw"
+                    quality={95}
+                    placeholder="blur"
+                  />
+                ) : item.primary ? (
+                  <video
+                    src={item.primary}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    controls
+                    preload="metadata"
+                    poster={`${item.primary}#t=5`}
+                    style={{
+                      backgroundColor: '#000'
+                    }}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        /* Desktop: Horizontal scrolling layout */
+        <CrossBrowserScrollContainer
+          ref={scrollerRef}
+          className="flex h-[calc(100vh-80px)] overflow-x-scroll overflow-y-hidden"
+          direction="horizontal"
+          sensitivity={5}
+          smoothness={0.15}
+        >
         {/* Project info section */}
         <div className="flex-shrink-0 pr-8 flex flex-col justify-start pt-1">
           <div className="relative">
@@ -519,9 +671,10 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           </div>
         ))}
         
-        {/* Extra spacing at the end */}
-        <div className="flex-shrink-0 w-8" />
-      </CrossBrowserScrollContainer>
+          {/* Extra spacing at the end */}
+          <div className="flex-shrink-0 w-8" />
+        </CrossBrowserScrollContainer>
+      )}
 
       {/* Component-specific styles */}
       <style jsx>{`
@@ -531,7 +684,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           z-index: 1;
         }
       `}</style>
-      <ScrollIcon />
+      {!isMobile && <ScrollIcon />}
     </div>
   );
 }
