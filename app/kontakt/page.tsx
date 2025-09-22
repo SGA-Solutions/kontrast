@@ -111,7 +111,7 @@ export default function KontaktPage() {
                 </div>
               </div>
               {/* Logo circle */}
-              <div className="flex justify-start">
+              <div className="flex justify-start pl-5">
                 <div className="w-24 h-24 bg-black rounded-full flex items-center justify-center">
                   <Image
                     src="/Kontrast-logo.png"
