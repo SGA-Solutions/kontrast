@@ -344,14 +344,14 @@ export default function ProjectClient({ project }: ProjectClientProps) {
               {/* Project details */}
               <div className="space-y-2">
                 {project.assignment && (
-                  <div className="flex flex-col space-y-1">
+                  <div className="grid grid-cols-2 gap-8">
                     <span className="text-xs uppercase tracking-wider text-neutral-500">UPPDRAG</span>
                     <span className="text-xs uppercase tracking-wider text-neutral-700">{project.assignment}</span>
                   </div>
                 )}
 
                 {project.categories && project.categories.length > 0 && (
-                  <div className="flex flex-col space-y-1">
+                  <div className="grid grid-cols-2 gap-8">
                     <span className="text-xs uppercase tracking-wider text-neutral-500">KATEGORI</span>
                     <span className="text-xs uppercase tracking-wider text-neutral-700">
                       {project.categories.map(cat => cat.title).join(", ")}
@@ -360,28 +360,28 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                 )}
 
                 {project.location && (
-                  <div className="flex flex-col space-y-1">
+                  <div className="grid grid-cols-2 gap-8">
                     <span className="text-xs uppercase tracking-wider text-neutral-500">PLATS</span>
                     <span className="text-xs uppercase tracking-wider text-neutral-700">{project.location}</span>
                   </div>
                 )}
 
                 {project.client && (
-                  <div className="flex flex-col space-y-1">
+                  <div className="grid grid-cols-2 gap-8">
                     <span className="text-xs uppercase tracking-wider text-neutral-500">BESTÄLLARE</span>
                     <span className="text-xs uppercase tracking-wider text-neutral-700">{project.client}</span>
                   </div>
                 )}
 
                 {project.status && (
-                  <div className="flex flex-col space-y-1">
+                  <div className="grid grid-cols-2 gap-8">
                     <span className="text-xs uppercase tracking-wider text-neutral-500">STATUS</span>
                     <span className="text-xs uppercase tracking-wider text-neutral-700">{project.status}</span>
                   </div>
                 )}
 
                 {(project.startDate || project.endDate) && (
-                  <div className="flex flex-col space-y-1">
+                  <div className="grid grid-cols-2 gap-8">
                     <span className="text-xs uppercase tracking-wider text-neutral-500">DATUM</span>
                     <span className="text-xs uppercase tracking-wider text-neutral-700">
                       FÄRDIGSTÄLLD, {project.startDate && new Date(project.startDate).getFullYear()}
