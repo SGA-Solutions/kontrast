@@ -23,7 +23,7 @@ interface ImageGridProps {
 export default function ImageGrid({ items, className = "", visibleColumns = 4.8 }: ImageGridProps) {
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const { ref: hookScrollRef } = useCrossBrowserScroll({
-    direction: 'horizontal',
+    direction: 'responsive',
     sensitivity: 8,
     smoothness: 0.10
   });
@@ -60,9 +60,19 @@ export default function ImageGrid({ items, className = "", visibleColumns = 4.8 
   return (
     <div
       ref={hookScrollRef}
-      className={`relative overflow-x-auto pb-2 hide-scrollbar no-overscroll touch-pan-x cursor-grab active:cursor-grabbing ${className}`}
+      className={`relative pb-2 hide-scrollbar no-overscroll cursor-grab active:cursor-grabbing
+        /* Desktop: horizontal scroll */
+        md:overflow-x-auto md:touch-pan-x
+        /* Mobile: vertical scroll */
+        max-md:overflow-y-auto max-md:touch-pan-y max-md:max-h-screen
+        ${className}`}
     >
-      <div className="grid grid-rows-2 grid-flow-col auto-cols-[var(--col)] gap-4">
+      <div className="
+        /* Desktop: 2-row horizontal grid */
+        md:grid md:grid-rows-2 md:grid-flow-col md:auto-cols-[var(--col)] md:gap-4
+        /* Mobile: single column vertical grid */
+        max-md:flex max-md:flex-col max-md:gap-4
+      ">
         {items.map((item, i) => {
           const content = (
             <>
@@ -110,7 +120,9 @@ export default function ImageGrid({ items, className = "", visibleColumns = 4.8 
               <Link
                 key={item.key ?? i}
                 href={item.href}
-                className="group relative aspect-square bg-neutral-100 overflow-hidden cursor-pointer block"
+                className="group relative aspect-square bg-neutral-100 overflow-hidden cursor-pointer block
+                  /* Mobile: full width */
+                  max-md:w-full max-md:aspect-[4/3]"
               >
                 {content}
               </Link>
@@ -120,7 +132,9 @@ export default function ImageGrid({ items, className = "", visibleColumns = 4.8 
           return (
             <div
               key={item.key ?? i}
-              className="group relative aspect-square bg-neutral-100 overflow-hidden cursor-pointer"
+              className="group relative aspect-square bg-neutral-100 overflow-hidden cursor-pointer
+                /* Mobile: full width */
+                max-md:w-full max-md:aspect-[4/3]"
               onClick={item.onClick}
             >
               {content}

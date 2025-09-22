@@ -7,7 +7,7 @@ import { useRef, useCallback, useEffect } from 'react';
 import { normalizeWheelDelta } from '../lib/browser-utils';
 
 interface ScrollOptions {
-  direction?: 'horizontal' | 'vertical';
+  direction?: 'horizontal' | 'vertical' | 'responsive';
   smoothness?: number;
   sensitivity?: number;
 }
@@ -30,11 +30,17 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
       return;
     }
 
+    // Determine effective direction for animation
+    let effectiveDirection = direction;
+    if (direction === 'responsive') {
+      effectiveDirection = window.innerWidth >= 768 ? 'horizontal' : 'vertical';
+    }
+
     const diff = targetScrollRef.current - currentScrollRef.current;
     
     if (Math.abs(diff) < 0.5) {
       // Close enough, snap to target
-      if (direction === 'horizontal') {
+      if (effectiveDirection === 'horizontal') {
         element.scrollLeft = targetScrollRef.current;
       } else {
         element.scrollTop = targetScrollRef.current;
@@ -47,7 +53,7 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
     // Smooth interpolation
     currentScrollRef.current += diff * smoothness;
     
-    if (direction === 'horizontal') {
+    if (effectiveDirection === 'horizontal') {
       element.scrollLeft = currentScrollRef.current;
     } else {
       element.scrollTop = currentScrollRef.current;
@@ -59,9 +65,16 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
   const handleWheel = useCallback((e: WheelEvent) => {
     const element = e.currentTarget as HTMLDivElement;
     
+    // Determine effective direction based on responsive setting
+    let effectiveDirection = direction;
+    if (direction === 'responsive') {
+      // Use horizontal on desktop (md and up), vertical on mobile
+      effectiveDirection = window.innerWidth >= 768 ? 'horizontal' : 'vertical';
+    }
+    
     // Check if we can actually scroll in the intended direction
-    const currentScroll = direction === 'horizontal' ? element.scrollLeft : element.scrollTop;
-    const maxScroll = direction === 'horizontal' 
+    const currentScroll = effectiveDirection === 'horizontal' ? element.scrollLeft : element.scrollTop;
+    const maxScroll = effectiveDirection === 'horizontal' 
       ? element.scrollWidth - element.clientWidth
       : element.scrollHeight - element.clientHeight;
     
@@ -74,7 +87,7 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
     const isTouchpad = e.deltaMode === 0 && Math.abs(e.deltaX) > 0;
     
     // For horizontal scrolling containers, prioritize horizontal gestures
-    if (direction === 'horizontal') {
+    if (effectiveDirection === 'horizontal') {
       // If it's a horizontal touchpad gesture, let browser handle it
       if (isTouchpad && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
         return;
