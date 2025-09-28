@@ -42,7 +42,7 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
   // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 640);
     };
     
     checkMobile();
@@ -105,7 +105,7 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
           >
             <div className="flex space-x-8 pb-4">
               {services.map((service, index) => (
-                <div key={service._id} className="group flex-shrink-0 w-120">
+                <div key={service._id} className="group flex-shrink-0 w-[30vw]">
                   {/* Service title */}
                   <h2 className="text-fluid-xl font-medium text-neutral-900 space-fluid-1 uppercase tracking-wide">
                     {service.title}

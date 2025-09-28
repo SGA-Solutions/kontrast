@@ -46,7 +46,7 @@ export default function OmOssPage() {
   // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 640);
     };
     
     checkMobile();
@@ -229,7 +229,7 @@ export default function OmOssPage() {
             <div className="pt-13 pb-8 min-h-screen flex items-top">
               <div className="w-full max-w-2xl ml-8">
                           
-                  <div className=" text-sm sm:text-base leading-relaxed">
+                  <div className="w-[50vw] max-h-[80vh] overflow-y-auto hide-scrollbar text-sm sm:text-base leading-relaxed">
                     {aboutUsData.map((entry, index) => (
                       <div key={index}>
                         {entry.title && (

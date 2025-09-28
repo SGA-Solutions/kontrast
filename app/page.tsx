@@ -127,7 +127,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="ml-0 sm:ml-10 grid gap-6 sm:gap-8 lg:grid-cols-[15%_85%] mt-6">
+      <div className="max-h-[70vh] overflow-y-auto overflow-x-hidden ml-0 sm:ml-10 grid gap-6 sm:gap-8 lg:grid-cols-[15%_85%] mt-6">
         {/* Intro text (left column) */}
         <div className="text-fluid-sm space-fluid-2 max-w-none lg:max-w-55">
           {introBlocks && introBlocks.length > 0 && (

@@ -33,7 +33,7 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
   // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 640);
     };
     
     checkMobile();
@@ -108,15 +108,15 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
         /* Desktop: Horizontal scrolling layout */
         <div 
           ref={scrollRef}
-          className="pb-4 mt-2 hide-scrollbar cursor-grab active:cursor-grabbing
-            md:flex md:gap-8 md:overflow-x-auto"
+          className="w-[100vw] pb-4 mt-2 hide-scrollbar cursor-grab active:cursor-grabbing
+            md:flex md:gap-8 overflow-x-auto"
         >
           {posts.map((post, index) => (
             <Link
               key={post._id}
               href={`/nyheter/${post.slug.current}`}
               className="group space-y-3 hover:opacity-80 transition-opacity
-                md:flex-none md:w-130"
+                md:flex-none md:w-[40vw] md:h-[65vh]"
             >              
               {/* Article image */}
               <div className="relative aspect-[4/1.8] bg-gray-100">

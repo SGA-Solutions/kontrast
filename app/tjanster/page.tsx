@@ -38,7 +38,7 @@ export default async function TjansterPage() {
   return (
     <div className="min-h-screen">
       {/* Main content */}
-      <div className="px-6 mt-6 sm:px-12 py-8">
+      <div className="max-h-[95vh] overflow-y-auto hide-scrollbar px-6 mt-6 sm:px-12 py-8">
         {/* Service Categories Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {serviceCategories.map((category) => (

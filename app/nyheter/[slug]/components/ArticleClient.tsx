@@ -35,7 +35,7 @@ export default function ArticleClient({ post }: ArticleClientProps) {
   // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 640);
     };
     
     checkMobile();
@@ -116,7 +116,7 @@ export default function ArticleClient({ post }: ArticleClientProps) {
         /* Desktop: Horizontal scrolling layout */
         <div 
           ref={scrollRef}
-          className="flex gap-8 h-120 overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
+          className="flex gap-8 w-[100vw] h-[65vh] overflow-x-auto hide-scrollbar cursor-grab active:cursor-grabbing"
         >
           {/* Image section */}
           {post.mainImage && (
