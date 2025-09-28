@@ -60,10 +60,10 @@ export default function BeforeAfterViewer({
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       >
-      {/* After image (top layer) */}
+      {/* Before image (top layer) */}
       <div >
         <CrossBrowserImage
-          src={afterImageUrls.primary}
+          src={beforeImageUrls.primary}
           alt={`${alt} - after`}
           fill
           className="object-contain object-top"
@@ -73,7 +73,7 @@ export default function BeforeAfterViewer({
         />
       </div>
 
-      {/* Before image (bottom layer, revealed on hover) */}
+      {/* After image (bottom layer, revealed on hover) */}
       <div 
         className="absolute inset-0"
         style={{
@@ -81,7 +81,7 @@ export default function BeforeAfterViewer({
         }}
       >
         <CrossBrowserImage
-          src={beforeImageUrls.primary}
+          src={afterImageUrls.primary}
           alt={`${alt} - before`}
           fill
           className="object-contain object-top"
