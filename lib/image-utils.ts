@@ -47,9 +47,9 @@ export function getOptimizedImageUrls(
     .quality(quality)
     .fit(fit)
     .auto('format'); // Let Sanity choose the best format
-
+  
   return {
-    primary: baseBuilder.format('webp').url(), // Primary WebP for modern browsers
+    primary: baseBuilder.fit('max').crop('center').format('webp').url(), // Primary WebP for modern browsers
     fallback: baseBuilder.format('jpg').quality(Math.min(quality + 3, 100)).url(), // Slightly higher quality fallback
     format: selectedFormat
   };

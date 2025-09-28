@@ -7,6 +7,7 @@ import CrossBrowserScrollContainer from "../../../components/CrossBrowserScrollC
 import ScrollIcon from "../../../components/ScrollIcon";
 import BeforeAfterViewer from "../../../components/BeforeAfterViewer";
 import Image360Viewer from "../../../components/Image360Viewer";
+import Image from "next/image";
 
 // Helper function to construct video URL from Sanity asset reference
 function getVideoUrl(asset: any, projectId: string, dataset: string): string {
@@ -294,7 +295,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           width: 1600,
           height: 1200,
           quality: 92,
-          fit: 'crop',
+          fit: 'max',
           format: 'auto'
         });
         allMediaItems.push({
@@ -311,7 +312,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           width: 1600,
           height: 1200,
           quality: 92,
-          fit: 'crop',
+          fit: 'max',
           format: 'auto'
         });
         allMediaItems.push({
@@ -622,7 +623,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
         {allMediaItems.map((item, index) => (
           <div 
             key={index} 
-            className={`flex-shrink-0 relative w-180 h-120  mt-10 transition-all duration-700 ease-in-out`}
+            className={`flex-shrink-0 relative w-[calc(95vw-780px-2rem)] max-h-[66vh] mt-10 transition-all duration-700 ease-in-out`}
             style={{
               marginLeft: '0',
               marginRight: index < allMediaItems.length - 1 ? '2rem' : '0'
@@ -634,39 +635,38 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                 afterImage={item.afterImage}
                 caption={item.caption}
                 alt={item.alt}
-                className="absolute inset-0 w-full h-full object-cover"
+                className="object-contain object-top w-full h-full"
               />
             ) : item.type === 'image360' ? (
               <Image360Viewer
                 image={item.image360}
                 caption={item.caption}
                 alt={item.alt}
-                className="absolute inset-0 w-full h-full"
+                className="object-contain object-top w-full h-full"
               />
             ) : item.type === 'image' && item.primary ? (
               <CrossBrowserImage
                 src={item.primary}
                 alt={item.alt}
                 fill
-                className="object-cover"
+                className="object-contain object-left-top w-full aspect-[4/3]"
                 priority={index === 0}
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, (max-width: 1440px) 80vw, 75vw"
                 quality={95}
                 placeholder="blur"
               />
             ) : item.primary ? (
-              <video
-                src={item.primary}
-                className="absolute inset-0 w-full h-full object-cover"
-                controls
-                preload="metadata"
-                poster={`${item.primary}#t=5`}
-                style={{
-                  backgroundColor: '#000'
-                }}
-              >
-                Your browser does not support the video tag.
-              </video>
+                <video
+                  src={item.primary}
+                  className="w-full aspect-[4/3]"
+                  controls
+                  preload="metadata"
+                  poster={`${item.primary}#t=5`}
+                  style={{
+                    backgroundColor: '#000'
+                  }}
+                >
+                  Your browser does not support the video tag.
+                </video>
             ) : null}
           </div>
         ))}

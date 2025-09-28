@@ -61,12 +61,12 @@ export default function BeforeAfterViewer({
       onMouseLeave={handleMouseLeave}
       >
       {/* After image (top layer) */}
-      <div className="absolute inset-0 w-full h-full">
+      <div >
         <CrossBrowserImage
           src={afterImageUrls.primary}
           alt={`${alt} - after`}
           fill
-          className="object-cover"
+          className="object-contain object-top"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, (max-width: 1440px) 80vw, 75vw"
           quality={95}
           placeholder="blur"
@@ -75,7 +75,7 @@ export default function BeforeAfterViewer({
 
       {/* Before image (bottom layer, revealed on hover) */}
       <div 
-        className="absolute inset-0 w-full h-full overflow-hidden"
+        className="absolute inset-0"
         style={{
           clipPath: `inset(0 ${100 - revealPercentage}% 0 0)`
         }}
@@ -84,7 +84,7 @@ export default function BeforeAfterViewer({
           src={beforeImageUrls.primary}
           alt={`${alt} - before`}
           fill
-          className="object-cover"
+          className="object-contain object-top"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, (max-width: 1440px) 80vw, 75vw"
           quality={95}
           placeholder="blur"
