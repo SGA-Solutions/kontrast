@@ -76,16 +76,33 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   const [mobileViewerOpen, setMobileViewerOpen] = useState(false);
   const [mobileViewerIndex, setMobileViewerIndex] = useState(0);
 
-  // Mobile detection
+  // Mobile detection - check for actual mobile devices, not just screen size
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
+      // Check if it's a touch device first
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      
+      // Check screen dimensions - use the smaller dimension to account for rotation
+      const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
+      const largerDimension = Math.max(window.innerWidth, window.innerHeight);
+      
+      // Consider it mobile if:
+      // 1. It's a touch device AND smaller dimension is less than 640px
+      // 2. OR if both dimensions suggest mobile (smaller < 640 and larger < 1024)
+      const isMobileSize = smallerDimension < 640 && largerDimension < 1024;
+      const isMobileDevice = isTouchDevice && smallerDimension < 640;
+      
+      setIsMobile(isMobileDevice || isMobileSize);
     };
     
     checkMobile();
     window.addEventListener('resize', checkMobile);
+    window.addEventListener('orientationchange', checkMobile);
     
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('orientationchange', checkMobile);
+    };
   }, []);
 
 
