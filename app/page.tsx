@@ -97,9 +97,9 @@ export default async function Home() {
       {/* Wordmark and subtext */}
       <div className="flex flex-col sm:flex-row items-start mobile-compact sm:mb-4">
         {/* Wordmark: full text on mobile, image on ≥sm to pair with sidebar 'K' */}
-        <div className="select-none whitespace-nowrap ml-0 sm:-ml-8 lg:-ml-12">
+        <div className="select-none whitespace-nowrap -ml-8">
           <div className="leading-none">
-            <span className="hidden sm:inline">
+            <span className="hidden sm:block">
               <Image
                 src="/Kontrast-logo-2.png"
                 alt="Kontrast wordmark"
@@ -107,14 +107,14 @@ export default async function Home() {
                 height={120}
                 priority
                 sizes="(max-width: 768px) 100vw, 700px"
-                className="ml-10 sm:h-16 md:h-15 w-auto object-contain"
+                className="ml-10 h-15 w-auto object-contain"
               />
             </span>
           </div>
         </div>
         
         {/* Subtext */}
-        <div className="hidden sm:inline text-left text-fluid-xs tracking-[0.35em] space-y-1">
+        <div className="hidden sm:block text-left text-fluid-xs tracking-[0.35em] space-y-1">
           <Link href="/tjanster/arkitektur" className="block hover:text-neutral-600 transition-colors touch-manipulation">
             ARKITEKTUR
           </Link>
@@ -127,7 +127,7 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="max-h-[70vh] overflow-y-auto overflow-x-hidden ml-0 sm:ml-10 grid gap-6 sm:gap-8 lg:grid-cols-[15%_85%] mt-6">
+      <div className="overflow-y-auto overflow-x-hidden ml-0 sm:ml-10 grid gap-6 sm:gap-8 sm:grid-cols-[15%_85%] mt-6">
         {/* Intro text (left column) */}
         <div className="text-fluid-sm space-fluid-2 max-w-none lg:max-w-55">
           {introBlocks && introBlocks.length > 0 && (

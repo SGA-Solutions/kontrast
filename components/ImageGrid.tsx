@@ -42,10 +42,7 @@ export default function ImageGrid({ items, className = "", visibleColumns = 4.8 
     // Base gap matches gap utilities below (gap-4 on mobile, gap-6 on ≥sm)
     const compute = () => {
       const width = el.clientWidth;
-      const isSmall = width < 640; // ~sm breakpoint
-      const gap = isSmall ? 16 : 24; // gap-4 vs gap-6
-      const visibleColumnsValue = isSmall ? 2.2 : visibleColumns; // make tiles larger on phones
-      const col = (width - gap * 3) / visibleColumnsValue; // 4 cols => 3 gaps between
+      const col = (width - 24 * 3) / visibleColumns; // 4 cols => 3 gaps between
       el.style.setProperty("--col", `${col}px`);
     };
 
@@ -69,7 +66,7 @@ export default function ImageGrid({ items, className = "", visibleColumns = 4.8 
     >
       <div className="
         /* Desktop: 2-row horizontal grid */
-        md:grid md:grid-rows-2 md:grid-flow-col md:auto-cols-[var(--col)] md:gap-4
+        sm:grid sm:grid-rows-2 sm:grid-flow-col sm:auto-cols-[var(--col)] sm:gap-4
         /* Mobile: single column vertical grid */
         max-md:flex max-md:flex-col max-md:gap-4
       ">
@@ -83,7 +80,7 @@ export default function ImageGrid({ items, className = "", visibleColumns = 4.8 
                 fill
                 className="object-cover transition-opacity duration-300 ease-out group-hover:opacity-50"
                 priority={i < 4}
-                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+                sizes="(max-width: 640px) 50vw, 25vw"
               />
 
               {/* Dark overlay */}

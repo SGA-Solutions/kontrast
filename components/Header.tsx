@@ -30,14 +30,14 @@ export function Header() {
       {/* Desktop Sidebar */}
       <aside className="hidden sm:flex flex-col pt-5 sticky top-0 h-screen w-full">
         {/* Logo */}
-        <Link href="/" aria-label="Kontrast" className="pt-2 mb-7 inline-block ml-1 md:ml-2">
+        <Link href="/" aria-label="Kontrast" className="pt-2 mb-7 inline-block ml-2">
           <Image
             src="/Kontrast-logo.png"
             alt="Kontrast logo"
             width={64}
             height={64}
             priority
-            className="pl-4 w-14 h-14 md:w-16 md:h-16 lg:h-16 w-auto object-contain"
+            className="pl-4 w-16 h-16 object-contain"
           />
         </Link>
         
