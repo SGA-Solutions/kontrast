@@ -133,7 +133,7 @@ export default function KontaktPage() {
           {/* Left column: Map, Hours, Address */}
           <div className="space-y-6 order-2 lg:order-1">
             {/* Map */}
-            <div className="relative h-[60vh] bg-gray-100 overflow-hidden">
+            <div className="relative h-[50vh] bg-gray-100 overflow-hidden">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2034.8234567890123!2d18.0876543!3d59.3123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465f77e2f7654321%3A0x1234567890abcdef!2sHammarby%20all%C3%A9%2051B%2C%20120%2030%20Stockholm%2C%20Sweden!5e0!3m2!1sen!2sse!4v1234567890123!5m2!1sen!2sse&style=feature:all|saturation:-100|lightness:20"
                 width="100%"

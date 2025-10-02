@@ -109,7 +109,7 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
         <div 
           ref={scrollRef}
           className="w-[100vw] pb-4 mt-2 hide-scrollbar cursor-grab active:cursor-grabbing
-            md:flex md:gap-8 overflow-x-auto"
+            flex gap-8 overflow-x-auto"
         >
           {posts.map((post, index) => (
             <Link
@@ -119,7 +119,7 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
                 md:flex-none md:w-[40vw] md:h-[65vh]"
             >              
               {/* Article image */}
-              <div className="relative aspect-[4/1.8] bg-gray-100">
+              <div className="relative aspect-[4/2] bg-gray-100">
                 {post.mainImage ? (
                   <Image
                     src={urlFor(post.mainImage).width(520).height(234).format('webp').quality(85).url()}

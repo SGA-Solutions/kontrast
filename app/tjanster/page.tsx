@@ -40,17 +40,17 @@ export default async function TjansterPage() {
       {/* Main content */}
       <div className="max-h-[95vh] overflow-y-auto hide-scrollbar px-6 mt-6 sm:px-12 py-8">
         {/* Service Categories Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
           {serviceCategories.map((category) => (
             <div key={category._id} className="group">
               {/* Service Category Card */}
               <div className="relative bg-white">
-                <h2 className="text-xl font-futura-medium text-neutral-900 mb-1 uppercase tracking-wide">
+                <h2 className="text-fluid-xl font-futura-medium text-neutral-900 mb-1 uppercase tracking-wide">
                   {category.title}
                 </h2>
                 {/* Clickable Image */}
                 <Link href={`/tjanster/${category.slug.current}`}>
-                  <div className="relative h-64 w-full cursor-pointer">
+                  <div className="relative  w-full aspect-[4/3] cursor-pointer">
                     {category.coverImage && (
                       <Image
                         src={urlFor(category.coverImage).width(600).height(400).format('webp').quality(85).url()}

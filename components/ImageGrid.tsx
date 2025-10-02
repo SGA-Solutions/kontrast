@@ -59,16 +59,16 @@ export default function ImageGrid({ items, className = "", visibleColumns = 4.8 
       ref={hookScrollRef}
       className={`relative pb-2 hide-scrollbar no-overscroll cursor-grab active:cursor-grabbing
         /* Desktop: horizontal scroll */
-        md:overflow-x-auto md:touch-pan-x
+        sm:overflow-x-auto sm:touch-pan-x
         /* Mobile: vertical scroll */
-        max-md:overflow-y-auto max-md:touch-pan-y max-md:max-h-screen
+        max-sm:overflow-y-auto max-sm:touch-pan-y max-sm:max-h-screen
         ${className}`}
     >
       <div className="
         /* Desktop: 2-row horizontal grid */
         sm:grid sm:grid-rows-2 sm:grid-flow-col sm:auto-cols-[var(--col)] sm:gap-4
         /* Mobile: single column vertical grid */
-        max-md:flex max-md:flex-col max-md:gap-4
+        max-sm:flex max-sm:flex-col max-sm:gap-4
       ">
         {items.map((item, i) => {
           const content = (

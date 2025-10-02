@@ -113,7 +113,7 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
                   
                   {/* Service image */}
                   {service.coverImage && (
-                    <div className="relative h-32 w-full overflow-hidden space-fluid-3">
+                    <div className="relative w-full aspect-[4/2] overflow-hidden space-fluid-3">
                       <Image
                         src={urlFor(service.coverImage).width(600).height(400).format('webp').quality(85).url()}
                         alt={service.title}

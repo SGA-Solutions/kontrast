@@ -32,7 +32,7 @@ export default function ProjectsClient({ initialCategories, initialProjects }: P
   // Mobile detection
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < 640);
     };
     
     checkMobile();
@@ -122,7 +122,7 @@ export default function ProjectsClient({ initialCategories, initialProjects }: P
         <div className={`w-full h-full overflow-hidden ${
           isMobile ? 'pt-0' : 'pt-3 pl-10'
         }`}>
-          <ImageGrid items={imageItems} visibleColumns={isMobile ? 1 : 5.8} />
+          <ImageGrid items={imageItems} visibleColumns={5.8} />
         </div>
       ) : (
         <div className="flex items-center justify-center min-h-[200px] text-neutral-500">
