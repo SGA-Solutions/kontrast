@@ -7,6 +7,7 @@ import CrossBrowserScrollContainer from "../../../components/CrossBrowserScrollC
 import ScrollIcon from "../../../components/ScrollIcon";
 import BeforeAfterViewer from "../../../components/BeforeAfterViewer";
 import Image360Viewer from "../../../components/Image360Viewer";
+import MobileImageViewer from "../../../components/MobileImageViewer";
 import Image from "next/image";
 
 // Helper function to construct video URL from Sanity asset reference
@@ -72,6 +73,8 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   const [visibleBlocks, setVisibleBlocks] = useState<any[]>([]);
   const [overflowBlocks, setOverflowBlocks] = useState<any[]>([]);
   const [isMobile, setIsMobile] = useState(false);
+  const [mobileViewerOpen, setMobileViewerOpen] = useState(false);
+  const [mobileViewerIndex, setMobileViewerIndex] = useState(0);
 
   // Mobile detection
   useEffect(() => {
@@ -419,7 +422,11 @@ export default function ProjectClient({ project }: ProjectClientProps) {
             {allMediaItems.map((item, index) => (
               <div 
                 key={index} 
-                className="w-full aspect-[4/3] relative"
+                className="w-full aspect-[4/3] relative cursor-pointer"
+                onClick={() => {
+                  setMobileViewerIndex(index);
+                  setMobileViewerOpen(true);
+                }}
               >
                 {item.type === 'beforeAfter' ? (
                   <BeforeAfterViewer
@@ -441,9 +448,8 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                     src={item.primary}
                     alt={item.alt}
                     fill
-                    className="object-cover"
+                    className="object-cover w-full h-full"
                     priority={index === 0}
-                    sizes="100vw"
                     quality={95}
                     placeholder="blur"
                   />
@@ -461,6 +467,15 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                     Your browser does not support the video tag.
                   </video>
                 ) : null}
+                
+                {/* Overlay indicator for clickable images */}
+                <div className="absolute inset-0 bg-opacity-0 hover:bg-opacity-10 transition-all duration-200 flex items-center justify-center">
+                  <div className="opacity-0 hover:opacity-100 transition-opacity duration-200">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                    </svg>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -685,6 +700,16 @@ export default function ProjectClient({ project }: ProjectClientProps) {
         }
       `}</style>
       {!isMobile && <ScrollIcon />}
+      
+      {/* Mobile Image Viewer */}
+      {isMobile && (
+        <MobileImageViewer
+          mediaItems={allMediaItems}
+          initialIndex={mobileViewerIndex}
+          isOpen={mobileViewerOpen}
+          onClose={() => setMobileViewerOpen(false)}
+        />
+      )}
     </div>
   );
 }
