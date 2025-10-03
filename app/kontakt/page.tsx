@@ -2,11 +2,11 @@
 
 import React from "react";
 import Image from "next/image";
-import { useMobileDetection } from "../../hooks/useMobileDetection";
+import { useMobile } from "../../contexts/MobileContext";
 
 export default function KontaktPage() {
-  // Use the reusable mobile detection hook
-  const isMobile = useMobileDetection();
+  // Use the mobile context
+  const { isMobile } = useMobile();
 
   return (
     <section className={`pb-8 mobile-vh-fit ${

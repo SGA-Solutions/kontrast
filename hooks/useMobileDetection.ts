@@ -65,22 +65,15 @@ export function detectMobile(): boolean {
   if (typeof window === 'undefined') return false;
   
   const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-  const isLandscape = window.innerWidth > window.innerHeight;
-  const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
-  const largerDimension = Math.max(window.innerWidth, window.innerHeight);
+  const isLandscape = window.matchMedia("(orientation: landscape)").matches;
   
-  let isMobileDevice: boolean;
   let isMobileSize: boolean;
   
-  if (isLandscape) {
-    // Landscape: use width-based detection
-    isMobileDevice = isTouchDevice && window.innerWidth < 1024;
-    isMobileSize = window.innerWidth < 1024 && window.innerHeight < 640;
+  if (isLandscape && isTouchDevice) {
+    isMobileSize = window.innerHeight < 640;
   } else {
-    // Portrait: use smaller dimension approach
-    isMobileDevice = isTouchDevice && smallerDimension < 640;
-    isMobileSize = smallerDimension < 640 && largerDimension < 1024;
+    isMobileSize = window.innerWidth < 640;
   }
   
-  return isMobileDevice || isMobileSize;
+  return isMobileSize;
 }

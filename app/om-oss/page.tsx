@@ -5,7 +5,7 @@ import { PortableText } from '@portabletext/react';
 import Link from 'next/link';
 import Image from "next/image";
 import { useEffect, useState } from 'react';
-import { useMobileDetection } from '../../hooks/useMobileDetection';
+import { useMobile } from '../../contexts/MobileContext';
 
 interface AboutUsData {
   title: string;
@@ -43,8 +43,8 @@ export default function OmOssPage() {
   const [aboutUsData, setAboutUsData] = useState<AboutUsData[]>([]);
   const [loading, setLoading] = useState(true);
   
-  // Use the reusable mobile detection hook
-  const isMobile = useMobileDetection();
+  // Use the mobile context
+  const { isMobile } = useMobile();
 
   // Fetch data on client side
   useEffect(() => {

@@ -4,7 +4,7 @@ import React, { useMemo, useState } from "react";
 import { urlFor } from "../../sanity/client";
 import ImageGrid, { type ImageGridItem } from "../../components/ImageGrid";
 import ScrollIcon from "../../components/ScrollIcon";
-import { useMobileDetection } from "../../hooks/useMobileDetection";
+import { useMobile } from "../../contexts/MobileContext";
 
 type ProjectCategory = {
   _id: string;
@@ -29,8 +29,8 @@ interface ProjectsClientProps {
 export default function ProjectsClient({ initialCategories, initialProjects }: ProjectsClientProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   
-  // Use the reusable mobile detection hook
-  const isMobile = useMobileDetection();
+  // Use the mobile context
+  const { isMobile } = useMobile();
 
   // Filtered projects based on selected category
   const filteredProjects = useMemo(() => {

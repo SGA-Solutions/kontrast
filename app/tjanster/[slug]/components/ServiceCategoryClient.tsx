@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { urlFor } from "../../../../sanity/client";
 import { useCrossBrowserScroll } from "../../../../hooks/useCrossBrowserScroll";
-import { useMobileDetection } from "../../../../hooks/useMobileDetection";
+import { useMobile } from "../../../../contexts/MobileContext";
 import ScrollIcon from "../../../../components/ScrollIcon";
 
 interface Service {
@@ -37,8 +37,8 @@ export default function ServiceCategoryClient({ category, services }: ServiceCat
     smoothness: 0.15
   });
 
-  // Use the reusable mobile detection hook
-  const isMobile = useMobileDetection();
+  // Use the mobile context
+  const { isMobile } = useMobile();
 
   return (
     <div className={`min-h-screen mobile-vh-fit ${

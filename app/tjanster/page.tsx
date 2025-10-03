@@ -1,7 +1,11 @@
+"use client";
+
 import { client, urlFor } from "../../sanity/client";
 import { PortableText } from "@portabletext/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { useMobile } from "../../contexts/MobileContext";
 import { SERVICE_CATEGORIES_QUERY, CACHE_TAGS } from "../../lib/sanity-queries";
 
 interface ServiceCategory {
@@ -32,15 +36,45 @@ async function getServiceCategories(): Promise<ServiceCategory[]> {
   }
 }
 
-export default async function TjansterPage() {
-  const serviceCategories = await getServiceCategories();
+export default function TjansterPage() {
+  const [serviceCategories, setServiceCategories] = useState<ServiceCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { isMobile } = useMobile();
+
+  // Fetch data on client side
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getServiceCategories();
+        setServiceCategories(data);
+      } catch (error) {
+        console.error('Error fetching service categories:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-neutral-500">Laddar tjänster...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen">
       {/* Main content */}
-      <div className="max-h-[95vh] overflow-y-auto hide-scrollbar px-6 mt-6 sm:px-12 py-8">
+      <div className={`max-h-[95vh] overflow-y-auto hide-scrollbar py-8 ${
+        isMobile ? 'px-6 mt-6' : 'px-12 mt-6'
+      }`}>
         {/* Service Categories Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        <div className={`grid gap-8 ${
+          isMobile ? 'grid-cols-1' : 'grid-cols-3'
+        }`}>
           {serviceCategories.map((category) => (
             <div key={category._id} className="group">
               {/* Service Category Card */}

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "../../../sanity/client";
 import { useCrossBrowserScroll } from "../../../hooks/useCrossBrowserScroll";
-import { useMobileDetection } from "../../../hooks/useMobileDetection";
+import { useMobile } from "../../../contexts/MobileContext";
 import ScrollIcon from "../../../components/ScrollIcon";
 
 type Post = {
@@ -28,8 +28,8 @@ export default function NewsListClient({ posts }: NewsListClientProps) {
     smoothness: 0.15
   });
 
-  // Use the reusable mobile detection hook
-  const isMobile = useMobileDetection();
+  // Use the mobile context
+  const { isMobile } = useMobile();
 
   return (
     <section className={`${

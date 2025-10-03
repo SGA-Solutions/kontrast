@@ -8,7 +8,7 @@ import ScrollIcon from "../../../components/ScrollIcon";
 import BeforeAfterViewer from "../../../components/BeforeAfterViewer";
 import Image360Viewer from "../../../components/Image360Viewer";
 import MobileImageViewer from "../../../components/MobileImageViewer";
-import { useMobileDetection } from "../../../hooks/useMobileDetection";
+import { useMobile } from "../../../contexts/MobileContext";
 import Image from "next/image";
 
 // Helper function to construct video URL from Sanity asset reference
@@ -76,8 +76,8 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   const [mobileViewerOpen, setMobileViewerOpen] = useState(false);
   const [mobileViewerIndex, setMobileViewerIndex] = useState(0);
 
-  // Use the reusable mobile detection hook
-  const isMobile = useMobileDetection();
+  // Use the mobile context
+  const { isMobile } = useMobile();
 
 
   // Using the cross-browser scroll hook will be handled by CrossBrowserScrollContainer

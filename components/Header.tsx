@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useMobileDetection } from "../hooks/useMobileDetection";
+import { useMobile } from "../contexts/MobileContext";
 import { MobileNav } from "./MobileNav";
 
 // Simple className merge helper
@@ -22,8 +22,7 @@ const NAV = [
 
 export function Header() {
   const pathname = usePathname();
-
-  const isMobile = useMobileDetection();
+  const { isMobile } = useMobile();
 
   return (
     <>

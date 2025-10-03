@@ -4,7 +4,7 @@ import Image from "next/image";
 import { PortableText } from "@portabletext/react";
 import { urlFor } from "../../../../sanity/client";
 import { useCrossBrowserScroll } from "../../../../hooks/useCrossBrowserScroll";
-import { useMobileDetection } from "../../../../hooks/useMobileDetection";
+import { useMobile } from "../../../../contexts/MobileContext";
 import ScrollIcon from "../../../../components/ScrollIcon";
 
 type Post = {
@@ -30,8 +30,8 @@ export default function ArticleClient({ post }: ArticleClientProps) {
     smoothness: 0.15
   });
 
-  // Use the reusable mobile detection hook
-  const isMobile = useMobileDetection();
+  // Use the mobile context
+  const { isMobile } = useMobile();
 
   return (
     <section className={`${
