@@ -75,9 +75,15 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   const [overflowBlocks, setOverflowBlocks] = useState<any[]>([]);
   const [mobileViewerOpen, setMobileViewerOpen] = useState(false);
   const [mobileViewerIndex, setMobileViewerIndex] = useState(0);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Use the mobile context
   const { isMobile } = useMobile();
+
+  // Track hydration to prevent SSR/client mismatch
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
 
   // Using the cross-browser scroll hook will be handled by CrossBrowserScrollContainer
@@ -321,9 +327,9 @@ export default function ProjectClient({ project }: ProjectClientProps) {
 
   return (
     <div className={`min-h-screen bg-white no-overscroll ${
-      isMobile ? 'mt-4 px-4' : 'mt-12 pl-10 overflow-hidden'
+      !isHydrated ? 'mt-12 pl-10 overflow-hidden' : isMobile ? 'mt-4 px-4' : 'mt-12 pl-10 overflow-hidden'
     }`}>
-      {isMobile ? (
+      {isHydrated && isMobile ? (
         /* Mobile: Vertical scrolling layout */
         <div className="space-y-8">
           {/* Project info section - mobile */}
@@ -690,10 +696,10 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           z-index: 1;
         }
       `}</style>
-      {!isMobile && <ScrollIcon />}
+      {isHydrated && !isMobile && <ScrollIcon />}
       
       {/* Mobile Image Viewer */}
-      {isMobile && (
+      {isHydrated && isMobile && (
         <MobileImageViewer
           mediaItems={allMediaItems}
           initialIndex={mobileViewerIndex}
