@@ -1,22 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
+import { useMobileDetection } from "../../hooks/useMobileDetection";
 
 export default function KontaktPage() {
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Mobile detection
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  // Use the reusable mobile detection hook
+  const isMobile = useMobileDetection();
 
   return (
     <section className={`pb-8 mobile-vh-fit ${

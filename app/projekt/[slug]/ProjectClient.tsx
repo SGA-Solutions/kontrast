@@ -8,6 +8,7 @@ import ScrollIcon from "../../../components/ScrollIcon";
 import BeforeAfterViewer from "../../../components/BeforeAfterViewer";
 import Image360Viewer from "../../../components/Image360Viewer";
 import MobileImageViewer from "../../../components/MobileImageViewer";
+import { useMobileDetection } from "../../../hooks/useMobileDetection";
 import Image from "next/image";
 
 // Helper function to construct video URL from Sanity asset reference
@@ -72,38 +73,11 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   const [hasOverflow, setHasOverflow] = useState(false);
   const [visibleBlocks, setVisibleBlocks] = useState<any[]>([]);
   const [overflowBlocks, setOverflowBlocks] = useState<any[]>([]);
-  const [isMobile, setIsMobile] = useState(false);
   const [mobileViewerOpen, setMobileViewerOpen] = useState(false);
   const [mobileViewerIndex, setMobileViewerIndex] = useState(0);
 
-  // Mobile detection - check for actual mobile devices, not just screen size
-  useEffect(() => {
-    const checkMobile = () => {
-      // Check if it's a touch device first
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      
-      // Check screen dimensions - use the smaller dimension to account for rotation
-      const smallerDimension = Math.min(window.innerWidth, window.innerHeight);
-      const largerDimension = Math.max(window.innerWidth, window.innerHeight);
-      
-      // Consider it mobile if:
-      // 1. It's a touch device AND smaller dimension is less than 640px
-      // 2. OR if both dimensions suggest mobile (smaller < 640 and larger < 1024)
-      const isMobileSize = smallerDimension < 640 && largerDimension < 1024;
-      const isMobileDevice = isTouchDevice && smallerDimension < 640;
-      
-      setIsMobile(isMobileDevice || isMobileSize);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    window.addEventListener('orientationchange', checkMobile);
-    
-    return () => {
-      window.removeEventListener('resize', checkMobile);
-      window.removeEventListener('orientationchange', checkMobile);
-    };
-  }, []);
+  // Use the reusable mobile detection hook
+  const isMobile = useMobileDetection();
 
 
   // Using the cross-browser scroll hook will be handled by CrossBrowserScrollContainer
