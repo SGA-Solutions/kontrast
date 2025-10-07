@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { getOptimizedImageUrls } from "../lib/image-utils";
 import CrossBrowserImage from "./CrossBrowserImage";
+import { useMobile } from "../contexts/MobileContext";
 
 interface BeforeAfterViewerProps {
   beforeImage: any;
@@ -19,8 +20,11 @@ export default function BeforeAfterViewer({
   alt = "Before and after comparison",
   className = ""
 }: BeforeAfterViewerProps) {
-  const [revealPercentage, setRevealPercentage] = useState(0);
+  const [revealPercentage, setRevealPercentage] = useState(5);
+  const [isDragging, setIsDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const handleRef = useRef<HTMLDivElement>(null);
+  const { isMobile } = useMobile();
 
   // Get optimized image URLs for both images
   const beforeImageUrls = getOptimizedImageUrls(beforeImage, {
@@ -39,29 +43,95 @@ export default function BeforeAfterViewer({
     format: 'auto'
   });
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-
+  // Calculate percentage from position
+  const calculatePercentage = (clientX: number) => {
+    if (!containerRef.current) return 50;
     const rect = containerRef.current.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-    
-    setRevealPercentage(percentage);
+    const x = clientX - rect.left;
+    return Math.max(0, Math.min(100, (x / rect.width) * 100));
   };
 
-  const handleMouseLeave = () => {
-    setRevealPercentage(0);
+  // Handle drag start (mouse and touch)
+  const handleDragStart = (clientX: number) => {
+    setIsDragging(true);
+    setRevealPercentage(calculatePercentage(clientX));
   };
+
+  // Handle drag move (mouse and touch)
+  const handleDragMove = (clientX: number) => {
+    if (!isDragging) return;
+    setRevealPercentage(calculatePercentage(clientX));
+  };
+
+  // Handle drag end
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
+  // Mouse events for desktop
+  const handleMouseDown = (event: React.MouseEvent) => {
+    event.preventDefault();
+    handleDragStart(event.clientX);
+  };
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    handleDragMove(event.clientX);
+  };
+
+  // Touch events for mobile
+  const handleTouchStart = (event: React.TouchEvent) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    handleDragStart(touch.clientX);
+  };
+
+  const handleTouchMove = (event: React.TouchEvent) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    handleDragMove(touch.clientX);
+  };
+
+  // Global event listeners for mouse/touch move and end
+  useEffect(() => {
+    const handleGlobalMouseMove = (event: MouseEvent) => {
+      if (isDragging) {
+        handleDragMove(event.clientX);
+      }
+    };
+
+    const handleGlobalTouchMove = (event: TouchEvent) => {
+      if (isDragging && event.touches.length > 0) {
+        event.preventDefault();
+        handleDragMove(event.touches[0].clientX);
+      }
+    };
+
+    const handleGlobalEnd = () => {
+      handleDragEnd();
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleGlobalMouseMove);
+      document.addEventListener('mouseup', handleGlobalEnd);
+      document.addEventListener('touchmove', handleGlobalTouchMove, { passive: false });
+      document.addEventListener('touchend', handleGlobalEnd);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+      document.removeEventListener('mouseup', handleGlobalEnd);
+      document.removeEventListener('touchmove', handleGlobalTouchMove);
+      document.removeEventListener('touchend', handleGlobalEnd);
+    };
+  }, [isDragging]);
 
   return (
     <div 
       ref={containerRef}
-      className={`relative overflow-hidden cursor-ew-resize ${className}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      className={`relative overflow-hidden ${className}`}
       >
       {/* Before image (top layer) */}
-      <div >
+      <div>
         <CrossBrowserImage
           src={beforeImageUrls.primary}
           alt={`${alt} - after`}
@@ -91,16 +161,36 @@ export default function BeforeAfterViewer({
         />
       </div>
 
-      {/* Divider line */}
-      {revealPercentage > 0 && (
-        <div
-          className="absolute top-0 bottom-0 w-0.5 bg-white shadow-lg z-10 transition-opacity duration-200"
-          style={{
-            left: `${revealPercentage}%`,
-            transform: 'translateX(-50%)'
-          }}
-        />
-      )}
+      {/* Divider line with draggable handle */}
+      <div
+        className="absolute top-0 bottom-0 w-0.5 bg-white shadow-lg z-20"
+        style={{
+          left: `${revealPercentage}%`,
+          transform: 'translateX(-50%)'
+        }}
+      />
+
+      {/* Draggable handle */}
+      <div
+        ref={handleRef}
+        className={`absolute top-1/2 w-12 h-12 bg-gray-800 bg-opacity-20 rounded-full shadow-lg z-30 flex items-center justify-center cursor-grab ${isDragging ? 'cursor-grabbing scale-110' : ''}`}
+        style={{
+          left: `${revealPercentage}%`,
+          transform: 'translate(-50%, -50%)'
+        }}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
+      >
+        {/* Handle icon - double arrows */}
+        <div className="flex items-center space-x-0.5">
+          <svg width="8" height="12" viewBox="0 0 8 12" fill="none" className="text-white">
+            <path d="M3 1L1 6L3 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <svg width="8" height="12" viewBox="0 0 8 12" fill="none" className="text-white">
+            <path d="M5 1L7 6L5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      </div>
 
       {/* Labels */}
       {/*
@@ -119,11 +209,11 @@ export default function BeforeAfterViewer({
         </>
       )}
       */}
-      {/* Instruction overlay when not hovering */}
-      {revealPercentage === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 z-10">
+      {/* Instruction overlay */}
+      {!isDragging && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 opacity-0 hover:opacity-100 transition-opacity duration-300 z-10 pointer-events-none">
           <div className="bg-white bg-opacity-90 text-neutral-800 px-4 py-2 text-sm uppercase tracking-wider rounded shadow-lg">
-            Håll muspekaren och dra för att jämföra
+            {isMobile ? 'Dra handtaget för att jämföra' : 'Dra handtaget för att jämföra'}
           </div>
         </div>
       )}
