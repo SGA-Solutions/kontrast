@@ -635,7 +635,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
         {allMediaItems.map((item, index) => (
           <div 
             key={index} 
-            className={`flex-shrink-0 relative min-w-50 w-[calc(95vw-780px-2rem)] max-h-[66vh] mt-10 transition-all duration-300 ease-in-out`}
+            className={`flex-shrink-0 relative min-w-50 w-[calc(95vw-780px-2rem)] 3xl:w-[calc(85vw-780px-2rem)] max-h-[66vh] mt-10 transition-all duration-300 ease-in-out`}
             style={{
               marginLeft: '0',
               marginRight: index < allMediaItems.length - 1 ? '2rem' : '0'
