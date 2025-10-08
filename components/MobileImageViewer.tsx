@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import CrossBrowserImage from "./CrossBrowserImage";
 import BeforeAfterViewer from "./BeforeAfterViewer";
 import Image360Viewer from "./Image360Viewer";
@@ -102,26 +102,26 @@ export default function MobileImageViewer({
     };
   }, [isOpen]);
 
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % mediaItems.length);
-  };
+  }, [mediaItems.length]);
 
-  const goToPrevious = () => {
+  const goToPrevious = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + mediaItems.length) % mediaItems.length);
-  };
+  }, [mediaItems.length]);
 
   // Touch handlers for swipe navigation
-  const handleTouchStart = (e: React.TouchEvent) => {
+  const handleTouchStart = useCallback((e: TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
     touchStartY.current = e.touches[0].clientY;
-  };
+  }, []);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
+  const handleTouchMove = useCallback((e: TouchEvent) => {
     // Prevent scrolling while swiping
     e.preventDefault();
-  };
+  }, []);
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
+  const handleTouchEnd = useCallback((e: TouchEvent) => {
     if (touchStartX.current === null || touchStartY.current === null) return;
 
     const touchEndX = e.changedTouches[0].clientX;
@@ -144,7 +144,23 @@ export default function MobileImageViewer({
 
     touchStartX.current = null;
     touchStartY.current = null;
-  };
+  }, [goToNext, goToPrevious]);
+
+  // Add non-passive touch event listeners
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !isOpen) return;
+
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
+    container.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isOpen, handleTouchStart, handleTouchMove, handleTouchEnd]);
 
   if (!isOpen) return null;
 
@@ -174,9 +190,6 @@ export default function MobileImageViewer({
         className={`relative w-full h-full flex items-center justify-center ${
           isLandscape ? 'px-16 py-8' : 'px-4 py-16'
         }`}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
         {/* Navigation arrows */}
         {mediaItems.length > 1 && (

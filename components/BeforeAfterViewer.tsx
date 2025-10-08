@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { getOptimizedImageUrls } from "../lib/image-utils";
 import CrossBrowserImage from "./CrossBrowserImage";
 import { useMobile } from "../contexts/MobileContext";
@@ -52,21 +52,21 @@ export default function BeforeAfterViewer({
   };
 
   // Handle drag start (mouse and touch)
-  const handleDragStart = (clientX: number) => {
+  const handleDragStart = useCallback((clientX: number) => {
     setIsDragging(true);
     setRevealPercentage(calculatePercentage(clientX));
-  };
+  }, []);
 
   // Handle drag move (mouse and touch)
-  const handleDragMove = (clientX: number) => {
+  const handleDragMove = useCallback((clientX: number) => {
     if (!isDragging) return;
     setRevealPercentage(calculatePercentage(clientX));
-  };
+  }, [isDragging]);
 
   // Handle drag end
-  const handleDragEnd = () => {
+  const handleDragEnd = useCallback(() => {
     setIsDragging(false);
-  };
+  }, []);
 
   // Mouse events for desktop
   const handleMouseDown = (event: React.MouseEvent) => {
@@ -78,18 +78,30 @@ export default function BeforeAfterViewer({
     handleDragMove(event.clientX);
   };
 
-  // Touch events for mobile
-  const handleTouchStart = (event: React.TouchEvent) => {
+  // Touch events for mobile (now using DOM events)
+  const handleTouchStart = useCallback((event: TouchEvent) => {
     event.preventDefault();
     const touch = event.touches[0];
     handleDragStart(touch.clientX);
-  };
+  }, [handleDragStart]);
 
-  const handleTouchMove = (event: React.TouchEvent) => {
+  const handleTouchMove = useCallback((event: TouchEvent) => {
     event.preventDefault();
     const touch = event.touches[0];
     handleDragMove(touch.clientX);
-  };
+  }, [handleDragMove]);
+
+  // Add non-passive touch event listeners to handle
+  useEffect(() => {
+    const handle = handleRef.current;
+    if (!handle) return;
+
+    handle.addEventListener('touchstart', handleTouchStart, { passive: false });
+
+    return () => {
+      handle.removeEventListener('touchstart', handleTouchStart);
+    };
+  }, [handleTouchStart]);
 
   // Global event listeners for mouse/touch move and end
   useEffect(() => {
@@ -170,7 +182,6 @@ export default function BeforeAfterViewer({
           transform: 'translate(-50%, -50%)'
         }}
         onMouseDown={handleMouseDown}
-        onTouchStart={handleTouchStart}
       >
         {/* Handle icon - double arrows */}
         <div className="flex items-center space-x-0.5">
