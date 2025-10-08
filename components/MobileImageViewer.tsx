@@ -272,13 +272,7 @@ export default function MobileImageViewer({
         )}
       </div>
 
-      {/* Swipe indicator */}
-      {mediaItems.length > 1 && (
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white text-xs opacity-70">
-          Swipe left or right to navigate
-        </div>
-      )}
-
+      
       {/* Dots indicator */}
       {mediaItems.length > 1 && mediaItems.length <= 10 && (
         <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 flex space-x-2">

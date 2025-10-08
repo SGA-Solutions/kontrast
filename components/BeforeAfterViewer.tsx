@@ -71,6 +71,7 @@ export default function BeforeAfterViewer({
   // Mouse events for desktop
   const handleMouseDown = (event: React.MouseEvent) => {
     event.preventDefault();
+    event.stopPropagation(); // Prevent event from bubbling to parent MobileImageViewer
     handleDragStart(event.clientX);
   };
 
@@ -81,12 +82,14 @@ export default function BeforeAfterViewer({
   // Touch events for mobile (now using DOM events)
   const handleTouchStart = useCallback((event: TouchEvent) => {
     event.preventDefault();
+    event.stopPropagation(); // Prevent event from bubbling to parent MobileImageViewer
     const touch = event.touches[0];
     handleDragStart(touch.clientX);
   }, [handleDragStart]);
 
   const handleTouchMove = useCallback((event: TouchEvent) => {
     event.preventDefault();
+    event.stopPropagation(); // Prevent event from bubbling to parent MobileImageViewer
     const touch = event.touches[0];
     handleDragMove(touch.clientX);
   }, [handleDragMove]);
@@ -114,6 +117,7 @@ export default function BeforeAfterViewer({
     const handleGlobalTouchMove = (event: TouchEvent) => {
       if (isDragging && event.touches.length > 0) {
         event.preventDefault();
+        event.stopPropagation(); // Prevent event from bubbling to parent MobileImageViewer
         handleDragMove(event.touches[0].clientX);
       }
     };
@@ -176,7 +180,7 @@ export default function BeforeAfterViewer({
       {/* Draggable handle */}
       <div
         ref={handleRef}
-        className={`absolute top-1/2 w-12 h-12 bg-gray-800 bg-opacity-20 rounded-full shadow-lg z-30 flex items-center justify-center cursor-grab ${isDragging ? 'cursor-grabbing scale-110' : ''}`}
+        className={`absolute top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-800 bg-opacity-20 rounded-full shadow-lg z-30 flex items-center justify-center cursor-grab ${isDragging ? 'cursor-grabbing scale-110' : ''}`}
         style={{
           left: `${revealPercentage}%`,
           transform: 'translate(-50%, -50%)'
