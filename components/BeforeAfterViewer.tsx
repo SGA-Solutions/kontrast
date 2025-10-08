@@ -161,15 +161,6 @@ export default function BeforeAfterViewer({
         />
       </div>
 
-      {/* Divider line with draggable handle */}
-      <div
-        className="absolute top-0 bottom-0 w-0.5 bg-white shadow-lg z-20"
-        style={{
-          left: `${revealPercentage}%`,
-          transform: 'translateX(-50%)'
-        }}
-      />
-
       {/* Draggable handle */}
       <div
         ref={handleRef}

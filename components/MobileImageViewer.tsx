@@ -206,13 +206,15 @@ export default function MobileImageViewer({
         {/* Media content */}
         <div className={`relative ${isLandscape ? 'max-w-[80vw] max-h-[80vh]' : 'max-w-[90vw] max-h-[70vh]'}`}>
           {currentItem.type === 'beforeAfter' ? (
-            <BeforeAfterViewer
-              beforeImage={currentItem.beforeImage}
-              afterImage={currentItem.afterImage}
-              caption={currentItem.caption}
-              alt={currentItem.alt}
-              className="w-full h-full object-contain"
-            />
+            <div className={`${isLandscape ? 'w-[80vw] h-[40vw]' : 'w-[90vw] h-[45vw]'} min-h-[300px]`}>
+              <BeforeAfterViewer
+                beforeImage={currentItem.beforeImage}
+                afterImage={currentItem.afterImage}
+                caption={currentItem.caption}
+                alt={currentItem.alt}
+                className="w-full h-full object-contain object-top"
+              />
+            </div>
           ) : currentItem.type === 'image360' ? (
             <div className={`${isLandscape ? 'w-[80vw] h-[40vw]' : 'w-[90vw] h-[45vw]'} min-h-[300px]`}>
               <Image360Viewer
