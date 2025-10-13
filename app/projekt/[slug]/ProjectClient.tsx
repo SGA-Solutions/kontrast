@@ -224,6 +224,8 @@ export default function ProjectClient({ project }: ProjectClientProps) {
     afterImage?: any;
     image360?: any;
     caption?: string;
+    isLandscape: boolean;
+    aspect: number;
   }> = [];
   
   /*
@@ -254,7 +256,9 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           caption: item.caption,
           alt: `${project.title} before/after comparison ${index + 1}`,
           isCover: false,
-          type: 'beforeAfter'
+          type: 'beforeAfter',
+          isLandscape: true,
+          aspect: 1.33 //item.asset.metadata?.dimensions.width/item.asset.metadata?.dimensions.height
         });
       }
       // Handle 360° images
@@ -264,7 +268,9 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           caption: item.caption,
           alt: `${project.title} 360° view ${index + 1}`,
           isCover: false,
-          type: 'image360'
+          type: 'image360',
+          isLandscape: true,
+          aspect: 1.33 //item.asset.metadata?.dimensions.width/item.asset.metadata?.dimensions.height
         });
       }
       // Handle videos - check for asset structure and video MIME type
@@ -275,7 +281,9 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           alt: `${project.title} gallery video ${index + 1}`,
           isCover: false,
           type: 'video',
-          asset: item.asset
+          asset: item.asset,
+          isLandscape: true,
+          aspect: 1.33 //item.asset.metadata?.dimensions.width/item.asset.metadata?.dimensions.height
         });
       }
       // Handle videos without MIME type (fallback based on file extension)
@@ -285,7 +293,9 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           alt: `${project.title} gallery video ${index + 1}`,
           isCover: false,
           type: 'video',
-          asset: item.asset
+          asset: item.asset,
+          isLandscape: true,
+          aspect: 1.33 //item.asset.metadata?.dimensions.width/item.asset.metadata?.dimensions.height
         });
       }
       // Handle images - check for asset structure and image MIME type
@@ -298,11 +308,15 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           fit: 'max',
           format: 'auto'
         });
+        var aspect = item.asset.metadata?.dimensions.width/item.asset.metadata?.dimensions.height
+        aspect = Number(aspect.toFixed(2))
         allMediaItems.push({
           ...imageUrls,
           alt: `${project.title} gallery image ${index + 1}`,
           isCover: false,
-          type: 'image'
+          type: 'image',
+          isLandscape: true,
+          aspect: aspect
         });
       }
       // Handle legacy images without MIME type check
@@ -315,11 +329,15 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           fit: 'max',
           format: 'auto'
         });
+        var aspect = item.asset.metadata?.dimensions.width/item.asset.metadata?.dimensions.height
+        aspect = Number(aspect.toFixed(2))
         allMediaItems.push({
           ...imageUrls,
           alt: `${project.title} gallery image ${index + 1}`,
           isCover: false,
-          type: 'image'
+          type: 'image',
+          isLandscape: item.asset.metadata.dimensions.width > item.asset.metadata.dimensions.height ,
+          aspect: aspect
         });
       }
     });
@@ -635,7 +653,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
         {allMediaItems.map((item, index) => (
           <div 
             key={index} 
-            className={`flex-shrink-0 relative min-w-50 w-[calc(95vw-780px-2rem)] 3xl:w-[calc(85vw-780px-2rem)] max-h-[66vh] mt-10 transition-all duration-300 ease-in-out`}
+            className={`flex-shrink-0 relative min-w-50 h-[70vh] aspect-[${item.aspect}] bg-black mt-10 transition-all duration-300 ease-in-out`}
             style={{
               marginLeft: '0',
               marginRight: index < allMediaItems.length - 1 ? '2rem' : '0'
@@ -656,12 +674,12 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                 alt={item.alt}
                 className="object-contain object-top w-full h-full"
               />
-            ) : item.type === 'image' && item.primary ? (
+            ) : item.type === 'image' && item.primary ? (              
               <CrossBrowserImage
                 src={item.primary}
                 alt={item.alt}
                 fill
-                className="object-contain object-left-top w-full aspect-[4/3]"
+                className="object-contain"
                 priority={index === 0}
                 quality={95}
                 placeholder="blur"
