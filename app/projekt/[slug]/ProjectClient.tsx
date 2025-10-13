@@ -224,7 +224,6 @@ export default function ProjectClient({ project }: ProjectClientProps) {
     afterImage?: any;
     image360?: any;
     caption?: string;
-    isLandscape: boolean;
     aspect: number;
   }> = [];
   
@@ -250,6 +249,8 @@ export default function ProjectClient({ project }: ProjectClientProps) {
       
       // Handle before/after objects
       if (item && item._type === 'beforeAfter' && item.beforeImage && item.afterImage) {
+        var aspect = item.afterImage.asset.metadata?.dimensions.width/item.afterImage.asset.metadata?.dimensions.height
+        aspect = Number(aspect.toFixed(2))
         allMediaItems.push({
           beforeImage: item.beforeImage,
           afterImage: item.afterImage,
@@ -257,8 +258,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           alt: `${project.title} before/after comparison ${index + 1}`,
           isCover: false,
           type: 'beforeAfter',
-          isLandscape: true,
-          aspect: 1.33 //item.asset.metadata?.dimensions.width/item.asset.metadata?.dimensions.height
+          aspect: aspect 
         });
       }
       // Handle 360° images
@@ -269,7 +269,6 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           alt: `${project.title} 360° view ${index + 1}`,
           isCover: false,
           type: 'image360',
-          isLandscape: true,
           aspect: 1.33 //item.asset.metadata?.dimensions.width/item.asset.metadata?.dimensions.height
         });
       }
@@ -282,7 +281,6 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           isCover: false,
           type: 'video',
           asset: item.asset,
-          isLandscape: true,
           aspect: 1.33 //item.asset.metadata?.dimensions.width/item.asset.metadata?.dimensions.height
         });
       }
@@ -294,7 +292,6 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           isCover: false,
           type: 'video',
           asset: item.asset,
-          isLandscape: true,
           aspect: 1.33 //item.asset.metadata?.dimensions.width/item.asset.metadata?.dimensions.height
         });
       }
@@ -315,7 +312,6 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           alt: `${project.title} gallery image ${index + 1}`,
           isCover: false,
           type: 'image',
-          isLandscape: true,
           aspect: aspect
         });
       }
@@ -336,7 +332,6 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           alt: `${project.title} gallery image ${index + 1}`,
           isCover: false,
           type: 'image',
-          isLandscape: item.asset.metadata.dimensions.width > item.asset.metadata.dimensions.height ,
           aspect: aspect
         });
       }
@@ -653,10 +648,11 @@ export default function ProjectClient({ project }: ProjectClientProps) {
         {allMediaItems.map((item, index) => (
           <div 
             key={index} 
-            className={`flex-shrink-0 relative min-w-50 h-[70vh] aspect-[${item.aspect}] bg-black mt-10 `}
+            className={`flex-shrink-0 relative min-w-50 h-[70vh] mt-10 `}
             style={{
               marginLeft: '0',
-              marginRight: index < allMediaItems.length - 1 ? '2rem' : '0'
+              marginRight: index < allMediaItems.length - 1 ? '2rem' : '0',
+              aspectRatio: item.aspect
             }}
           >
             {item.type === 'beforeAfter' ? (
@@ -665,7 +661,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
                 afterImage={item.afterImage}
                 caption={item.caption}
                 alt={item.alt}
-                className="object-contain object-top w-full h-full"
+                className="object-contain w-full h-full"
               />
             ) : item.type === 'image360' ? (
               <Image360Viewer
