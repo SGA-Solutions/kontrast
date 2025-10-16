@@ -173,19 +173,19 @@ export default function OmOssPage() {
                       components={{
                         block: {
                           normal: ({ children }) => (
-                            <div className="mb-4">
-                              <p className="text-sm text-gray-100 text-justify">
+                            <div className="mb-4 3xl:mb-6">
+                              <p className="text-sm 3xl:text-lg text-gray-100 text-justify leading-relaxed 3xl:leading-relaxed">
                                 {children}
                               </p>
                             </div>
                           ),
                           h2: ({ children }) => (
-                            <h2 className="text-lg sm:text-xl lg:text-2xl font-medium uppercase tracking-wider mb-4 text-white">
+                            <h2 className="text-lg sm:text-xl lg:text-2xl 3xl:text-4xl font-medium uppercase tracking-wider mb-4 3xl:mb-6 text-white">
                               {children}
                             </h2>
                           ),
                           h3: ({ children }) => (
-                            <h3 className="text-base sm:text-lg lg:text-xl font-medium uppercase tracking-wider mb-3 text-white">
+                            <h3 className="text-base sm:text-lg lg:text-xl 3xl:text-2xl font-medium uppercase tracking-wider mb-3 3xl:mb-4 text-white">
                               {children}
                             </h3>
                           ),
