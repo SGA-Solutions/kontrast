@@ -119,7 +119,7 @@ export default function TjansterPage() {
         </div>
 
         {/* Customer Logos Carousel */}
-        <div className="overflow-hidden mt-25">
+        <div className="overflow-hidden">
           <div className="flex animate-scroll-left gap-x-12 items-center">
             {/* First set of logos */}
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((num) => (

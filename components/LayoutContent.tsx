@@ -22,7 +22,7 @@ export function LayoutContent({ children }: LayoutContentProps) {
       <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-[100px_1fr]'} grid-fallback`}>
         {/* Left vertical navigation */}      
         <Header />       
-        <main className="max-h-[80vh] overflow-x-hidden overflow-y-auto hide-scrollbar mt-8 no-overscroll">
+        <main className="max-h-[88vh] overflow-x-hidden overflow-y-auto hide-scrollbar mt-8 no-overscroll">
           {children}
         </main>
       </div>
