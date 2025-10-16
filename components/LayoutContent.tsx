@@ -14,7 +14,7 @@ export function LayoutContent({ children }: LayoutContentProps) {
   
   return (
     <div className="flex flex-col min-h-screen">
-      <ResolutionDisplay />
+      {/*<ResolutionDisplay />*/}
       <div className="flex-1 3xl:min-h-[5vh]" />
       {/* Dynamic layout based on actual device type, not screen size */}
       <div className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-[100px_1fr]'} grid-fallback`}>

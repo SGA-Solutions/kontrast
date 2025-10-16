@@ -129,7 +129,7 @@ export default async function Home() {
 
       <div className="overflow-y-auto overflow-x-hidden ml-0 sm:ml-10 grid gap-6 sm:gap-8 sm:grid-cols-[15%_85%] mt-6">
         {/* Intro text (left column) */}
-        <div className="text-fluid-sm space-fluid-2 max-w-none lg:max-w-55">
+        <div className="text-fluid-sm space-fluid-2 max-w-none ">
           {introBlocks && introBlocks.length > 0 && (
             <div className="prose prose-sm prose-neutral max-w-none text-justify mobile-fit-text leading-fluid-normal">
               <PortableText value={introBlocks} />
