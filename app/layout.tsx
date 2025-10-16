@@ -5,6 +5,7 @@ import { futuraBQMedium, futuraBQLight } from "./fonts";
 import { PreloaderProvider } from "../components/PreloaderProvider";
 import LottiePreloader from "../components/LottiePreloader";
 import { MobileProvider } from "../contexts/MobileContext";
+import { ThemeProvider } from "../contexts/ThemeContext";
 import { LayoutContent } from "../components/LayoutContent";
 
 const geistSans = Geist({
@@ -34,7 +35,9 @@ export default function RootLayout({
         <PreloaderProvider>
           <LottiePreloader />
           <MobileProvider>
-            <LayoutContent>{children}</LayoutContent>
+            <ThemeProvider>
+              <LayoutContent>{children}</LayoutContent>
+            </ThemeProvider>
           </MobileProvider>
         </PreloaderProvider>
       </body>

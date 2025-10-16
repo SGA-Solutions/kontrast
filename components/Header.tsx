@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useMobile } from "../contexts/MobileContext";
+import { useTheme } from "../contexts/ThemeContext";
 import { MobileNav } from "./MobileNav";
 
 // Simple className merge helper
@@ -23,6 +24,7 @@ const NAV = [
 export function Header() {
   const pathname = usePathname();
   const { isMobile } = useMobile();
+  const { isDark } = useTheme();
 
   return (
     <>
@@ -31,7 +33,7 @@ export function Header() {
         <MobileNav />
       ) : (
         /* Desktop Sidebar */
-        <aside className="flex flex-col pt-5 sticky top-0 h-screen w-full">
+        <aside className="flex flex-col pt-5 sticky top-0 h-screen w-full z-20">
           {/* Logo */}
           <Link href="/" aria-label="Kontrast" className="pt-2 mb-7 inline-block ml-2">
             <Image
@@ -40,19 +42,22 @@ export function Header() {
               width={64}
               height={64}
               priority
-              className="pl-4 w-16 h-16 object-contain"
+              className={`pl-4 w-16 h-16 object-contain ${isDark ? 'filter brightness-0 invert' : ''}`}
             />
           </Link>
           
           {/* Primary nav */}
-          <nav className="flex flex-col gap-3 text-xs ml-5 tracking-[0.3em] text-neutral-400 font-semibold">
+          <nav className={`flex flex-col gap-3 text-xs ml-5 tracking-[0.3em] font-semibold ${isDark ? 'text-neutral-300' : 'text-neutral-400'}`}>
             {NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors touch-manipulation",
-                  pathname === item.href && "font-semibold text-neutral-900"
+                  "transition-colors touch-manipulation",
+                  isDark 
+                    ? "hover:text-white" 
+                    : "hover:text-neutral-900",
+                  pathname === item.href && (isDark ? "font-semibold text-white" : "font-semibold text-neutral-900")
                 )}
               >
                 {item.label.toUpperCase()}
@@ -61,13 +66,13 @@ export function Header() {
           </nav>
 
           {/* Social links */}
-          <div className="mt-4 ml-5 flex gap-4 text-neutral-500">
+          <div className={`mt-4 ml-5 flex gap-4 ${isDark ? 'text-neutral-400' : 'text-neutral-500'}`}>
             <a
               href="https://www.instagram.com/"
               target="_blank"
               rel="noreferrer noopener"
               aria-label="Instagram"
-              className="hover:text-neutral-900 dark:hover:text-neutral-100 p-1 touch-manipulation"
+              className={`p-1 touch-manipulation transition-colors ${isDark ? 'hover:text-white' : 'hover:text-neutral-900'}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +93,7 @@ export function Header() {
               target="_blank"
               rel="noreferrer noopener"
               aria-label="LinkedIn"
-              className="hover:text-neutral-900 dark:hover:text-neutral-100 p-1 touch-manipulation"
+              className={`p-1 touch-manipulation transition-colors ${isDark ? 'hover:text-white' : 'hover:text-neutral-900'}`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

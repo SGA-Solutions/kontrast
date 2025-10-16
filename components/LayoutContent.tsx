@@ -3,6 +3,7 @@
 import { ReactNode } from 'react';
 import { Header } from './Header';
 import { useMobile } from '../contexts/MobileContext';
+import { useTheme } from '../contexts/ThemeContext';
 import { ResolutionDisplay } from './ResolutionDisplay';
 
 interface LayoutContentProps {
@@ -11,9 +12,10 @@ interface LayoutContentProps {
 
 export function LayoutContent({ children }: LayoutContentProps) {
   const { isMobile } = useMobile();
+  const { isDark } = useTheme();
   
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className={`flex flex-col min-h-screen ${isDark ? 'bg-black text-white' : 'bg-white text-neutral-900'}`}>
       {/*<ResolutionDisplay />*/}
       <div className="flex-1 3xl:min-h-[5vh]" />
       {/* Dynamic layout based on actual device type, not screen size */}

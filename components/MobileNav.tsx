@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useMobile } from "../contexts/MobileContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 const NAV = [
   { href: "/", label: "Hem" },
@@ -19,6 +20,7 @@ export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const { isMobile } = useMobile();
+  const { isDark } = useTheme();
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const closeMenu = () => setIsOpen(false);
@@ -26,7 +28,9 @@ export function MobileNav() {
   return (
     <>
       {/* Mobile Header Bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-neutral-200 px-4 py-3 flex items-center justify-between">
+      <div className={`fixed top-0 left-0 right-0 z-50 px-4 py-3 flex items-center justify-between ${
+        isDark ? 'bg-black border-b border-neutral-700' : 'bg-white border-b border-neutral-200'
+      }`}>
         {/* Logo */}
         <Link href="/" onClick={closeMenu} className="flex items-center">
           <img
@@ -34,32 +38,34 @@ export function MobileNav() {
             alt="Kontrast logo"
             width={700}
             height={120}
-            className="w-50 h-auto object-contain"
+            className={`w-50 h-auto object-contain ${isDark ? 'filter brightness-0 invert' : ''}`}
           />
         </Link>
 
         {/* Hamburger Menu Button */}
         <button
           onClick={toggleMenu}
-          className="p-2 rounded-md hover:bg-neutral-100 transition-colors touch-manipulation"
+          className={`p-2 rounded-md transition-colors touch-manipulation ${
+            isDark ? 'hover:bg-neutral-800' : 'hover:bg-neutral-100'
+          }`}
           aria-label="Toggle menu"
           aria-expanded={isOpen}
         >
           <div className="w-6 h-6 flex flex-col justify-center items-center">
             <span
-              className={`block h-0.5 w-6 bg-neutral-900 transition-all duration-300 ${
-                isOpen ? "rotate-45 translate-y-1" : "-translate-y-1"
-              }`}
+              className={`block h-0.5 w-6 transition-all duration-300 ${
+                isDark ? 'bg-white' : 'bg-neutral-900'
+              } ${isOpen ? "rotate-45 translate-y-1" : "-translate-y-1"}`}
             />
             <span
-              className={`block h-0.5 w-6 bg-neutral-900 transition-all duration-300 ${
-                isOpen ? "opacity-0" : "opacity-100"
-              }`}
+              className={`block h-0.5 w-6 transition-all duration-300 ${
+                isDark ? 'bg-white' : 'bg-neutral-900'
+              } ${isOpen ? "opacity-0" : "opacity-100"}`}
             />
             <span
-              className={`block h-0.5 w-6 bg-neutral-900 transition-all duration-300 ${
-                isOpen ? "-rotate-45 -translate-y-1" : "translate-y-1"
-              }`}
+              className={`block h-0.5 w-6 transition-all duration-300 ${
+                isDark ? 'bg-white' : 'bg-neutral-900'
+              } ${isOpen ? "-rotate-45 -translate-y-1" : "translate-y-1"}`}
             />
           </div>
         </button>
