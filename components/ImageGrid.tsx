@@ -60,8 +60,8 @@ export default function ImageGrid({ items, className = "", visibleColumns = 4.8 
       className={`relative pb-2 hide-scrollbar no-overscroll cursor-grab active:cursor-grabbing
         /* Desktop: horizontal scroll */
         sm:overflow-x-auto sm:touch-pan-x
-        /* Mobile: vertical scroll */
-        max-sm:overflow-y-auto max-sm:touch-pan-y max-sm:max-h-screen
+        /* Mobile: vertical scroll - let page handle it */
+        max-sm:touch-pan-y
         ${className}`}
     >
       <div className="
@@ -94,7 +94,7 @@ export default function ImageGrid({ items, className = "", visibleColumns = 4.8 
                 <div className="absolute bottom-3 right-3 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-out">
                   <div className="w-6 h-6 border-3 border-white rounded-full flex items-center justify-center">
                     <svg className="w-4 h-4 text-white " fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z"/>
+                      <path d="M8 5v14l11-7z" />
                     </svg>
                   </div>
                 </div>
