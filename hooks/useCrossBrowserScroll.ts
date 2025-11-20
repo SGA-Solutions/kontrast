@@ -37,7 +37,7 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
     }
 
     const diff = targetScrollRef.current - currentScrollRef.current;
-    
+
     if (Math.abs(diff) < 0.5) {
       // Close enough, snap to target
       if (effectiveDirection === 'horizontal') {
@@ -52,7 +52,7 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
 
     // Smooth interpolation
     currentScrollRef.current += diff * smoothness;
-    
+
     if (effectiveDirection === 'horizontal') {
       element.scrollLeft = currentScrollRef.current;
     } else {
@@ -64,43 +64,43 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
 
   const handleWheel = useCallback((e: WheelEvent) => {
     const element = e.currentTarget as HTMLDivElement;
-    
+
     // Determine effective direction based on responsive setting
     let effectiveDirection = direction;
     if (direction === 'responsive') {
       // Use horizontal on desktop (md and up), vertical on mobile
       effectiveDirection = window.innerWidth >= 768 ? 'horizontal' : 'vertical';
     }
-    
+
     // Check if we can actually scroll in the intended direction
     const currentScroll = effectiveDirection === 'horizontal' ? element.scrollLeft : element.scrollTop;
-    const maxScroll = effectiveDirection === 'horizontal' 
+    const maxScroll = effectiveDirection === 'horizontal'
       ? element.scrollWidth - element.clientWidth
       : element.scrollHeight - element.clientHeight;
-    
+
     // Only handle scroll if there's content to scroll
     if (maxScroll <= 0) return;
-    
+
     // Detect touchpad vs mouse wheel
     // Touchpad: deltaMode = 0 (pixels), usually has deltaX for horizontal scrolling
     // Mouse wheel: deltaMode = 1 (lines) or larger delta values
     const isTouchpad = e.deltaMode === 0 && Math.abs(e.deltaX) > 0;
-    
+
     // For horizontal scrolling containers, prioritize horizontal gestures
     if (effectiveDirection === 'horizontal') {
       // If it's a horizontal touchpad gesture, let browser handle it
       if (isTouchpad && Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
         return;
       }
-      
+
       // For vertical gestures on horizontal containers, always prevent and convert to horizontal
       e.preventDefault();
-      
+
       // Use deltaY for vertical wheel/touchpad gestures, deltaX for horizontal
       const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       const normalizedDelta = normalizeWheelDelta(delta) * sensitivity;
       const newScroll = currentScroll + normalizedDelta;
-      
+
       // Update target scroll position
       targetScrollRef.current = Math.max(0, Math.min(maxScroll, newScroll));
       currentScrollRef.current = currentScroll;
@@ -111,17 +111,17 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
       }
       return;
     }
-    
+
     // For vertical containers, handle normally
     const normalizedDelta = normalizeWheelDelta(e.deltaY) * sensitivity;
     const newScroll = currentScroll + normalizedDelta;
-    
+
     // Only prevent default if we're handling the scroll
-    if ((newScroll >= 0 && newScroll <= maxScroll) || 
-        (newScroll < 0 && currentScroll > 0) || 
-        (newScroll > maxScroll && currentScroll < maxScroll)) {
+    if ((newScroll >= 0 && newScroll <= maxScroll) ||
+      (newScroll < 0 && currentScroll > 0) ||
+      (newScroll > maxScroll && currentScroll < maxScroll)) {
       e.preventDefault();
-      
+
       // Update target scroll position
       targetScrollRef.current = Math.max(0, Math.min(maxScroll, newScroll));
       currentScrollRef.current = currentScroll;
@@ -140,21 +140,145 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
     }
   }, []);
 
+  // Drag state
+  const isDraggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const startYRef = useRef(0);
+  const startScrollRef = useRef(0);
+
+  const handlePointerDown = useCallback((e: PointerEvent) => {
+    const element = elementRef.current;
+    if (!element) return;
+
+    // Only handle primary button (usually left click) or touch
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+
+    isDraggingRef.current = false; // Not dragging yet, waiting for threshold
+    startXRef.current = e.pageX;
+    startYRef.current = e.pageY;
+
+    // Determine effective direction
+    let effectiveDirection = direction;
+    if (direction === 'responsive') {
+      effectiveDirection = window.innerWidth >= 768 ? 'horizontal' : 'vertical';
+    }
+
+    startScrollRef.current = effectiveDirection === 'horizontal' ? element.scrollLeft : element.scrollTop;
+
+    // Cancel any ongoing animations (wheel)
+    if (animationRef.current !== undefined) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = undefined;
+    }
+
+    // Update target to current to prevent jump
+    targetScrollRef.current = startScrollRef.current;
+    currentScrollRef.current = startScrollRef.current;
+
+    // Don't capture yet - wait for move threshold
+  }, [direction]);
+
+  const handlePointerMove = useCallback((e: PointerEvent) => {
+    const element = elementRef.current;
+    if (!element) return;
+
+    // Determine effective direction
+    let effectiveDirection = direction;
+    if (direction === 'responsive') {
+      effectiveDirection = window.innerWidth >= 768 ? 'horizontal' : 'vertical';
+    }
+
+    const x = e.pageX;
+    const y = e.pageY;
+
+    // Check for drag threshold if not yet dragging
+    if (!isDraggingRef.current) {
+      // Only check if we have a valid start point (which we should from pointerdown)
+      if (e.pointerType === 'mouse' && e.buttons !== 1) return;
+
+      const dist = Math.hypot(x - startXRef.current, y - startYRef.current);
+      if (dist < 5) return; // Threshold not reached
+
+      // Threshold reached, start dragging
+      isDraggingRef.current = true;
+      element.setPointerCapture(e.pointerId);
+      element.style.cursor = 'grabbing';
+      element.style.userSelect = 'none';
+
+      // Reset start position to current to avoid jump
+      startXRef.current = x;
+      startYRef.current = y;
+      startScrollRef.current = effectiveDirection === 'horizontal' ? element.scrollLeft : element.scrollTop;
+    }
+
+    // If we are here, we are dragging
+    e.preventDefault();
+
+    if (effectiveDirection === 'horizontal') {
+      const walk = (x - startXRef.current); // 1:1 tracking
+      element.scrollLeft = startScrollRef.current - walk;
+      currentScrollRef.current = element.scrollLeft;
+      targetScrollRef.current = element.scrollLeft;
+    } else {
+      const walk = (y - startYRef.current);
+      element.scrollTop = startScrollRef.current - walk;
+      currentScrollRef.current = element.scrollTop;
+      targetScrollRef.current = element.scrollTop;
+    }
+  }, [direction]);
+
+  const handlePointerUp = useCallback((e: PointerEvent) => {
+    if (!isDraggingRef.current) {
+      // It was a click (or sub-threshold drag)
+      if (elementRef.current) {
+        if (elementRef.current.hasPointerCapture(e.pointerId)) {
+          elementRef.current.releasePointerCapture(e.pointerId);
+        }
+      }
+      return;
+    }
+
+    isDraggingRef.current = false;
+
+    if (elementRef.current) {
+      elementRef.current.releasePointerCapture(e.pointerId);
+      elementRef.current.style.cursor = 'grab';
+      elementRef.current.style.removeProperty('user-select');
+    }
+  }, []);
+
+  const handleDragStart = useCallback((e: DragEvent) => {
+    e.preventDefault();
+  }, []);
+
   // Set up native wheel event listener with passive: false
   useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
 
     element.addEventListener('wheel', handleWheel, { passive: false });
+    element.addEventListener('pointerdown', handlePointerDown);
+    element.addEventListener('pointermove', handlePointerMove);
+    element.addEventListener('pointerup', handlePointerUp);
+    element.addEventListener('pointercancel', handlePointerUp); // Handle cancel same as up
+    element.addEventListener('pointerleave', handlePointerUp); // Handle leave same as up
+    element.addEventListener('dragstart', handleDragStart);
 
     return () => {
       element.removeEventListener('wheel', handleWheel);
+      element.removeEventListener('pointerdown', handlePointerDown);
+      element.removeEventListener('pointermove', handlePointerMove);
+      element.removeEventListener('pointerup', handlePointerUp);
+      element.removeEventListener('pointercancel', handlePointerUp);
+      element.removeEventListener('pointerleave', handlePointerUp);
+      element.removeEventListener('dragstart', handleDragStart);
+
       if (animationRef.current !== undefined) {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = undefined;
       }
     };
-  }, [handleWheel]);
+  }, [handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, handleDragStart]);
 
   return {
     ref: elementRef,
