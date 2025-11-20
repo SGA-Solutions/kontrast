@@ -142,10 +142,10 @@ export default function BeforeAfterViewer({
   }, [isDragging]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className={`relative overflow-hidden ${className}`}
-      >
+    >
       {/* Before image (top layer) */}
       <div>
         <CrossBrowserImage
@@ -160,7 +160,7 @@ export default function BeforeAfterViewer({
       </div>
 
       {/* After image (bottom layer, revealed on hover) */}
-      <div 
+      <div
         className="absolute inset-0"
         style={{
           clipPath: `inset(0 ${100 - revealPercentage}% 0 0)`
@@ -180,7 +180,7 @@ export default function BeforeAfterViewer({
       {/* Draggable handle */}
       <div
         ref={handleRef}
-        className={`absolute top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-800 bg-opacity-20 rounded-full shadow-lg z-30 flex items-center justify-center cursor-grab ${isDragging ? 'cursor-grabbing scale-110' : ''}`}
+        className={`no-drag-scroll absolute top-1/2 transform -translate-y-1/2 w-12 h-12 bg-gray-800 bg-opacity-20 rounded-full shadow-lg z-30 flex items-center justify-center cursor-grab ${isDragging ? 'cursor-grabbing scale-110' : ''}`}
         style={{
           left: `${revealPercentage}%`,
           transform: 'translate(-50%, -50%)'
@@ -190,10 +190,10 @@ export default function BeforeAfterViewer({
         {/* Handle icon - double arrows */}
         <div className="flex items-center space-x-0.5">
           <svg width="8" height="12" viewBox="0 0 8 12" fill="none" className="text-white">
-            <path d="M3 1L1 6L3 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M3 1L1 6L3 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           <svg width="8" height="12" viewBox="0 0 8 12" fill="none" className="text-white">
-            <path d="M5 1L7 6L5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M5 1L7 6L5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       </div>

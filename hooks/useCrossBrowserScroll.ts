@@ -142,6 +142,7 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
 
   // Drag state
   const isDraggingRef = useRef(false);
+  const isScrollActiveRef = useRef(false);
   const startXRef = useRef(0);
   const startYRef = useRef(0);
   const startScrollRef = useRef(0);
@@ -158,6 +159,13 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
 
     // Only handle primary button (usually left click) or touch
     if (e.button !== 0 && e.pointerType === 'mouse') return;
+
+    // Check if the target or any ancestor has the no-drag-scroll class
+    if ((e.target as HTMLElement).closest('.no-drag-scroll')) {
+      isScrollActiveRef.current = false;
+      return;
+    }
+    isScrollActiveRef.current = true;
 
     isDraggingRef.current = false; // Not dragging yet, waiting for threshold
     startXRef.current = e.pageX;
@@ -196,6 +204,8 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
   const handlePointerMove = useCallback((e: PointerEvent) => {
     const element = elementRef.current;
     if (!element) return;
+
+    if (!isScrollActiveRef.current) return;
 
     // Determine effective direction
     let effectiveDirection = direction;
@@ -253,6 +263,9 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
   }, [direction]);
 
   const handlePointerUp = useCallback((e: PointerEvent) => {
+    if (!isScrollActiveRef.current) return;
+    isScrollActiveRef.current = false;
+
     if (!isDraggingRef.current) {
       // It was a click (or sub-threshold drag)
       if (elementRef.current) {
@@ -289,7 +302,7 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
           }
 
           // Move scroll based on velocity (pixels per ms * frame duration approx 16ms)
-          // Using 64 multiplier as per user tuning
+          // Using 16 multiplier as per user tuning
           const delta = velocityRef.current * 16;
 
           if (effectiveDirection === 'horizontal') {
