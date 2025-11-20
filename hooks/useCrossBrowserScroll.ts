@@ -146,6 +146,12 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
   const startYRef = useRef(0);
   const startScrollRef = useRef(0);
 
+  // Momentum state
+  const velocityRef = useRef(0);
+  const lastMoveTimeRef = useRef(0);
+  const lastMovePosRef = useRef(0);
+  const momentumIdRef = useRef<number | undefined>(undefined);
+
   const handlePointerDown = useCallback((e: PointerEvent) => {
     const element = elementRef.current;
     if (!element) return;
@@ -165,10 +171,19 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
 
     startScrollRef.current = effectiveDirection === 'horizontal' ? element.scrollLeft : element.scrollTop;
 
-    // Cancel any ongoing animations (wheel)
+    // Initialize momentum tracking
+    lastMoveTimeRef.current = Date.now();
+    lastMovePosRef.current = effectiveDirection === 'horizontal' ? e.pageX : e.pageY;
+    velocityRef.current = 0;
+
+    // Cancel any ongoing animations (wheel or momentum)
     if (animationRef.current !== undefined) {
       cancelAnimationFrame(animationRef.current);
       animationRef.current = undefined;
+    }
+    if (momentumIdRef.current !== undefined) {
+      cancelAnimationFrame(momentumIdRef.current);
+      momentumIdRef.current = undefined;
     }
 
     // Update target to current to prevent jump
@@ -190,6 +205,8 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
 
     const x = e.pageX;
     const y = e.pageY;
+    const now = Date.now();
+    const currentPos = effectiveDirection === 'horizontal' ? x : y;
 
     // Check for drag threshold if not yet dragging
     if (!isDraggingRef.current) {
@@ -213,6 +230,14 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
 
     // If we are here, we are dragging
     e.preventDefault();
+
+    // Calculate velocity
+    const dt = now - lastMoveTimeRef.current;
+    if (dt > 0) {
+      velocityRef.current = (currentPos - lastMovePosRef.current) / dt;
+      lastMoveTimeRef.current = now;
+      lastMovePosRef.current = currentPos;
+    }
 
     if (effectiveDirection === 'horizontal') {
       const walk = (x - startXRef.current); // 1:1 tracking
@@ -244,8 +269,46 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
       elementRef.current.releasePointerCapture(e.pointerId);
       elementRef.current.style.cursor = 'grab';
       elementRef.current.style.removeProperty('user-select');
+
+      // Start momentum if velocity is significant
+      if (Math.abs(velocityRef.current) > 0.1) {
+        const effectiveDirection = direction === 'responsive'
+          ? (window.innerWidth >= 768 ? 'horizontal' : 'vertical')
+          : direction;
+
+        const momentumLoop = () => {
+          const element = elementRef.current;
+          if (!element) return;
+
+          // Apply friction
+          velocityRef.current *= 0.95; // User tuned friction
+
+          if (Math.abs(velocityRef.current) < 0.01) {
+            momentumIdRef.current = undefined;
+            return;
+          }
+
+          // Move scroll based on velocity (pixels per ms * frame duration approx 16ms)
+          // Using 64 multiplier as per user tuning
+          const delta = velocityRef.current * 16;
+
+          if (effectiveDirection === 'horizontal') {
+            element.scrollLeft -= delta;
+            currentScrollRef.current = element.scrollLeft;
+            targetScrollRef.current = element.scrollLeft;
+          } else {
+            element.scrollTop -= delta;
+            currentScrollRef.current = element.scrollTop;
+            targetScrollRef.current = element.scrollTop;
+          }
+
+          momentumIdRef.current = requestAnimationFrame(momentumLoop);
+        };
+
+        momentumIdRef.current = requestAnimationFrame(momentumLoop);
+      }
     }
-  }, []);
+  }, [direction]);
 
   const handleDragStart = useCallback((e: DragEvent) => {
     e.preventDefault();
@@ -276,6 +339,10 @@ export function useCrossBrowserScroll(options: ScrollOptions = {}) {
       if (animationRef.current !== undefined) {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = undefined;
+      }
+      if (momentumIdRef.current !== undefined) {
+        cancelAnimationFrame(momentumIdRef.current);
+        momentumIdRef.current = undefined;
       }
     };
   }, [handleWheel, handlePointerDown, handlePointerMove, handlePointerUp, handleDragStart]);
