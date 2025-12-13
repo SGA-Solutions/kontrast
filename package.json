@@ -18,7 +18,7 @@
     "@sanity/ui": "^3.0.8",
     "@sanity/vision": "^4.4.1",
     "lottie-react": "^2.4.1",
-    "next": "15.4.8",
+    "next": "15.4.10",
     "next-sanity": "^10.0.10",
     "react": "19.1.2",
     "react-dom": "19.1.2",
