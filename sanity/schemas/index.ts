@@ -9,6 +9,7 @@ import post from './post';
 import person from './person';
 import menu from './menu';
 import aboutUs from './aboutUs';
+import kontakt from './kontakt';
 
 export const schemaTypes = [
   // Documents
@@ -18,6 +19,7 @@ export const schemaTypes = [
   projectCategory,
   project,
   aboutUs,
+  kontakt,
   post,
   person,
   menu,

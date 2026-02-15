@@ -1,12 +1,76 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useMobile } from "../../contexts/MobileContext";
+import { client } from "../../sanity/client";
+import { KONTAKT_QUERY, CACHE_TAGS } from "../../lib/sanity-queries";
+
+interface KontaktData {
+  companyName: string;
+  email: string;
+  phone: string;
+  address: string;
+  businessHours: string;
+  mapEmbedUrl: string;
+}
+
+const DEFAULTS: KontaktData = {
+  companyName: "Kontrast AB",
+  email: "info@kontrastarkitekter.se",
+  phone: "+46 73 679 7940",
+  address: "Hammarby allé 51B\n120 30 Stockholm Sweden",
+  businessHours: "09:00-18:00",
+  mapEmbedUrl:
+    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2034.8234567890123!2d18.0876543!3d59.3123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465f77e2f7654321%3A0x1234567890abcdef!2sHammarby%20all%C3%A9%2051B%2C%20120%2030%20Stockholm%2C%20Sweden!5e0!3m2!1sen!2sse!4v1234567890123!5m2!1sen!2sse&style=feature:all|saturation:-100|lightness:20",
+};
+
+async function getKontaktData(): Promise<KontaktData> {
+  try {
+    const data = await client.fetch<KontaktData | null>(KONTAKT_QUERY);
+    return data ? { ...DEFAULTS, ...data } : DEFAULTS;
+  } catch (error) {
+    console.error("Error fetching kontakt data:", error);
+    return DEFAULTS;
+  }
+}
+
+/** Render address string with newlines as <br /> */
+function AddressText({ address }: { address: string }) {
+  const parts = address.split("\n");
+  return (
+    <span>
+      {parts.map((part, i) => (
+        <React.Fragment key={i}>
+          {part}
+          {i < parts.length - 1 && <br />}
+        </React.Fragment>
+      ))}
+    </span>
+  );
+}
 
 export default function KontaktPage() {
-  // Use the mobile context
   const { isMobile } = useMobile();
+  const [data, setData] = useState<KontaktData>(DEFAULTS);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const kontakt = await getKontaktData();
+        setData(kontakt);
+      } catch (error) {
+        console.error("Error fetching kontakt data:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
+  // Strip non-digit characters for tel: link
+  const phoneHref = `tel:${data.phone.replace(/[^\d+]/g, "")}`;
 
   return (
     <section className={`pb-8 mobile-vh-fit ${
@@ -23,7 +87,7 @@ export default function KontaktPage() {
           {/* Company info - mobile first */}
           <div className="text-center">
             <h3 className="font-semibold tracking-[0.2em] text-neutral-900 mb-6 text-xl">
-              Kontrast AB
+              {data.companyName}
             </h3>
             
             {/* Contact info */}
@@ -37,10 +101,10 @@ export default function KontaktPage() {
                   className="w-4 h-4 object-contain"
                 />
                 <a 
-                  href="mailto:info@kontrastarkitekter.se"
+                  href={`mailto:${data.email}`}
                   className="hover:text-neutral-900 transition-colors touch-manipulation"
                 >
-                  info@kontrastarkitekter.se
+                  {data.email}
                 </a>
               </div>
               
@@ -53,10 +117,10 @@ export default function KontaktPage() {
                   className="w-4 h-4 object-contain"
                 />
                 <a 
-                  href="tel:+46736797940"
+                  href={phoneHref}
                   className="hover:text-neutral-900 transition-colors touch-manipulation"
                 >
-                  +46 73 679 7940
+                  {data.phone}
                 </a>
               </div>
             </div>
@@ -80,7 +144,7 @@ export default function KontaktPage() {
           <div>
             <div className="relative h-[250px] bg-gray-100 overflow-hidden rounded-lg">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2034.8234567890123!2d18.0876543!3d59.3123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465f77e2f7654321%3A0x1234567890abcdef!2sHammarby%20all%C3%A9%2051B%2C%20120%2030%20Stockholm%2C%20Sweden!5e0!3m2!1sen!2sse!4v1234567890123!5m2!1sen!2sse&style=feature:all|saturation:-100|lightness:20"
+                src={data.mapEmbedUrl}
                 width="100%"
                 height="100%"
                 style={{ border: 0, filter: 'grayscale(100%)' }}
@@ -102,7 +166,7 @@ export default function KontaktPage() {
                 height={16}
                 className="w-4 h-4 object-contain"
               />
-              <span>Hammarby allé 51B<br />120 30 Stockholm Sweden</span>
+              <AddressText address={data.address} />
             </div>
             
             <div className="flex items-center justify-center gap-3 text-neutral-600 text-sm">
@@ -113,7 +177,7 @@ export default function KontaktPage() {
                 height={16}
                 className="w-4 h-4 object-contain"
               />
-              <span>09:00-18:00</span>
+              <span>{data.businessHours}</span>
             </div>
           </div>
         </div>
@@ -125,7 +189,7 @@ export default function KontaktPage() {
             {/* Map */}
             <div className="relative h-[50vh] bg-gray-100 overflow-hidden">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2034.8234567890123!2d18.0876543!3d59.3123456!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465f77e2f7654321%3A0x1234567890abcdef!2sHammarby%20all%C3%A9%2051B%2C%20120%2030%20Stockholm%2C%20Sweden!5e0!3m2!1sen!2sse!4v1234567890123!5m2!1sen!2sse&style=feature:all|saturation:-100|lightness:20"
+                src={data.mapEmbedUrl}
                 width="100%"
                 height="100%"
                 style={{ border: 0, filter: 'grayscale(100%)' }}
@@ -148,7 +212,7 @@ export default function KontaktPage() {
                     height={16}
                     className="w-4 h-4 object-contain"
                   />
-                  <span>09:00-18:00</span>
+                  <span>{data.businessHours}</span>
                 </p>
               </div>
 
@@ -162,7 +226,7 @@ export default function KontaktPage() {
                     height={16}
                     className="w-4 h-4 object-contain mt-0.5"
                   />
-                  <span>Hammarby allé 51B<br />120 30 Stockholm Sweden</span>
+                  <AddressText address={data.address} />
                 </p>
               </div>
             </div>
@@ -185,7 +249,7 @@ export default function KontaktPage() {
             <div className="flex grid grid-cols-[30%_70%]">
               <div className="text-left">
                 <h3 className="font-semibold tracking-[0.2em] text-neutral-900 mb-4 text-lg">
-                  Kontrast AB
+                  {data.companyName}
                 </h3>
                 <div className="text-neutral-600 space-y-3 text-sm">
                   <p className="flex items-center justify-start gap-2">
@@ -197,10 +261,10 @@ export default function KontaktPage() {
                       className="w-4 h-4 object-contain"
                     />
                     <a 
-                      href="mailto:info@kontrastarkitekter.se"
+                      href={`mailto:${data.email}`}
                       className="hover:text-neutral-900 transition-colors touch-manipulation"
                     >
-                      info@kontrastarkitekter.se
+                      {data.email}
                     </a>
                   </p>
                   <p className="flex items-center justify-start gap-2">
@@ -212,10 +276,10 @@ export default function KontaktPage() {
                       className="w-4 h-4 object-contain"
                     />
                     <a 
-                      href="tel:+46736797940"
+                      href={phoneHref}
                       className="hover:text-neutral-900 transition-colors touch-manipulation"
                     >
-                      +46 73 679 7940
+                      {data.phone}
                     </a>
                   </p>
                 </div>

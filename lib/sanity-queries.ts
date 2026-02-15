@@ -301,6 +301,18 @@ export const SERVICE_CATEGORY_SLUGS_QUERY = groq`
   }
 `;
 
+// Kontakt page query
+export const KONTAKT_QUERY = groq`
+  *[_type == "kontakt"][0] {
+    companyName,
+    email,
+    phone,
+    address,
+    businessHours,
+    mapEmbedUrl
+  }
+`;
+
 // Cache tags for revalidation
 export const CACHE_TAGS = {
   posts: 'posts',
@@ -311,4 +323,5 @@ export const CACHE_TAGS = {
   settings: 'settings',
   services: 'services',
   serviceCategories: 'service-categories',
+  kontakt: 'kontakt',
 } as const;
