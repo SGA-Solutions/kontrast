@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import { Header } from './Header';
 import { useMobile } from '../contexts/MobileContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -11,8 +12,14 @@ interface LayoutContentProps {
 }
 
 export function LayoutContent({ children }: LayoutContentProps) {
+  const pathname = usePathname();
   const { isMobile } = useMobile();
   const { isDark } = useTheme();
+
+  // Let the Sanity Studio own the full viewport
+  if (pathname.startsWith('/studio')) {
+    return <>{children}</>;
+  }
   
   return (
     <div className={`flex flex-col min-h-screen ${isDark ? 'bg-black text-white' : 'bg-white text-neutral-900'}`}>
