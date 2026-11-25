@@ -17,6 +17,7 @@
     "@sanity/image-url": "^1.1.0",
     "@sanity/ui": "^3.0.8",
     "@sanity/vision": "^4.4.1",
+    "@vercel/analytics": "^2.0.1",
     "lottie-react": "^2.4.1",
     "next": "15.4.10",
     "next-sanity": "^10.0.10",
